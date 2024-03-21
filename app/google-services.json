@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "262227234767",
+    "project_id": "kelomproapp",
+    "storage_bucket": "kelomproapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262227234767:android:f57878df30c019d3cb0cba",
+        "android_client_info": {
+          "package_name": "com.example.kelomproapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_zAoGmQOFiMADwfzTrD9rY34UelBxSAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

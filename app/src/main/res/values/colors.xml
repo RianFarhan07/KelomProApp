@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="yellow">#ffd100</color>
+    <color name="yellow_light">#ffee32</color>
+    <color name="navy">#14213d</color>
+    <color name="midnight_black">#333533</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#ef233c</color>
+    <color name="orange_logo">#FF8538</color>
+    <color name="dark_grey">#606a6a</color>
+    <color name="blue">#0C90F1</color>
+
+    <color name="blue_deep_aqua">#003B46</color>
+    <color name="blue_ocean">#07575B</color>
+    <color name="blue_wave">#66A5AD</color>
+    <color name="blue_seafoam">#C4DFE6</color>
+
+    <color name="tropical_pink">#F5AB99</color>
+    <color name="liquid_sunset">#FEB47B</color>
+    <color name="heat_wave">#FF7E5F</color>
+    <color name="paradise">#765285</color>
+    <color name="nightfall">#351C4D</color>
+
+    //instagram
+    <color name="insta_purple">#833AB4</color>
+    <color name="insta_pink">#E1306C</color>
+    <color name="insta_blue">#3897F0</color>
+    <color name="insta_orange">#F56040</color>
+    <color name="insta_yellow">#FFD32E</color>
+
+    //chat-gpt
+    <color name="blue_gpt">#336699</color>
+    <color name="green_gpt">#006633</color>
+    <color name="grey_gpt">#666666</color>
+    <color name="orange_gpt">#FF6600</color>
+
+    <color name="colorPrimaryText">#FFFFFF</color>
+    <color name="colorSecondaryText">#666666</color>
+    <color name="colorPrimary">#336699</color>
+    <color name="colorSecondary">#006633</color>
+
+    <color name="colorSnackBarSuccess">#8BC34A</color>
+    <color name="colorSnackBarError">#F72400</color>
+
+    <color name="divider_color">#7A8089</color>
+    <color name="whiteGrey">#ECEFF1</color>
+
+    <color name="colorImageViewBackground">#E1E1E1</color>
+    <color name="colorBorder">#E8E6E6</color>
+    <color name="colorDarkGrey">#878787</color>
+    <color name="item_value_text_color">#545353</color>
+
+
+</resources>
