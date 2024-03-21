@@ -3,6 +3,7 @@ package com.example.kelomproapp.firebase
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
+import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.ui.activities.*
@@ -15,12 +16,28 @@ class FirestoreClass {
 
     private val mFireStore = FirebaseFirestore.getInstance()
 
-    fun registerUser(activity: SignUpActivity, siswaInfo: Siswa){
+    fun registerSiswa(activity: SignUpActivity, siswaInfo: Siswa){
         mFireStore.collection(Constants.USERS)
             .document(siswaInfo.id)
             .set(siswaInfo, SetOptions.merge())
             .addOnSuccessListener {
-                activity.userRegistrationSuccess()
+                activity.siswaRegistrationSuccess()
+            }
+            .addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error Ketika Registrasi User"
+                )
+            }
+    }
+
+    fun registerGuru(activity: SignUpGuruActivity, guruInfo: Guru){
+        mFireStore.collection(Constants.GURU)
+            .document(guruInfo.id)
+            .set(guruInfo, SetOptions.merge())
+            .addOnSuccessListener {
+                activity.guruRegistrationSuccess()
             }
             .addOnFailureListener {
                 activity.hideProgressDialog()

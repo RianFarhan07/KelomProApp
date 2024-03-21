@@ -9,6 +9,7 @@ import android.webkit.MimeTypeMap
 object Constants {
 
     const val USERS: String = "users"
+    const val GURU: String = "guru"
     const val KELOMPOK: String = "kelompok"
 
     const val IMAGE : String = "image"

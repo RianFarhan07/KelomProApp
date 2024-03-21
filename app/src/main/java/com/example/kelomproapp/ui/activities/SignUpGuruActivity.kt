@@ -8,18 +8,17 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import com.example.kelomproapp.R
-import com.example.kelomproapp.databinding.ActivitySignUpBinding
+import com.example.kelomproapp.databinding.ActivitySignUpGuruBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.Siswa
+import com.example.kelomproapp.models.Guru
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-class SignUpActivity : BaseActivity() {
-
-    private var binding : ActivitySignUpBinding? = null
+class SignUpGuruActivity : BaseActivity() {
+    private var binding : ActivitySignUpGuruBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivitySignUpGuruBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
@@ -38,30 +37,29 @@ class SignUpActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        binding?.tvLoginGuru?.setOnClickListener {
-            val intent = Intent(this, SignUpGuruActivity::class.java)
-            startActivity(intent)
-        }
-
         binding?.btnRegister?.setOnClickListener{
-            registerSiswa()
+            if(binding?.etPassGuru?.text.toString() != "123"){
+                showErrorSnackBar("pass guru salah", true)
+            }else{
+                registerGuru()
+            }
         }
     }
 
     private fun validateRegisterDetails(): Boolean {
         return when {
-            TextUtils.isEmpty(binding?.etFirstName?.text.toString().trim { it <= ' ' }) -> {
-                showErrorSnackBar("Silahkan isi nama depan dan nama belakang", true)
-                false
-            }
-
-            TextUtils.isEmpty(binding?.etLastName?.text.toString().trim { it <= ' ' }) -> {
-                showErrorSnackBar("Silahkan isi nama depan dan nama belakang", true)
+            TextUtils.isEmpty(binding?.etName?.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar("Silahkan isi nama", true)
                 false
             }
 
             TextUtils.isEmpty(binding?.etEmail?.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar("Silahkan isi email anda", true)
+                false
+            }
+
+            TextUtils.isEmpty(binding?.etPassGuru?.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar("Silahkan isi pass guru", true)
                 false
             }
 
@@ -87,20 +85,13 @@ class SignUpActivity : BaseActivity() {
                 )
                 false
             }
-            binding?.cbTermsAndCondition?.isChecked == false -> {
-                showErrorSnackBar(
-                    "Harap centang syarat dan ketentuan",
-                    true
-                )
-                false
-            }
             else -> {
                 true
             }
         }
     }
 
-    private fun registerSiswa() {
+    private fun registerGuru() {
         if (validateRegisterDetails()) {
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
@@ -109,29 +100,28 @@ class SignUpActivity : BaseActivity() {
 
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener{ task ->
-                        if (task.isSuccessful) {
-                            val firebaseUser: FirebaseUser = task.result!!.user!!
+                    if (task.isSuccessful) {
+                        val firebaseUser: FirebaseUser = task.result!!.user!!
 
-                            val siswa = Siswa(
-                                firebaseUser.uid,
-                                binding?.etFirstName?.text.toString().trim{ it <= ' ' },
-                                binding?.etLastName?.text.toString().trim{ it <= ' ' },
-                                binding?.etEmail?.text.toString().trim{ it <= ' ' },
-                            )
+                        val guru = Guru(
+                            firebaseUser.uid,
+                            binding?.etName?.text.toString().trim{ it <= ' ' },
+                            binding?.etEmail?.text.toString().trim{ it <= ' ' },
+                        )
 
-                            FirestoreClass().registerSiswa(this,siswa)
-                        } else {
-                            showErrorSnackBar(task.exception!!.message.toString(), true)
-                            hideProgressDialog()
-                        }
+                        FirestoreClass().registerGuru(this,guru)
+                    } else {
+                        showErrorSnackBar(task.exception!!.message.toString(), true)
+                        hideProgressDialog()
                     }
+                }
 
         }
     }
 
-    fun siswaRegistrationSuccess(){
+    fun guruRegistrationSuccess(){
         hideProgressDialog()
-        Toast.makeText(this@SignUpActivity,"Anda Berhasil Mendaftar",
+        Toast.makeText(this@SignUpGuruActivity,"Anda Berhasil Mendaftar",
             Toast.LENGTH_LONG).show()
 
         finish()
