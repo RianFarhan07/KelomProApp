@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityMyProfileBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -23,7 +23,7 @@ import java.io.IOException
 class MyProfileActivity : BaseActivity() {
 
     private var binding : ActivityMyProfileBinding? = null
-    private lateinit var mUserDetails : User
+    private lateinit var mSiswaDetails : Siswa
     private var mSelectedImageFileUri :Uri? = null
     private var mUserProfileImageURL: String = ""
 
@@ -154,24 +154,24 @@ class MyProfileActivity : BaseActivity() {
 
         var anyChangesMade = false
 
-        if (mUserProfileImageURL.isNotEmpty() && mUserProfileImageURL != mUserDetails.image){
+        if (mUserProfileImageURL.isNotEmpty() && mUserProfileImageURL != mSiswaDetails.image){
             userHashMap[Constants.IMAGE] = mUserProfileImageURL
             anyChangesMade = true
         }
 
-        if (binding?.etFirstName?.text.toString() != mUserDetails.firstName){
+        if (binding?.etFirstName?.text.toString() != mSiswaDetails.firstName){
             userHashMap[Constants.FIRST_NAME] = binding?.etFirstName?.text.toString()
             anyChangesMade = true
         }
-        if (binding?.etLastName?.text.toString() != mUserDetails.lastName){
+        if (binding?.etLastName?.text.toString() != mSiswaDetails.lastName){
             userHashMap[Constants.LAST_NAME] = binding?.etLastName?.text.toString()
             anyChangesMade = true
         }
-        if (binding?.etMobile?.text.toString() != mUserDetails.mobile){
+        if (binding?.etMobile?.text.toString() != mSiswaDetails.mobile){
             userHashMap[Constants.MOBILE] = binding?.etMobile?.text.toString()
             anyChangesMade = true
         }
-        if (binding?.etClasses?.text.toString() != mUserDetails.classes){
+        if (binding?.etClasses?.text.toString() != mSiswaDetails.classes){
             userHashMap[Constants.CLASSES] = binding?.etClasses?.text.toString()
             anyChangesMade = true
         }
@@ -185,21 +185,21 @@ class MyProfileActivity : BaseActivity() {
 
     }
 
-    fun setUserDataInUI(user: User){
-        mUserDetails = user
+    fun setUserDataInUI(siswa: Siswa){
+        mSiswaDetails = siswa
 
         Glide
             .with(this)
-            .load(user.image)
+            .load(siswa.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
             .into(findViewById(R.id.iv_profile_user_image))
 
-        binding?.etFirstName?.setText(user.firstName)
-        binding?.etLastName?.setText(user.lastName)
-        binding?.etEmail?.setText(user.email)
-        binding?.etClasses?.setText(user.classes)
-        binding?.etMobile?.setText(user.mobile)
+        binding?.etFirstName?.setText(siswa.firstName)
+        binding?.etLastName?.setText(siswa.lastName)
+        binding?.etEmail?.setText(siswa.email)
+        binding?.etClasses?.setText(siswa.classes)
+        binding?.etMobile?.setText(siswa.mobile)
 
     }
 

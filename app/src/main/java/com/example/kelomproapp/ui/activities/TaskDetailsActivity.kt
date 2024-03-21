@@ -24,7 +24,7 @@ import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.SelectedAnggota
 import com.example.kelomproapp.models.Task
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -35,7 +35,7 @@ import kotlin.collections.ArrayList
 class TaskDetailsActivity : BaseActivity() {
     private var binding : ActivityTaskDetailsBinding? = null
     private lateinit var mKelompokDetails : Kelompok
-    private lateinit var mAnggotaDetailList : ArrayList<User>
+    private lateinit var mAnggotaDetailList : ArrayList<Siswa>
     private var mTaskListPosition = -1
     private var mSelectedDueDateMilliSeconds : Long = 0
 
@@ -60,11 +60,15 @@ class TaskDetailsActivity : BaseActivity() {
 
         binding?.etNameTaskDetails?.setText(mKelompokDetails
             .taskList[mTaskListPosition].name)
+
         binding?.etNameTaskDetails?.setSelection(binding?.etNameTaskDetails?.text.toString().length)
 
         binding?.tvSelectMembers?.setOnClickListener{
             anggotaListDialog()
         }
+
+        binding?.etNilai?.setText(mKelompokDetails
+            .taskList[mTaskListPosition].nilai)
 
         mSelectedDueDateMilliSeconds =
             mKelompokDetails.taskList[mTaskListPosition].dueDate
@@ -171,19 +175,19 @@ class TaskDetailsActivity : BaseActivity() {
         this,
         mAnggotaDetailList, "Pilih Anggota"
     ){
-        override fun onItemSelected(user: User, action: String) {
+        override fun onItemSelected(siswa: Siswa, action: String) {
             if (action == Constants.SELECT){
                 if (!mKelompokDetails.taskList[mTaskListPosition].
-                    assignedTo.contains(user.id)){
+                    assignedTo.contains(siswa.id)){
                     mKelompokDetails.taskList[mTaskListPosition].
-                   assignedTo.add(user.id)
+                   assignedTo.add(siswa.id)
                 }
             }else{
                 mKelompokDetails.taskList[mTaskListPosition].
-                assignedTo.remove(user.id)
+                assignedTo.remove(siswa.id)
 
                 for (i in mAnggotaDetailList.indices){
-                    if (mAnggotaDetailList[i].id == user.id){
+                    if (mAnggotaDetailList[i].id == siswa.id){
                         mAnggotaDetailList[i].selected = false
                     }
                 }
@@ -273,7 +277,9 @@ class TaskDetailsActivity : BaseActivity() {
             mKelompokDetails.taskList[mTaskListPosition].createdBy,
             mKelompokDetails.taskList[mTaskListPosition].assignedTo,
             mSelectedDueDateMilliSeconds,
-            pdfUriString
+            pdfUriString,
+            binding?.etNilai?.text.toString()
+
         )
 
 

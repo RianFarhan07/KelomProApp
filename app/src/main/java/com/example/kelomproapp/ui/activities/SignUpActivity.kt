@@ -10,7 +10,7 @@ import android.widget.Toast
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivitySignUpBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -107,14 +107,14 @@ class SignUpActivity : BaseActivity() {
                         if (task.isSuccessful) {
                             val firebaseUser: FirebaseUser = task.result!!.user!!
 
-                            val user = User(
+                            val siswa = Siswa(
                                 firebaseUser.uid,
                                 binding?.etFirstName?.text.toString().trim{ it <= ' ' },
                                 binding?.etLastName?.text.toString().trim{ it <= ' ' },
                                 binding?.etEmail?.text.toString().trim{ it <= ' ' },
                             )
 
-                            FirestoreClass().registerUser(this,user)
+                            FirestoreClass().registerUser(this,siswa)
                         } else {
                             showErrorSnackBar(task.exception!!.message.toString(), true)
                             hideProgressDialog()

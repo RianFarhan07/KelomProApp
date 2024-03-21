@@ -3,25 +3,22 @@ package com.example.kelomproapp.firebase
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Task
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.ui.activities.*
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlin.math.log
 
 class FirestoreClass {
 
     private val mFireStore = FirebaseFirestore.getInstance()
 
-    fun registerUser(activity: SignUpActivity, userInfo: User){
+    fun registerUser(activity: SignUpActivity, siswaInfo: Siswa){
         mFireStore.collection(Constants.USERS)
-            .document(userInfo.id)
-            .set(userInfo, SetOptions.merge())
+            .document(siswaInfo.id)
+            .set(siswaInfo, SetOptions.merge())
             .addOnSuccessListener {
                 activity.userRegistrationSuccess()
             }
@@ -49,28 +46,28 @@ class FirestoreClass {
             .document(getCurrentUserID())
             .get()
             .addOnSuccessListener { document ->
-                val loggedInUser = document.toObject(User::class.java)
+                val loggedInSiswa = document.toObject(Siswa::class.java)
                 Log.i(activity.javaClass.simpleName, document.toString())
 
                 when(activity){
                     is SignInActivity -> {
-                        if (loggedInUser != null) {
-                            activity.userLoggedInSuccess(loggedInUser)
+                        if (loggedInSiswa != null) {
+                            activity.userLoggedInSuccess(loggedInSiswa)
                         }
                     }
                     is MainActivity -> {
-                        if (loggedInUser != null) {
-                            activity.updateNavigationUserDetails(loggedInUser,readKelompokList)
+                        if (loggedInSiswa != null) {
+                            activity.updateNavigationUserDetails(loggedInSiswa,readKelompokList)
                         }
                     }
                     is MyProfileActivity -> {
-                        if (loggedInUser != null){
-                            activity.setUserDataInUI(loggedInUser)
+                        if (loggedInSiswa != null){
+                            activity.setUserDataInUI(loggedInSiswa)
                         }
                     }
                     is KelompokDetailsActivity -> {
-                        if (loggedInUser != null){
-                            activity.setUserDataInUI(loggedInUser)
+                        if (loggedInSiswa != null){
+                            activity.setUserDataInUI(loggedInSiswa)
                         }
                     }
                 }
@@ -241,19 +238,19 @@ class FirestoreClass {
                     document ->
                 Log.e(activity.javaClass.simpleName,document.documents.toString())
 
-                val userList : ArrayList<User> = ArrayList()
+                val siswaList : ArrayList<Siswa> = ArrayList()
 
                 for (i in document.documents){
-                    val user = i.toObject(User::class.java)!!
-                    userList.add(user)
+                    val siswa = i.toObject(Siswa::class.java)!!
+                    siswaList.add(siswa)
                 }
 
                 when(activity) {
                     is AnggotaActivity ->  {
-                        activity.setupAnggotaList(userList)
+                        activity.setupAnggotaList(siswaList)
                     }
                     is TaskListActivity -> {
-                        activity.anggotaKelompokDetailList(userList)
+                        activity.anggotaKelompokDetailList(siswaList)
                     }
                 }
 
@@ -281,8 +278,8 @@ class FirestoreClass {
             .addOnSuccessListener {
                     document ->
                 if (document.documents.size > 0){
-                    val user = document.documents[0].toObject(User::class.java)!!
-                    activity.anggotaDetails(user)
+                    val siswa = document.documents[0].toObject(Siswa::class.java)!!
+                    activity.anggotaDetails(siswa)
                 }else{
                     activity.hideProgressDialog()
                     activity.showErrorSnackBar("TIDAK ADA USER DITEMUKAN",true)
@@ -299,7 +296,7 @@ class FirestoreClass {
             }
     }
 
-    fun assignedAnggotaToKelompok(activity: AnggotaActivity, kelompok: Kelompok, user: User){
+    fun assignedAnggotaToKelompok(activity: AnggotaActivity, kelompok: Kelompok, siswa: Siswa){
 
         val assignedToHashMap = HashMap<String, Any>()
         assignedToHashMap[Constants.ASSIGNED_TO] = kelompok.assignedTo
@@ -308,7 +305,7 @@ class FirestoreClass {
             .document(kelompok.documentId.toString())
             .update(assignedToHashMap)
             .addOnSuccessListener {
-                activity.anggotaAssignedSuccess(user)
+                activity.anggotaAssignedSuccess(siswa)
             }
             .addOnFailureListener {
                     e ->

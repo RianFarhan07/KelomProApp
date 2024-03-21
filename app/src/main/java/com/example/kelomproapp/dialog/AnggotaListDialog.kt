@@ -8,11 +8,11 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kelomproapp.adapter.AnggotaItemsAdapter
 import com.example.kelomproapp.databinding.DialogListBinding
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 
 abstract class AnggotaListDialog (
     context : Context,
-    private val list : ArrayList<User> = ArrayList(),
+    private val list : ArrayList<Siswa> = ArrayList(),
     private val title : String = ""
 ) : Dialog(context){
     private var adapter : AnggotaItemsAdapter? = null
@@ -39,15 +39,15 @@ abstract class AnggotaListDialog (
             binding?.rvList?.adapter = adapter
 
             adapter!!.setOnClickListener  (object : AnggotaItemsAdapter.OnClickListener{
-                override fun onClick(position: Int, user: User, action: String) {
+                override fun onClick(position: Int, siswa: Siswa, action: String) {
                     dismiss()
-                    onItemSelected(user,action)
+                    onItemSelected(siswa,action)
                 }
             })
         }
 
     }
-    protected abstract fun onItemSelected(user: User, action : String)
+    protected abstract fun onItemSelected(siswa: Siswa, action : String)
 
 
 

@@ -1,8 +1,6 @@
 package com.example.kelomproapp.ui.activities
 
-import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,13 +11,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
-import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.adapter.TaskItemsAdapter
 import com.example.kelomproapp.databinding.ActivityTaskListBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Task
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 
 class TaskListActivity : BaseActivity() {
@@ -27,7 +24,7 @@ class TaskListActivity : BaseActivity() {
     private var binding : ActivityTaskListBinding? = null
     private lateinit var mKelompokDetails : Kelompok
     private lateinit var mKelompokDocumentId : String
-    lateinit var mAssignedAnggotaDetailList: ArrayList<User>
+    lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
 
     companion object {
         const val TASK_DETAILS_REQUEST_CODE : Int = 15
@@ -184,7 +181,7 @@ class TaskListActivity : BaseActivity() {
         startActivityForResult(intent, TASK_DETAILS_REQUEST_CODE)
     }
 
-    fun anggotaKelompokDetailList(list: ArrayList<User>){
+    fun anggotaKelompokDetailList(list: ArrayList<Siswa>){
         mAssignedAnggotaDetailList = list
 
         hideProgressDialog()

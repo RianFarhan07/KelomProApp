@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ItemAnggotaBinding
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 
 class AnggotaItemsAdapter(private val context: Context,
-                          private val list : ArrayList<User>,)
+                          private val list : ArrayList<Siswa>,)
         : RecyclerView.Adapter<AnggotaItemsAdapter.AnggotaViewHolder>() {
 
     private var onClickListener : OnClickListener? = null
@@ -67,6 +67,6 @@ class AnggotaItemsAdapter(private val context: Context,
         RecyclerView.ViewHolder(binding.root)
 
     interface OnClickListener{
-        fun onClick(position: Int, user: User, action: String)
+        fun onClick(position: Int, siswa: Siswa, action: String)
     }
 }

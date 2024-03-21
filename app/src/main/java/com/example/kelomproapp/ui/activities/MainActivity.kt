@@ -17,7 +17,7 @@ import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.ActivityMainBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -121,18 +121,18 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         return true
     }
 
-    fun updateNavigationUserDetails(user : User, readKelompokList: Boolean){
-        mUserName = "${user.firstName} ${user.lastName}"
+    fun updateNavigationUserDetails(siswa : Siswa, readKelompokList: Boolean){
+        mUserName = "${siswa.firstName} ${siswa.lastName}"
 
         Glide
             .with(this)
-            .load(user.image)
+            .load(siswa.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
             .into(findViewById(R.id.nav_user_image))
 
         var tvUserName : TextView = findViewById(R.id.tv_username)
-        tvUserName.text = "${user.firstName} ${user.lastName}"
+        tvUserName.text = "${siswa.firstName} ${siswa.lastName}"
 
         if (readKelompokList){
             showProgressDialog(resources.getString(R.string.mohon_tunggu))

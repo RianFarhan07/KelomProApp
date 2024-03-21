@@ -13,13 +13,13 @@ import com.example.kelomproapp.databinding.ActivityAnggotaBinding
 import com.example.kelomproapp.databinding.DialogSearchAnggotaBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 
 class AnggotaActivity : BaseActivity() {
     private var binding : ActivityAnggotaBinding? = null
     private lateinit var mKelompokDetails : Kelompok
-    private lateinit var mAssignedAnggotaList : ArrayList<User>
+    private lateinit var mAssignedAnggotaList : ArrayList<Siswa>
     private var anyChangesMade : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,7 @@ class AnggotaActivity : BaseActivity() {
         super.onBackPressed()
     }
 
-    fun setupAnggotaList(list: ArrayList<User>){
+    fun setupAnggotaList(list: ArrayList<Siswa>){
         hideProgressDialog()
         mAssignedAnggotaList = list
 
@@ -82,14 +82,14 @@ class AnggotaActivity : BaseActivity() {
         binding?.rvAnggotaList?.adapter = adapter
     }
 
-    fun anggotaDetails(user: User){
-        mKelompokDetails.assignedTo.add(user.id)
-        FirestoreClass().assignedAnggotaToKelompok(this,mKelompokDetails,user)
+    fun anggotaDetails(siswa: Siswa){
+        mKelompokDetails.assignedTo.add(siswa.id)
+        FirestoreClass().assignedAnggotaToKelompok(this,mKelompokDetails,siswa)
     }
 
-    fun anggotaAssignedSuccess(user: User){
+    fun anggotaAssignedSuccess(siswa: Siswa){
         hideProgressDialog()
-        mAssignedAnggotaList.add(user)
+        mAssignedAnggotaList.add(siswa)
         setupAnggotaList(mAssignedAnggotaList)
         anyChangesMade = true
 

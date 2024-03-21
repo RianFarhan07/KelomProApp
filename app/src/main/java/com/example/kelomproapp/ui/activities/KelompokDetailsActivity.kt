@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -18,7 +16,7 @@ import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityKelompokDetailsBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.User
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -27,7 +25,7 @@ import java.io.IOException
 class KelompokDetailsActivity : BaseActivity() {
 
     private var binding : ActivityKelompokDetailsBinding? = null
-    private lateinit var mUserDetails : User
+    private lateinit var mSiswaDetails : Siswa
     private lateinit var mKelompokDetails : Kelompok
     private lateinit var mKelompokDocumentId : String
     private var mSelectedImageFileUri : Uri? = null
@@ -159,9 +157,9 @@ class KelompokDetailsActivity : BaseActivity() {
 
     }
 
-    fun setUserDataInUI(user: User) {
+    fun setUserDataInUI(siswa: Siswa) {
         Glide.with(this)
-            .load(user.image)
+            .load(siswa.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
             .into(binding?.ivKetuaImage!!)

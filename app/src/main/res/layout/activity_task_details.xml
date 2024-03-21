@@ -122,6 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:padding="10dp"
+                    android:textStyle="bold"
                     android:text="Pilih Tenggat Waktu"
                     android:textColor="@color/dark_grey" />
 
@@ -137,6 +138,8 @@
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
                         android:padding="16dp">
+
+
 
                         <com.example.kelomproapp.utils.KMPButton
                             android:id="@+id/btn_upload_pdf"
@@ -163,7 +166,40 @@
                             android:textSize="16dp" />
 
                     </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:elevation="10dp"
+                    app:cardCornerRadius="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/et_nilai"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Nilai Guru"
+                                android:inputType="number"
+                                android:textSize="16dp"
+                                tools:text="100" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
 
                 <com.example.kelomproapp.utils.KMPButton
                     android:id="@+id/btn_update_card_details"

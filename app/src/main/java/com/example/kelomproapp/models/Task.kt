@@ -10,4 +10,5 @@ data class Task (
     val assignedTo: ArrayList<String> = ArrayList(),
     val dueDate: Long = 0,
     val pdfUrl: String = "",
+    val nilai: String = ""
         ) : Parcelable
