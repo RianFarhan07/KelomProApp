@@ -34,7 +34,7 @@ class MyProfileActivity : BaseActivity() {
 
         setupActionBar()
 
-        FirestoreClass().getUserDetails(this)
+        FirestoreClass().getUserDetails(this,Constants.USERS)
 
         binding?.ivProfileUserImage?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(

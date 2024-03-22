@@ -44,7 +44,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         binding?.navView?.setNavigationItemSelectedListener(this)
 
 
-        FirestoreClass().getUserDetails(this,true)
+        FirestoreClass().getUserDetails(this,Constants.USERS,true)
 
         val fabCreateKelompok : FloatingActionButton = findViewById(R.id.fab_create_kelompok)
         fabCreateKelompok.setOnClickListener {
@@ -89,7 +89,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE){
-            FirestoreClass().getUserDetails(this)
+            FirestoreClass().getUserDetails(this,Constants.USERS)
         }else if (resultCode == Activity.RESULT_OK && requestCode == CREATE_KELOMPOK_REQUEST_CODE){
             FirestoreClass().getKelompokList(this)
         }else if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE) {

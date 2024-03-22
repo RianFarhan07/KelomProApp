@@ -30,7 +30,7 @@ class GuruMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
-        FirestoreClass().getUserDetails(this,true)
+        FirestoreClass().getUserDetails(this,"guru",true)
 
     }
 

@@ -58,61 +58,23 @@ class FirestoreClass {
         }
         return currentUserID
     }
-
-    fun getCurrentUserRole(): String {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        var currentUserRole = ""
-
-        // Pastikan pengguna telah masuk sebelum mencoba mengambil perannya
-        currentUser?.let { user ->
-            // Mendapatkan ID pengguna saat ini
-            val currentUserId = user.uid
-
-            // Mendapatkan referensi ke koleksi sesuai dengan peran pengguna
-            val collectionReference = if (getCurrentUserRole() == "guru") {
-                FirebaseFirestore.getInstance().collection("guru")
-            } else {
-                FirebaseFirestore.getInstance().collection("users")
-            }
-
-            // Mendapatkan dokumen pengguna dari basis data berdasarkan ID pengguna saat ini
-            collectionReference.document(currentUserId)
-                .get()
-                .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        // Jika dokumen pengguna ada dan memiliki atribut "role"
-                        // Anda bisa mengambil peran dari dokumen tersebut
-                        currentUserRole = document.getString("role") ?: ""
-                        Log.e("getCurrentUserRole", "role ${currentUserRole}")
-                    } else {
-                        // Dokumen pengguna tidak ditemukan atau kosong
-                        Log.e("getCurrentUserRole", "Dokumen pengguna tidak ditemukan")
-                    }
-                }
-                .addOnFailureListener { e ->
-                    // Gagal mengambil dokumen pengguna dari basis data
-                    Log.e("getCurrentUserRole", "Error saat mengambil dokumen pengguna", e)
-                }
-        }
-
-        return currentUserRole
-    }
+    
 
 
-    fun getUserDetails(activity : Activity, readKelompokList: Boolean = false) {
-        val userCollection = if (getCurrentUserRole() == "siswa") Constants.USERS else Constants.GURU
+    fun getUserDetails(activity: Activity, role: String, readKelompokList: Boolean = false) {
+        val userCollection = if (role == "siswa") Constants.USERS else Constants.GURU
 
         mFireStore.collection(userCollection)
             .document(getCurrentUserID())
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    if (getCurrentUserRole() == "siswa") {
+                    if (role == "siswa") {
                         val loggedInSiswa = document.toObject(Siswa::class.java)
                         Log.i(activity.javaClass.simpleName, document.toString())
 
                         loggedInSiswa?.let { siswa ->
-                            when(activity){
+                            when (activity) {
                                 is SignInActivity -> {
                                     activity.userLoggedInSuccess(siswa)
                                 }
@@ -127,12 +89,12 @@ class FirestoreClass {
                                 }
                             }
                         }
-                    } else if (getCurrentUserRole() == "guru") {
+                    } else if (role == "guru") {
                         val loggedInGuru = document.toObject(Guru::class.java)
                         Log.i(activity.javaClass.simpleName, document.toString())
 
                         loggedInGuru?.let { guru ->
-                            when(activity){
+                            when (activity) {
                                 is SignInActivity -> {
                                     activity.userLoggedInSuccess(guru)
                                 }
@@ -147,7 +109,7 @@ class FirestoreClass {
                 }
             }
             .addOnFailureListener { e ->
-                when(activity){
+                when (activity) {
                     is SignInActivity -> {
                         activity.hideProgressDialog()
                     }
@@ -166,6 +128,7 @@ class FirestoreClass {
                     "Error Mengambil data detail user", e)
             }
     }
+
 
 
 //    fun getGuruDetails(activity : Activity, readKelompokList: Boolean = false) {
