@@ -12,5 +12,6 @@ data class Siswa(
         val classes: String = "",
         val image: String = "",
         val mobile: String = "",
-        var selected: Boolean = false
+        var selected: Boolean = false,
+        val role : String = "siswa"
 ) : Parcelable

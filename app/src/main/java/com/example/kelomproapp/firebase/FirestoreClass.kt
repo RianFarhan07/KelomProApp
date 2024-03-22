@@ -11,6 +11,7 @@ import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlin.math.log
 
 class FirestoreClass {
 
@@ -58,35 +59,91 @@ class FirestoreClass {
         return currentUserID
     }
 
-    fun getUserDetails(activity : Activity,  readKelompokList: Boolean = false) {
-        mFireStore.collection(Constants.USERS)
+    fun getCurrentUserRole(): String {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        var currentUserRole = ""
+
+        // Pastikan pengguna telah masuk sebelum mencoba mengambil perannya
+        currentUser?.let { user ->
+            // Mendapatkan ID pengguna saat ini
+            val currentUserId = user.uid
+
+            // Mendapatkan referensi ke koleksi sesuai dengan peran pengguna
+            val collectionReference = if (getCurrentUserRole() == "guru") {
+                FirebaseFirestore.getInstance().collection("guru")
+            } else {
+                FirebaseFirestore.getInstance().collection("users")
+            }
+
+            // Mendapatkan dokumen pengguna dari basis data berdasarkan ID pengguna saat ini
+            collectionReference.document(currentUserId)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Jika dokumen pengguna ada dan memiliki atribut "role"
+                        // Anda bisa mengambil peran dari dokumen tersebut
+                        currentUserRole = document.getString("role") ?: ""
+                        Log.e("getCurrentUserRole", "role ${currentUserRole}")
+                    } else {
+                        // Dokumen pengguna tidak ditemukan atau kosong
+                        Log.e("getCurrentUserRole", "Dokumen pengguna tidak ditemukan")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Gagal mengambil dokumen pengguna dari basis data
+                    Log.e("getCurrentUserRole", "Error saat mengambil dokumen pengguna", e)
+                }
+        }
+
+        return currentUserRole
+    }
+
+
+    fun getUserDetails(activity : Activity, readKelompokList: Boolean = false) {
+        val userCollection = if (getCurrentUserRole() == "siswa") Constants.USERS else Constants.GURU
+
+        mFireStore.collection(userCollection)
             .document(getCurrentUserID())
             .get()
             .addOnSuccessListener { document ->
-                val loggedInSiswa = document.toObject(Siswa::class.java)
-                Log.i(activity.javaClass.simpleName, document.toString())
+                if (document.exists()) {
+                    if (getCurrentUserRole() == "siswa") {
+                        val loggedInSiswa = document.toObject(Siswa::class.java)
+                        Log.i(activity.javaClass.simpleName, document.toString())
 
-                when(activity){
-                    is SignInActivity -> {
-                        if (loggedInSiswa != null) {
-                            activity.userLoggedInSuccess(loggedInSiswa)
+                        loggedInSiswa?.let { siswa ->
+                            when(activity){
+                                is SignInActivity -> {
+                                    activity.userLoggedInSuccess(siswa)
+                                }
+                                is MainActivity -> {
+                                    activity.updateNavigationUserDetails(siswa, readKelompokList)
+                                }
+                                is MyProfileActivity -> {
+                                    activity.setUserDataInUI(siswa)
+                                }
+                                is KelompokDetailsActivity -> {
+                                    activity.setUserDataInUI(siswa)
+                                }
+                            }
+                        }
+                    } else if (getCurrentUserRole() == "guru") {
+                        val loggedInGuru = document.toObject(Guru::class.java)
+                        Log.i(activity.javaClass.simpleName, document.toString())
+
+                        loggedInGuru?.let { guru ->
+                            when(activity){
+                                is SignInActivity -> {
+                                    activity.userLoggedInSuccess(guru)
+                                }
+                                is GuruMainActivity -> {
+                                    activity.updateNavigationGuruDetails(guru, readKelompokList)
+                                }
+                            }
                         }
                     }
-                    is MainActivity -> {
-                        if (loggedInSiswa != null) {
-                            activity.updateNavigationUserDetails(loggedInSiswa,readKelompokList)
-                        }
-                    }
-                    is MyProfileActivity -> {
-                        if (loggedInSiswa != null){
-                            activity.setUserDataInUI(loggedInSiswa)
-                        }
-                    }
-                    is KelompokDetailsActivity -> {
-                        if (loggedInSiswa != null){
-                            activity.setUserDataInUI(loggedInSiswa)
-                        }
-                    }
+                } else {
+                    Log.e(activity.javaClass.simpleName.toString(), "Dokumen tidak ditemukan")
                 }
             }
             .addOnFailureListener { e ->
@@ -97,15 +154,53 @@ class FirestoreClass {
                     is MainActivity -> {
                         activity.hideProgressDialog()
                     }
+                    is GuruMainActivity -> {
+                        activity.hideProgressDialog()
+                    }
                     is MyProfileActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
 
                 Log.e(activity.javaClass.simpleName.toString(),
-                "Error Mengambil data detail user")
+                    "Error Mengambil data detail user", e)
             }
     }
+
+
+//    fun getGuruDetails(activity : Activity, readKelompokList: Boolean = false) {
+//        mFireStore.collection(Constants.GURU)
+//            .document(getCurrentUserID())
+//            .get()
+//            .addOnSuccessListener { document ->
+//                val loggedInGuru = document.toObject(Guru::class.java)
+//                Log.i(activity.javaClass.simpleName, document.toString())
+//
+//                when(activity){
+//                    is SignInActivity -> {
+//                        if (loggedInGuru != null) {
+//                            activity.userLoggedInSuccess(loggedInGuru)
+//                        }
+//                    }
+//                    is GuruMainActivity -> {
+//                        if (loggedInGuru != null) {
+//                            activity.updateNavigationGuruDetails(loggedInGuru,readKelompokList)
+//                        }
+//                    }
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                when(activity){
+//                    is SignInActivity -> {
+//                        activity.hideProgressDialog()
+//                    }
+//
+//                }
+//
+//                Log.e(activity.javaClass.simpleName.toString(),
+//                    "Error Mengambil data detail user")
+//            }
+//    }
 
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>){
@@ -156,6 +251,26 @@ class FirestoreClass {
     fun getKelompokList(activity: MainActivity){
         mFireStore.collection(Constants.KELOMPOK)
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                val kelompokList : ArrayList<Kelompok> = ArrayList()
+                for(i in document.documents){
+                    val kelompok = i.toObject(Kelompok::class.java)!!
+                    kelompok.documentId = i.id
+                    kelompokList.add(kelompok)
+                }
+
+                activity.populateKelompokListToUI(kelompokList)
+            }.addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+    fun getKelompokListGuru(activity: GuruMainActivity){
+        mFireStore.collection(Constants.KELOMPOK)
             .get()
             .addOnSuccessListener {
                     document ->

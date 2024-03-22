@@ -11,6 +11,7 @@ import android.view.WindowManager
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivitySignInBinding
 import com.example.kelomproapp.firebase.FirestoreClass
+import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Siswa
 import com.google.firebase.auth.FirebaseAuth
 
@@ -98,10 +99,18 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    fun userLoggedInSuccess(siswa : Siswa){
+    fun userLoggedInSuccess(user: Any) {
         hideProgressDialog()
-        val intent = Intent(this@SignInActivity, MainActivity::class.java)
-        startActivity(intent)
+
+        if (user is Guru) {
+            val intent = Intent(this@SignInActivity, GuruMainActivity::class.java)
+            startActivity(intent)
+        } else if (user is Siswa) {
+            val intent = Intent(this@SignInActivity, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         finish()
     }
+
 }

@@ -5,4 +5,9 @@ data class Guru(
     val Name: String = "",
     val email: String = "",
     val image: String = "",
-)
+    val role : String = "guru"
+) {
+    fun isGuru(): Boolean {
+        return true
+    }
+}
