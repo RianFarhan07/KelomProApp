@@ -34,17 +34,38 @@ class SplashActivity : AppCompatActivity() {
         }
 
         Handler().postDelayed({
+            checkUserLoggedIn()
+        },3000)
+    }
 
-            var currentUserID = FirestoreClass().getCurrentUserID()
+    private fun checkUserLoggedIn() {
+        val currentUserID = FirestoreClass().getCurrentUserID()
 
-            if (currentUserID.isNotEmpty()){
+        if (currentUserID.isNotEmpty()) {
+            FirestoreClass().getUserRole(currentUserID) { role ->
+                if (role != null) {
+                    handleUserRole(role)
+                } else {
+                    startActivity(Intent(this, IntroActivity::class.java))
+                }
+            }
+        } else {
+            startActivity(Intent(this, IntroActivity::class.java))
+        }
+        finish()
+    }
+
+    private fun handleUserRole(role: String) {
+        when(role) {
+            "siswa" -> {
                 startActivity(Intent(this, MainActivity::class.java))
-            }else{
+            }
+            "guru" -> {
+                startActivity(Intent(this, GuruMainActivity::class.java))
+            }
+            else -> {
                 startActivity(Intent(this, IntroActivity::class.java))
             }
-            finish()
-        },3000)
-
-
+        }
     }
 }

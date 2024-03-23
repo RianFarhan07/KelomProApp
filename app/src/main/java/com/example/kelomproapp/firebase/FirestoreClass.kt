@@ -3,6 +3,7 @@ package com.example.kelomproapp.firebase
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
@@ -18,7 +19,7 @@ class FirestoreClass {
     private val mFireStore = FirebaseFirestore.getInstance()
 
     fun registerSiswa(activity: SignUpActivity, siswaInfo: Siswa){
-        mFireStore.collection(Constants.USERS)
+        mFireStore.collection(Constants.SISWA)
             .document(siswaInfo.id)
             .set(siswaInfo, SetOptions.merge())
             .addOnSuccessListener {
@@ -58,11 +59,42 @@ class FirestoreClass {
         }
         return currentUserID
     }
-    
+
+    fun getUserRole(userId: String, onComplete: (String?) -> Unit) {
+        mFireStore.collection(Constants.SISWA)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { siswaDocument ->
+                if (siswaDocument.exists()) {
+                    onComplete(Constants.SISWA) // Mengembalikan peran siswa
+                } else {
+                    // Jika tidak ditemukan sebagai siswa, cek sebagai guru
+                    mFireStore.collection(Constants.GURU)
+                        .document(userId)
+                        .get()
+                        .addOnSuccessListener { guruDocument ->
+                            if (guruDocument.exists()) {
+                                onComplete(Constants.GURU) // Mengembalikan peran guru
+                            } else {
+                                onComplete(null) // Jika tidak ditemukan sebagai guru, kembalikan null
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("FirestoreClass", "Error getting user role (guru): ${e.message}", e)
+                            onComplete(null)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreClass", "Error getting user role (siswa): ${e.message}", e)
+                onComplete(null)
+            }
+    }
+
 
 
     fun getUserDetails(activity: Activity, role: String, readKelompokList: Boolean = false) {
-        val userCollection = if (role == "siswa") Constants.USERS else Constants.GURU
+        val userCollection = if (role == "siswa") Constants.SISWA else Constants.GURU
 
         mFireStore.collection(userCollection)
             .document(getCurrentUserID())
@@ -167,7 +199,7 @@ class FirestoreClass {
 
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>){
-        mFireStore.collection(Constants.USERS)
+        mFireStore.collection(Constants.SISWA)
             .document(getCurrentUserID())
             .update(userHashMap)
             .addOnSuccessListener {
@@ -326,7 +358,7 @@ class FirestoreClass {
     }
 
     fun getAssignedAnggotaListDetails(activity: Activity, assignedTo: ArrayList<String>){
-        mFireStore.collection(Constants.USERS)
+        mFireStore.collection(Constants.SISWA)
             .whereIn(Constants.ID, assignedTo)
             .get()
             .addOnSuccessListener {
@@ -367,7 +399,7 @@ class FirestoreClass {
     }
 
     fun getAnggotaDetails(activity: AnggotaActivity, email: String){
-        mFireStore.collection(Constants.USERS)
+        mFireStore.collection(Constants.SISWA)
             .whereEqualTo(Constants.EMAIL,email)
             .get()
             .addOnSuccessListener {

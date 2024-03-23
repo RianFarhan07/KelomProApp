@@ -45,7 +45,7 @@ class KelompokDetailsActivity : BaseActivity() {
         }
 
         FirestoreClass().getKelompokDetails(this,mKelompokDocumentId)
-        FirestoreClass().getUserDetails(this,Constants.USERS)
+        FirestoreClass().getUserDetails(this,Constants.SISWA)
 
         setupActionBar()
 
@@ -137,7 +137,7 @@ class KelompokDetailsActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK
             && requestCode == ANGGOTA_REQUEST_CODE){
             FirestoreClass().getKelompokDetails(this,mKelompokDocumentId)
-            FirestoreClass().getUserDetails(this,Constants.USERS)
+            FirestoreClass().getUserDetails(this,Constants.SISWA)
         }
     }
 

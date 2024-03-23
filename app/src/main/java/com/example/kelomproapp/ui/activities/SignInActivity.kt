@@ -91,7 +91,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
                 .addOnCompleteListener { task ->
 
                     if (task.isSuccessful){
-                        FirestoreClass().getUserDetails(this, Constants.USERS)
+                        FirestoreClass().getUserDetails(this, Constants.SISWA)
 
                         FirestoreClass().getUserDetails(this, Constants.GURU)
                     }else{

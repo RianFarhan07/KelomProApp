@@ -124,6 +124,7 @@ class SignUpGuruActivity : BaseActivity() {
         Toast.makeText(this@SignUpGuruActivity,"Anda Berhasil Mendaftar",
             Toast.LENGTH_LONG).show()
 
-        finish()
+        val intent = Intent(this@SignUpGuruActivity, SignInActivity::class.java)
+        startActivity(intent)
     }
 }

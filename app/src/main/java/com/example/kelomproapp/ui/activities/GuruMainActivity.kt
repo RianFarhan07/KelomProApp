@@ -30,6 +30,10 @@ class GuruMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
+        setupActionBar()
+
+//        binding?.navViewGuru?.setNavigationItemSelectedListener(this)
+
         FirestoreClass().getUserDetails(this,"guru",true)
 
     }
@@ -77,7 +81,7 @@ class GuruMainActivity : BaseActivity() {
             .into(findViewById(R.id.nav_user_image))
 
         var tvUserName : TextView = findViewById(R.id.tv_username)
-        tvUserName.text = "${guru.Name}"
+        tvUserName.text = guru.Name
 
         if (readKelompokList){
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
