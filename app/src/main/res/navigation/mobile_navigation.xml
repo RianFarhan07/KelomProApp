@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_kelompok">
+
+    <fragment
+        android:id="@+id/navigation_kelompok"
+        android:name="com.example.kelomproapp.ui.fragments.KelompokFragment"
+        android:label="Kelompok"
+        tools:layout="@layout/fragment_kelompok" />
+
+    <fragment
+        android:id="@+id/navigation_siswa"
+        android:name="com.example.kelomproapp.ui.fragments.SiswaFragment"
+        android:label="Siswa"
+        tools:layout="@layout/fragment_siswa" />
+
+    <fragment
+        android:id="@+id/navigation_guru"
+        android:name="com.example.kelomproapp.ui.fragments.GuruFragment"
+        android:label="Guru"
+        tools:layout="@layout/fragment_guru" />
+
+    <fragment
+        android:id="@+id/navigation_pengaturan"
+        android:name="com.example.kelomproapp.ui.fragments.PengaturanFragment"
+        android:label="Pengaturan"
+        tools:layout="@layout/fragment_guru" />
+</navigation>
