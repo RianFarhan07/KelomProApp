@@ -11,9 +11,12 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="colorOnSurfaceVariant">@color/blue_gpt</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge"/>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="colorOnSurfaceVariant">@color/blue_gpt</item>
+    </style>
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="PopUpOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
@@ -29,4 +32,17 @@
     <item name="android:shadowDy">2</item>
     <item name="android:shadowRadius">3</item>
     </style>
+
+    <style name="SearchBar" parent="Widget.Material3.SearchBar">
+        <!-- Customize attributes for the SearchBar -->
+        <item name="android:background">@drawable/app_gradient_color_background3</item>
+        <!-- Add more customizations as needed -->
+    </style>
+
+    <style name="SearchView" parent="Widget.Material3.SearchView">
+        <!-- Customize attributes for the SearchBar -->
+        <item name="android:background">@drawable/app_gradient_color_background3</item>
+        <!-- Add more customizations as needed -->
+    </style>
+
 </resources>

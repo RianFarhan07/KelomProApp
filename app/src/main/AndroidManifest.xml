@@ -17,9 +17,10 @@
         android:theme="@style/Theme.KelomProApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.Main_Guru_Activity"
+            android:name=".ui.activities.MainGuruActivity"
             android:exported="false"
-            android:label="@string/title_activity_main_guru">
+            android:label="@string/title_activity_main_guru"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -61,7 +61,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
             }
             "guru" -> {
-                startActivity(Intent(this, GuruMainActivity::class.java))
+                startActivity(Intent(this, MainGuruActivity::class.java))
             }
             else -> {
                 startActivity(Intent(this, IntroActivity::class.java))

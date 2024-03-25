@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SearchView
 import com.example.kelomproapp.databinding.FragmentKelompokBinding
 
 class KelompokFragment : Fragment() {
@@ -25,6 +26,22 @@ class KelompokFragment : Fragment() {
         textView.text = "Kelompok Fragment"
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Action when the search button is pressed
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Action while typing into the search bar
+                return false
+            }
+        })
     }
 
     override fun onDestroyView() {

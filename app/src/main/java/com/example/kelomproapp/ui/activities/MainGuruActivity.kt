@@ -10,7 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityMainGuruBinding
 
-class Main_Guru_Activity : AppCompatActivity() {
+class MainGuruActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainGuruBinding
 
