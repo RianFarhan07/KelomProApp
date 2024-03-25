@@ -86,7 +86,6 @@ class GuruMainActivity : BaseActivity() {
         if (readKelompokList){
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
-            FirestoreClass().getKelompokListGuru(this)
         }
     }
 

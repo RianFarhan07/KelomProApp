@@ -8,6 +8,7 @@ import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.ui.activities.*
+import com.example.kelomproapp.ui.fragments.KelompokFragment
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +18,11 @@ import kotlin.math.log
 class FirestoreClass {
 
     private val mFireStore = FirebaseFirestore.getInstance()
+
+    interface KelompokSearchListener {
+        fun onSearchComplete(kelompokList: ArrayList<Kelompok>)
+    }
+
 
     fun registerSiswa(activity: SignUpActivity, siswaInfo: Siswa){
         mFireStore.collection(Constants.SISWA)
@@ -161,41 +167,26 @@ class FirestoreClass {
             }
     }
 
+    fun searchKelompokList(query: String?, listener: KelompokSearchListener) {
+        val lowerCaseQuery = query?.toLowerCase() // Mengonversi query ke huruf kecil
 
-
-//    fun getGuruDetails(activity : Activity, readKelompokList: Boolean = false) {
-//        mFireStore.collection(Constants.GURU)
-//            .document(getCurrentUserID())
-//            .get()
-//            .addOnSuccessListener { document ->
-//                val loggedInGuru = document.toObject(Guru::class.java)
-//                Log.i(activity.javaClass.simpleName, document.toString())
-//
-//                when(activity){
-//                    is SignInActivity -> {
-//                        if (loggedInGuru != null) {
-//                            activity.userLoggedInSuccess(loggedInGuru)
-//                        }
-//                    }
-//                    is GuruMainActivity -> {
-//                        if (loggedInGuru != null) {
-//                            activity.updateNavigationGuruDetails(loggedInGuru,readKelompokList)
-//                        }
-//                    }
-//                }
-//            }
-//            .addOnFailureListener { e ->
-//                when(activity){
-//                    is SignInActivity -> {
-//                        activity.hideProgressDialog()
-//                    }
-//
-//                }
-//
-//                Log.e(activity.javaClass.simpleName.toString(),
-//                    "Error Mengambil data detail user")
-//            }
-//    }
+        mFireStore.collection(Constants.KELOMPOK)
+            .get()
+            .addOnSuccessListener { documents ->
+                val searchResults = ArrayList<Kelompok>()
+                for (document in documents) {
+                    val kelompok = document.toObject(Kelompok::class.java)
+                    val topic = kelompok.topic?.toLowerCase() // Mengonversi topik kelompok ke huruf kecil
+                    if (topic != null && lowerCaseQuery != null && topic.contains(lowerCaseQuery)) {
+                        searchResults.add(kelompok)
+                    }
+                }
+                listener.onSearchComplete(searchResults)
+            }
+            .addOnFailureListener { exception ->
+                listener.onSearchComplete(ArrayList()) // Jika ada kesalahan, kembalikan daftar kosong
+            }
+    }
 
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>){
@@ -264,12 +255,12 @@ class FirestoreClass {
             }
     }
 
-    fun getKelompokListGuru(activity: GuruMainActivity){
+    fun getAllKelompokList(fragment: KelompokFragment){
         mFireStore.collection(Constants.KELOMPOK)
             .get()
             .addOnSuccessListener {
                     document ->
-                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                Log.e(fragment.javaClass.simpleName, document.documents.toString())
                 val kelompokList : ArrayList<Kelompok> = ArrayList()
                 for(i in document.documents){
                     val kelompok = i.toObject(Kelompok::class.java)!!
@@ -277,10 +268,10 @@ class FirestoreClass {
                     kelompokList.add(kelompok)
                 }
 
-                activity.populateKelompokListToUI(kelompokList)
+                fragment.successKelompokItemsList(kelompokList)
             }.addOnFailureListener {
-                activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+                fragment.hideProgressDialog()
+                Log.e(fragment.javaClass.simpleName, "Error mendapatkan kelompok")
             }
     }
 

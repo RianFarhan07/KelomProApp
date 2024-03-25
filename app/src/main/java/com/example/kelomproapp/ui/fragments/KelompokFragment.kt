@@ -1,15 +1,23 @@
 package com.example.kelomproapp.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kelomproapp.R
+import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.FragmentKelompokBinding
+import com.example.kelomproapp.firebase.FirestoreClass
+import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.ui.activities.TaskListActivity
+import com.example.kelomproapp.utils.Constants
+import com.example.shopeekwapp.ui.fragments.BaseFragment
 
-class KelompokFragment : Fragment() {
+class KelompokFragment : BaseFragment() {
 
     private var _binding: FragmentKelompokBinding? = null
     private val binding get() = _binding!!
@@ -22,7 +30,7 @@ class KelompokFragment : Fragment() {
         _binding = FragmentKelompokBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textKelompok
+        val textView: TextView = binding.tvTidakAdaKelompok
         textView.text = "Kelompok Fragment"
 
         return root
@@ -38,21 +46,92 @@ class KelompokFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // Action when the search button is pressed
+
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Action while typing into the search bar
+                searchInFirebase(newText)
                 return false
             }
         })
+
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        getKelompokItemList()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun getKelompokItemList(){
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+
+        FirestoreClass().getAllKelompokList(this)
+    }
+
+    fun successKelompokItemsList(kelompokItemsList: ArrayList<Kelompok>){
+        hideProgressDialog()
+
+        if (kelompokItemsList.size > 0){
+            binding.rvKelompokList.visibility = View.VISIBLE
+            binding.tvTidakAdaKelompok.visibility = View.GONE
+
+            binding.rvKelompokList.layoutManager = LinearLayoutManager(activity)
+            binding.rvKelompokList.setHasFixedSize(true)
+
+            val dashboardAdapter = KelompokItemsAdapter(requireActivity(),kelompokItemsList)
+            binding.rvKelompokList.adapter = dashboardAdapter
+
+            dashboardAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
+                override fun onClick(position: Int, kelompok: Kelompok) {
+                    val intent = Intent(context,TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
+                    startActivity(intent)
+                }
+            })
+
+        }else{
+            binding.rvKelompokList.visibility = View.GONE
+            binding.tvTidakAdaKelompok.visibility = View.VISIBLE
+        }
+    }
+
+    private fun searchInFirebase(query: String?) {
+
+
+        FirestoreClass().searchKelompokList(query, object : FirestoreClass.KelompokSearchListener {
+            override fun onSearchComplete(kelompokList: ArrayList<Kelompok>) {
+
+
+                if (kelompokList.isNotEmpty()) {
+
+                    binding.rvKelompokList.visibility = View.VISIBLE
+                    binding.tvTidakAdaKelompok.visibility = View.GONE
+
+
+                    val adapter = KelompokItemsAdapter(requireContext(), kelompokList)
+                    binding.rvKelompokList.layoutManager = LinearLayoutManager(requireContext())
+                    binding.rvKelompokList.adapter = adapter
+
+
+                    adapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener {
+                        override fun onClick(position: Int, kelompok: Kelompok) {
+                            val intent = Intent(requireContext(), TaskListActivity::class.java)
+                            intent.putExtra(Constants.DOCUMENT_ID, kelompok.documentId)
+                            startActivity(intent)
+                        }
+                    })
+                } else {
+
+                    binding.rvKelompokList.visibility = View.GONE
+                    binding.tvTidakAdaKelompok.visibility = View.VISIBLE
+                }
+            }
+        })
     }
 }
