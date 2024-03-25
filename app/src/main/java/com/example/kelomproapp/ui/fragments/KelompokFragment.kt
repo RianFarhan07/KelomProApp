@@ -31,6 +31,11 @@ class KelompokFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.searchView.setOnClickListener {
+            // Set focus to the SearchView to show keyboard
+            binding.searchView.isIconified = false
+        }
+
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Action when the search button is pressed
@@ -43,6 +48,8 @@ class KelompokFragment : Fragment() {
             }
         })
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
