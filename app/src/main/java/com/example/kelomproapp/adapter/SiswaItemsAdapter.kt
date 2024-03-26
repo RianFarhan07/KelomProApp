@@ -11,9 +11,9 @@ import com.example.kelomproapp.databinding.ItemAnggotaBinding
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 
-class AnggotaItemsAdapter(private val context: Context,
-                          private val list : ArrayList<Siswa>,)
-        : RecyclerView.Adapter<AnggotaItemsAdapter.AnggotaViewHolder>() {
+class SiswaItemsAdapter(private val context: Context,
+                        private val list : ArrayList<Siswa>,)
+        : RecyclerView.Adapter<SiswaItemsAdapter.AnggotaViewHolder>() {
 
     private var onClickListener : OnClickListener? = null
 

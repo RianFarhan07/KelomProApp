@@ -1,9 +1,7 @@
 package com.example.kelomproapp.ui.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -17,9 +15,7 @@ import com.example.kelomproapp.databinding.ActivityGuruMainBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
-import com.google.firebase.auth.FirebaseAuth
 
 class GuruMainActivity : BaseActivity() {
 
@@ -81,7 +77,7 @@ class GuruMainActivity : BaseActivity() {
             .into(findViewById(R.id.nav_user_image))
 
         var tvUserName : TextView = findViewById(R.id.tv_username)
-        tvUserName.text = guru.Name
+        tvUserName.text = guru.name
 
         if (readKelompokList){
             showProgressDialog(resources.getString(R.string.mohon_tunggu))

@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kelomproapp.R
-import com.example.kelomproapp.adapter.AnggotaItemsAdapter
+import com.example.kelomproapp.adapter.SiswaItemsAdapter
 import com.example.kelomproapp.databinding.ActivityAnggotaBinding
 import com.example.kelomproapp.databinding.DialogSearchAnggotaBinding
 import com.example.kelomproapp.firebase.FirestoreClass
@@ -77,7 +77,7 @@ class AnggotaActivity : BaseActivity() {
         binding?.rvAnggotaList?.layoutManager = LinearLayoutManager(this)
         binding?.rvAnggotaList?.setHasFixedSize(true)
 
-        val adapter = AnggotaItemsAdapter(this,list)
+        val adapter = SiswaItemsAdapter(this,list)
 
         binding?.rvAnggotaList?.adapter = adapter
     }

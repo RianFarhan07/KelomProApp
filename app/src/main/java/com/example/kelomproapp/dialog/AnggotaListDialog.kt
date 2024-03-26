@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kelomproapp.adapter.AnggotaItemsAdapter
+import com.example.kelomproapp.adapter.SiswaItemsAdapter
 import com.example.kelomproapp.databinding.DialogListBinding
 import com.example.kelomproapp.models.Siswa
 
@@ -15,7 +15,7 @@ abstract class AnggotaListDialog (
     private val list : ArrayList<Siswa> = ArrayList(),
     private val title : String = ""
 ) : Dialog(context){
-    private var adapter : AnggotaItemsAdapter? = null
+    private var adapter : SiswaItemsAdapter? = null
     private var binding : DialogListBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +35,10 @@ abstract class AnggotaListDialog (
 
         if (list.size > 0){
             binding?.rvList?.layoutManager = LinearLayoutManager(context)
-            adapter = AnggotaItemsAdapter(context,list)
+            adapter = SiswaItemsAdapter(context,list)
             binding?.rvList?.adapter = adapter
 
-            adapter!!.setOnClickListener  (object : AnggotaItemsAdapter.OnClickListener{
+            adapter!!.setOnClickListener  (object : SiswaItemsAdapter.OnClickListener{
                 override fun onClick(position: Int, siswa: Siswa, action: String) {
                     dismiss()
                     onItemSelected(siswa,action)

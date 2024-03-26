@@ -8,7 +8,9 @@ import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.ui.activities.*
+import com.example.kelomproapp.ui.fragments.GuruFragment
 import com.example.kelomproapp.ui.fragments.KelompokFragment
+import com.example.kelomproapp.ui.fragments.SiswaFragment
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -385,6 +387,58 @@ class FirestoreClass {
                 }
 
                 Log.e(activity.javaClass.simpleName,"error creating members",e)
+
+            }
+    }
+
+    fun getSiswaListDetails(fragment: SiswaFragment){
+        mFireStore.collection(Constants.SISWA)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(fragment.javaClass.simpleName,document.documents.toString())
+
+                val siswaList : ArrayList<Siswa> = ArrayList()
+
+                for (i in document.documents){
+                    val siswa = i.toObject(Siswa::class.java)!!
+                    siswaList.add(siswa)
+                }
+
+                fragment.successSiswaItemsList(siswaList)
+            }
+            .addOnFailureListener {
+                    e ->
+
+                fragment.hideProgressDialog()
+
+                Log.e(fragment.javaClass.simpleName,"error creating members",e)
+
+            }
+    }
+
+    fun getGuruListDetails(fragment: GuruFragment){
+        mFireStore.collection(Constants.GURU)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(fragment.javaClass.simpleName,document.documents.toString())
+
+                val guruList : ArrayList<Guru> = ArrayList()
+
+                for (i in document.documents){
+                    val guru = i.toObject(Guru::class.java)!!
+                    guruList.add(guru)
+                }
+
+                fragment.successGuruItemsList(guruList)
+            }
+            .addOnFailureListener {
+                    e ->
+
+                fragment.hideProgressDialog()
+
+                Log.e(fragment.javaClass.simpleName,"error creating members",e)
 
             }
     }

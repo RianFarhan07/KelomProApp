@@ -30,9 +30,6 @@ class KelompokFragment : BaseFragment() {
         _binding = FragmentKelompokBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.tvTidakAdaKelompok
-        textView.text = "Kelompok Fragment"
-
         return root
     }
 
