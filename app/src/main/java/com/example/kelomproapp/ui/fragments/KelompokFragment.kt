@@ -2,9 +2,7 @@ package com.example.kelomproapp.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,9 +11,11 @@ import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.FragmentKelompokBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.ui.activities.IntroActivity
 import com.example.kelomproapp.ui.activities.TaskListActivity
 import com.example.kelomproapp.utils.Constants
 import com.example.shopeekwapp.ui.fragments.BaseFragment
+import com.google.firebase.auth.FirebaseAuth
 
 class KelompokFragment : BaseFragment() {
 
@@ -64,6 +64,8 @@ class KelompokFragment : BaseFragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 
     fun getKelompokItemList(){
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
