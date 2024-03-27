@@ -83,10 +83,10 @@ class KelompokFragment : BaseFragment() {
             binding.rvKelompokList.layoutManager = LinearLayoutManager(activity)
             binding.rvKelompokList.setHasFixedSize(true)
 
-            val dashboardAdapter = KelompokItemsAdapter(requireActivity(),kelompokItemsList)
-            binding.rvKelompokList.adapter = dashboardAdapter
+            val kelompokdAdapter = KelompokItemsAdapter(requireActivity(),kelompokItemsList)
+            binding.rvKelompokList.adapter = kelompokdAdapter
 
-            dashboardAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
+            kelompokdAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
                 override fun onClick(position: Int, kelompok: Kelompok) {
                     val intent = Intent(context,TaskListActivity::class.java)
                     intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
@@ -101,8 +101,6 @@ class KelompokFragment : BaseFragment() {
     }
 
     private fun searchInFirebase(query: String?) {
-
-
         FirestoreClass().searchKelompokList(query, object : FirestoreClass.KelompokSearchListener {
             override fun onSearchComplete(kelompokList: ArrayList<Kelompok>) {
 
@@ -113,15 +111,13 @@ class KelompokFragment : BaseFragment() {
                     binding.tvTidakAdaKelompok.visibility = View.GONE
 
 
-                    val adapter = KelompokItemsAdapter(requireContext(), kelompokList)
-                    binding.rvKelompokList.layoutManager = LinearLayoutManager(requireContext())
-                    binding.rvKelompokList.adapter = adapter
+                    val kelompokdAdapter = KelompokItemsAdapter(requireActivity(),kelompokList)
+                    binding.rvKelompokList.adapter = kelompokdAdapter
 
-
-                    adapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener {
+                    kelompokdAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
                         override fun onClick(position: Int, kelompok: Kelompok) {
-                            val intent = Intent(requireContext(), TaskListActivity::class.java)
-                            intent.putExtra(Constants.DOCUMENT_ID, kelompok.documentId)
+                            val intent = Intent(requireContext(),TaskListActivity::class.java)
+                            intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
                             startActivity(intent)
                         }
                     })

@@ -10,7 +10,7 @@ import com.example.kelomproapp.databinding.ItemKelompokBinding
 import com.example.kelomproapp.models.Kelompok
 
 class KelompokItemsAdapter(private val context: Context,
-                           private var list : ArrayList<Kelompok>, ) :
+                           private var list : ArrayList<Kelompok> ) :
     RecyclerView.Adapter<KelompokItemsAdapter.KelompokViewHolder>(){
 
     private var onClickListener : OnClickListener? = null
@@ -40,8 +40,9 @@ class KelompokItemsAdapter(private val context: Context,
 
 
             holder.itemView.setOnClickListener {
-                if (onClickListener != null){
-                    onClickListener!!.onClick(position,model)
+                val index = list.indexOf(model) // Dapatkan indeks model
+                if (onClickListener != null && index != -1) {
+                    onClickListener!!.onClick(index, model) // Gunakan indeks ini untuk memanggil onClickListener
                 }
             }
         }
