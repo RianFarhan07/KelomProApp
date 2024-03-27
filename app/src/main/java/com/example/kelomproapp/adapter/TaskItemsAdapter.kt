@@ -17,6 +17,8 @@ import com.example.kelomproapp.models.SelectedAnggota
 import com.example.kelomproapp.models.Task
 import com.example.kelomproapp.ui.activities.TaskListActivity
 import kotlinx.android.synthetic.main.activity_task_list.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TaskItemsAdapter (private val context: Context,
                         private var list : ArrayList<Task>, ) :
@@ -35,6 +37,7 @@ class TaskItemsAdapter (private val context: Context,
         val isCompleted = model.pdfUrl.isNotEmpty()
         val horizontalView = holder.itemView.findViewById<View>(R.id.horizontal_only)
         val tvStatus = holder.itemView.findViewById<TextView>(R.id.tv_status)
+        val tvSisaWaktu = holder.itemView.findViewById<TextView>(R.id.tv_sisa_waktu)
 
         if (holder is TaskViewHolder){
             holder.binding.tvCardName.text = "${model.name}"
@@ -43,9 +46,28 @@ class TaskItemsAdapter (private val context: Context,
                 horizontalView.setBackgroundColor(ContextCompat.getColor(context, R.color.green_gpt))
                 tvStatus.text = "Selesai"
             } else {
-                // Mengubah warna latar belakang horizontal view menjadi warna aslinya jika tugas belum selesai
                 horizontalView.setBackgroundColor(ContextCompat.getColor(context, R.color.red))
                 tvStatus.text = "Belum Selesai"
+            }
+
+            if (model.dueDate == 0L){
+                tvSisaWaktu.visibility = View.GONE
+            }else{
+                val currentDate = Calendar.getInstance()
+                val dueDate = Calendar.getInstance()
+                dueDate.timeInMillis = model.dueDate //
+                val diffInMillis = dueDate.timeInMillis - currentDate.timeInMillis
+                val diffInDays = diffInMillis / (1000 * 60 * 60 * 24)
+                val diffInHours = (diffInMillis % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+
+                tvSisaWaktu.text = "Sisa waktu: $diffInDays hari $diffInHours jam"
+
+                if (diffInMillis < 0) {
+                    tvSisaWaktu.setTextColor(ContextCompat.getColor(context, R.color.red))
+                    tvSisaWaktu.text = "Waktu telah lewat"
+                } else {
+                    tvSisaWaktu.text = "Sisa waktu: $diffInDays hari $diffInHours jam"
+                }
             }
 
             if ((context as TaskListActivity).mAssignedAnggotaDetailList.size > 0){
