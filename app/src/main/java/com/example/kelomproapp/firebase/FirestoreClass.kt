@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
+import com.example.kelomproapp.models.Task
 import com.example.kelomproapp.ui.activities.*
 import com.example.kelomproapp.ui.fragments.GuruFragment
 import com.example.kelomproapp.ui.fragments.KelompokFragment
@@ -306,6 +307,7 @@ class FirestoreClass {
             }
     }
 
+
     fun deleteKelompok(activity: KelompokDetailsActivity,kelompokId: String){
         mFireStore.collection(Constants.KELOMPOK)
             .document(kelompokId)
@@ -538,5 +540,24 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName,"Error while updating TaskList")
             }
     }
+
+    fun getAssignedTaskList(activity: MyTaskActivity) {
+        mFireStore.collection(Constants.KELOMPOK)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
+            .get()
+            .addOnSuccessListener { documents ->
+                val taskList: ArrayList<Task> = ArrayList()
+                for (document in documents) {
+                    val kelompok = document.toObject(Kelompok::class.java)
+                    taskList.addAll(kelompok.taskList.filter { task -> getCurrentUserID() in task.assignedTo })
+                }
+                activity.populateTaskListToUI(taskList)
+            }
+            .addOnFailureListener { exception ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error fetching assigned task list: ${exception.message}")
+            }
+    }
+
 
 }

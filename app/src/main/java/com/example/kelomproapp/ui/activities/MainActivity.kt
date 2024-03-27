@@ -115,6 +115,14 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 finish()
             }
 
+            R.id.nav_my_task -> {
+
+                val intent = Intent(this, MyTaskActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
+            }
+
         }
         binding?.drawerLayout?.closeDrawer(GravityCompat.START)
 

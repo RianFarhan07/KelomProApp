@@ -38,6 +38,7 @@ class TaskDetailsActivity : BaseActivity() {
     private lateinit var mAnggotaDetailList : ArrayList<Siswa>
     private var mTaskListPosition = -1
     private var mSelectedDueDateMilliSeconds : Long = 0
+    private var mTaskId : String? = null
 
     private lateinit var storageReference: StorageReference
     private var uploadedPdfFileName: String = ""
@@ -55,6 +56,9 @@ class TaskDetailsActivity : BaseActivity() {
         setContentView(binding?.root)
 
         setupActionBar()
+
+
+
         getIntentData()
         setupSelectedAnggotaList()
 
@@ -152,6 +156,9 @@ class TaskDetailsActivity : BaseActivity() {
         }
         if (intent.hasExtra(Constants.LIST_ANGGOTA_KELOMPOK)){
             mAnggotaDetailList = intent.getParcelableArrayListExtra(Constants.LIST_ANGGOTA_KELOMPOK)!!
+        }
+        if (intent.hasExtra(Constants.TASK_ID)){
+            mTaskId = intent.getStringExtra(Constants.TASK_ID)
         }
     }
 
