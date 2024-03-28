@@ -31,7 +31,7 @@ class MainGuruActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_kelompok, R.id.navigation_siswa, R.id.navigation_guru,R.id.navigation_pengaturan
+                R.id.navigation_kelompok, R.id.navigation_siswa, R.id.navigation_guru,R.id.navigation_materi
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

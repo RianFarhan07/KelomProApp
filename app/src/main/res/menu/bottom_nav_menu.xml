@@ -17,8 +17,8 @@
         android:title="Guru" />
 
     <item
-        android:id="@+id/navigation_pengaturan"
+        android:id="@+id/navigation_materi"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Pengaturan" />
+        android:title="Materi" />
 
 </menu>

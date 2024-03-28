@@ -9,6 +9,7 @@ data class Materi (
     val id : String? = UUID.randomUUID().toString(),
     val name : String = "",
     val courses: String = "",
-    val topic: String = ""
+    val topic: String = "",
+    val Url: String = "",
 
         ) : Parcelable
