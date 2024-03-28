@@ -3,14 +3,11 @@ package com.example.kelomproapp.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityCreateMateriBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
@@ -18,7 +15,7 @@ import com.google.firebase.storage.StorageReference
 import java.util.*
 
 class CreateMateriActivity : BaseActivity() {
-    private var binding : ActivityCreateMateriBinding? = null
+    private var binding: ActivityCreateMateriBinding? = null
     private var selectedFileUri: Uri? = null
     private var storageReference: StorageReference? = null
 
@@ -42,16 +39,15 @@ class CreateMateriActivity : BaseActivity() {
             // Check if a file is selected
             selectedFileUri?.let { uri ->
                 uploadFileToFirebase(uri)
-            } ?: Toast.makeText(this,"Please Select File To Upload",Toast.LENGTH_LONG).show()
+            } ?: Toast.makeText(this, "Please Select File To Upload", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun setupActionBar(){
+    private fun setupActionBar() {
         setSupportActionBar(binding?.toolbarCreateMateriActivity)
-        val toolbar = supportActionBar
-        if (toolbar != null){
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
         binding?.toolbarCreateMateriActivity?.setNavigationOnClickListener {
             onBackPressed()
@@ -68,7 +64,7 @@ class CreateMateriActivity : BaseActivity() {
     }
 
     private fun uploadFileToFirebase(fileUri: Uri) {
-        showProgressDialog("Sedang Mengupload File")
+        showProgressDialog("Uploading File...")
 
         // Generate a random file name for the uploaded file
         val fileName = UUID.randomUUID().toString()
@@ -80,7 +76,7 @@ class CreateMateriActivity : BaseActivity() {
         fileRef.putFile(fileUri)
             .addOnSuccessListener { taskSnapshot ->
                 hideProgressDialog()
-                Toast.makeText(this,"Upload Success",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Upload Success", Toast.LENGTH_LONG).show()
 
                 // Get the download URL for the uploaded file
                 fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -93,37 +89,23 @@ class CreateMateriActivity : BaseActivity() {
                         url = downloadUrl
                     )
 
-                    // Save the Materi object to Firestore or perform other operations as needed
-                    // FirestoreClass().createMateri(materi)
+                    // Save the Materi object to Firestore
+                    createMateri(materi)
                 }
             }
             .addOnFailureListener { exception ->
                 hideProgressDialog()
-                Toast.makeText(this,"Failed to upload file: ${exception.message}",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Failed to upload file: ${exception.message}", Toast.LENGTH_LONG).show()
             }
     }
 
-    private fun createMateri(){
-
-        var materi = Materi(
-            binding?.etMateriName?.text.toString(),
-            binding?.etCourse?.text.toString(),
-            binding?.etTopic?.text.toString(),
-//            assignedUserArrayList,
-        )
-
-//        FirestoreClass().createKelompok(this,kelompok)
+    private fun createMateri(materi: Materi) {
+        FirestoreClass().createMateri(this, materi)
     }
 
-    fun kelompokCreatedSuccessfully(){
+    fun materiCreatedSuccessfully() {
         hideProgressDialog()
-
         setResult(Activity.RESULT_OK)
-
         finish()
     }
-
-
-
-
 }

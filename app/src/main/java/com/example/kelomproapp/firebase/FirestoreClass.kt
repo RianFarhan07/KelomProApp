@@ -4,10 +4,7 @@ import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
-import com.example.kelomproapp.models.Guru
-import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Siswa
-import com.example.kelomproapp.models.Task
+import com.example.kelomproapp.models.*
 import com.example.kelomproapp.ui.activities.*
 import com.example.kelomproapp.ui.fragments.GuruFragment
 import com.example.kelomproapp.ui.fragments.KelompokFragment
@@ -558,6 +555,22 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName, "Error fetching assigned task list: ${exception.message}")
             }
     }
+
+    fun createMateri(activity: CreateMateriActivity, materi: Materi) {
+        mFireStore.collection(Constants.MATERI)
+            .document()
+            .set(materi, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "Materi berhasil dibuat")
+                Toast.makeText(activity, "Berhasil membuat materi", Toast.LENGTH_LONG).show()
+                activity.materiCreatedSuccessfully()
+
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error membuat materi", e)
+            }
+    }
+
 
 
 }
