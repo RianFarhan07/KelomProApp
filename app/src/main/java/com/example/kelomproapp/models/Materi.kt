@@ -2,6 +2,7 @@ package com.example.kelomproapp.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.net.URL
 import java.util.*
 
 @Parcelize
@@ -10,6 +11,6 @@ data class Materi (
     val name : String = "",
     val courses: String = "",
     val topic: String = "",
-    val Url: String = "",
+    val url: String = "",
 
         ) : Parcelable
