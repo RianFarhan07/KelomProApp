@@ -60,6 +60,34 @@ class FirestoreClass {
             }
     }
 
+    fun deleteSiswa(fragment: SiswaFragment, siswaId: String) {
+        mFireStore.collection(Constants.SISWA)
+            .document(siswaId)
+            .delete()
+            .addOnSuccessListener {
+                fragment.deleteSiswaSuccess()
+
+
+            }
+            .addOnFailureListener { e ->
+                fragment.hideProgressDialog()
+                Log.e(fragment.javaClass.simpleName, "Error while deleting guru", e)
+            }
+    }
+
+    fun deleteGuru(fragment: GuruFragment, guruId: String) {
+        mFireStore.collection(Constants.GURU)
+            .document(guruId)
+            .delete()
+            .addOnSuccessListener {
+                fragment.deleteGuruSuccess()
+            }
+            .addOnFailureListener { e ->
+                fragment.hideProgressDialog()
+                Log.e(fragment.javaClass.simpleName, "Error while deleting guru", e)
+            }
+    }
+
     fun getCurrentUserID() : String {
         val currentUser = FirebaseAuth.getInstance().currentUser
 

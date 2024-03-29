@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.GuruItemsAdapter
 import com.example.kelomproapp.adapter.SiswaItemsAdapter
 import com.example.kelomproapp.databinding.FragmentGuruBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Guru
+import com.example.kelomproapp.utils.SwipeToDeleteCallback
+import com.example.kelomproapp.utils.SwipeToEditCallback
 import com.example.shopeekwapp.ui.fragments.BaseFragment
 
 class GuruFragment : BaseFragment() {
@@ -44,6 +49,8 @@ class GuruFragment : BaseFragment() {
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
         FirestoreClass().getGuruListDetails(this)
+
+
     }
 
     fun successGuruItemsList(guruItemList: ArrayList<Guru>){
@@ -59,17 +66,28 @@ class GuruFragment : BaseFragment() {
             val dashboardAdapter = GuruItemsAdapter(requireActivity(),guruItemList)
             binding.rvGuruList.adapter = dashboardAdapter
 
-//            dashboardAdapter.setOnClickListener(object : sis.OnClickListener{
-//                override fun onClick(position: Int, kelompok: Kelompok) {
-//                    val intent = Intent(context, TaskListActivity::class.java)
-//                    intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
-//                    startActivity(intent)
-//                }
-//            })
+
+            val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    showProgressDialog(resources.getString(R.string.mohon_tunggu))
+                    FirestoreClass().deleteGuru(this@GuruFragment,
+                        guruItemList[viewHolder.adapterPosition].id)
+                }
+            }
+            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+            deleteItemTouchHelper.attachToRecyclerView(binding.rvGuruList)
 
         }else{
             binding.rvGuruList.visibility = View.GONE
             binding.tvTidakAdaGuru.visibility = View.VISIBLE
         }
+    }
+
+    fun deleteGuruSuccess(){
+        hideProgressDialog()
+        Toast.makeText(context,"Berhasil menghapus akun guru",
+            Toast.LENGTH_LONG).show()
+
+        getGuruItemList()
     }
 }

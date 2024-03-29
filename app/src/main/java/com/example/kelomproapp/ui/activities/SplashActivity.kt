@@ -13,8 +13,8 @@ class SplashActivity : BaseActivity() {
     private var binding : ActivitySplashBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivitySplashBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         window.setFlags(
@@ -35,22 +35,24 @@ class SplashActivity : BaseActivity() {
 
         Handler().postDelayed({
             checkUserLoggedIn()
-        },3000)
+        }, 3000)
     }
 
     private fun checkUserLoggedIn() {
         val currentUserID = FirestoreClass().getCurrentUserID()
 
-        if (currentUserID.isNotEmpty()) {
-            FirestoreClass().getUserRole(currentUserID) { role ->
-                if (role != null) {
-                    handleUserRole(role)
+        Handler().postDelayed({
+            if (currentUserID.isNotEmpty()) {
+                FirestoreClass().getUserRole(currentUserID) { role ->
+                    if (role != null) {
+                        handleUserRole(role)
+                    }
                 }
+            } else {
+                startActivity(Intent(this, IntroActivity::class.java))
+                finish()
             }
-        } else {
-            startActivity(Intent(this, IntroActivity::class.java))
-        }
-        finish()
+        }, 2000)
     }
 
     fun handleUserRole(role: String) {
@@ -62,7 +64,6 @@ class SplashActivity : BaseActivity() {
                 startActivity(Intent(this, MainGuruActivity::class.java))
             }
         }
+        finish()
     }
-
-
 }

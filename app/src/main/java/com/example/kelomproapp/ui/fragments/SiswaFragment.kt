@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.SiswaItemsAdapter
 import com.example.kelomproapp.databinding.FragmentSiswaBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Siswa
+import com.example.kelomproapp.utils.SwipeToDeleteCallback
 import com.example.shopeekwapp.ui.fragments.BaseFragment
+import com.google.firebase.auth.FirebaseAuth
 
 class SiswaFragment : BaseFragment() {
 
@@ -58,18 +63,29 @@ class SiswaFragment : BaseFragment() {
             val dashboardAdapter = SiswaItemsAdapter(requireActivity(),siswaItemsList)
             binding.rvSiswaList.adapter = dashboardAdapter
 
-//            dashboardAdapter.setOnClickListener(object : sis.OnClickListener{
-//                override fun onClick(position: Int, kelompok: Kelompok) {
-//                    val intent = Intent(context, TaskListActivity::class.java)
-//                    intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
-//                    startActivity(intent)
-//                }
-//            })
+            val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    showProgressDialog(resources.getString(R.string.mohon_tunggu))
+                    FirestoreClass().deleteSiswa(this@SiswaFragment,
+                        siswaItemsList[viewHolder.adapterPosition].id)
+
+                }
+            }
+            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+            deleteItemTouchHelper.attachToRecyclerView(binding.rvSiswaList)
 
         }else{
             binding.rvSiswaList.visibility = View.GONE
             binding.tvTidakAdaSiswa.visibility = View.VISIBLE
         }
+    }
+
+    fun deleteSiswaSuccess(){
+        hideProgressDialog()
+        Toast.makeText(context,"Berhasil menghapus akun siswa",
+            Toast.LENGTH_LONG).show()
+
+        getSiswaItemList()
     }
 }
 
