@@ -101,7 +101,9 @@ class MateriFragment : BaseFragment() {
 
             materiAdapter.setOnClickListener(object : MateriItemsAdapter.OnClickListener{
                 override fun onClick(position: Int, model: Materi) {
-                    TODO("Not yet implemented")
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(model.url)
+                    startActivity(intent)
                 }
             })
 
