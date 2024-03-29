@@ -172,7 +172,7 @@ class FirestoreClass {
     }
 
     fun searchKelompokList(query: String?, listener: KelompokSearchListener) {
-        val lowerCaseQuery = query?.toLowerCase() // Mengonversi query ke huruf kecil
+        val lowerCaseQuery = query?.toLowerCase() ?: "" // Mengonversi query ke huruf kecil
 
         mFireStore.collection(Constants.KELOMPOK)
             .get()
@@ -181,7 +181,7 @@ class FirestoreClass {
                 for (document in documents) {
                     val kelompok = document.toObject(Kelompok::class.java)
                     val topic = kelompok.topic?.toLowerCase() // Mengonversi topik kelompok ke huruf kecil
-                    if (topic != null && lowerCaseQuery != null && topic.contains(lowerCaseQuery)) {
+                    if (topic != null && topic.contains(lowerCaseQuery)) {
                         searchResults.add(kelompok)
                     }
                 }
@@ -191,6 +191,7 @@ class FirestoreClass {
                 listener.onSearchComplete(ArrayList()) // Jika ada kesalahan, kembalikan daftar kosong
             }
     }
+
 
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>){

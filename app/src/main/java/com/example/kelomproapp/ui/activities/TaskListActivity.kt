@@ -38,6 +38,7 @@
 
             if (intent.hasExtra(Constants.DOCUMENT_ID)){
                 mKelompokDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
+                Log.e("document","document $mKelompokDocumentId")
             }
 
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
@@ -136,7 +137,9 @@
             taskAssignedUserList.add(FirestoreClass().getCurrentUserID())
 
 
-            val task = Task(taskListName, FirestoreClass().getCurrentUserID(),taskAssignedUserList)
+            val currentUserId = FirestoreClass().getCurrentUserID()
+            val task = Task(taskListName, currentUserId, taskAssignedUserList)
+
             mKelompokDetails.taskList.add(0,task)
     //        mKelompokDetails.taskList.removeAt(mKelompokDetails.taskList.size -1)
 

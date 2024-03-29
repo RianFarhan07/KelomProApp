@@ -116,7 +116,7 @@ class KelompokFragment : BaseFragment() {
 
                     kelompokdAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
                         override fun onClick(position: Int, kelompok: Kelompok) {
-                            val intent = Intent(requireContext(),TaskListActivity::class.java)
+                            val intent = Intent(context,TaskListActivity::class.java)
                             intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
                             startActivity(intent)
                         }
