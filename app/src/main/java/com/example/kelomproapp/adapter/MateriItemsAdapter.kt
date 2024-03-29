@@ -28,9 +28,15 @@ class MateriItemsAdapter (private val context: Context,
         if (holder is MateriViewHolder){
 
             holder.binding.tvNamaMateri.text = model.name
-            holder.binding.textViewTopik.text = model.topic
-            holder.binding.textViewMataPelajaran.text = model.courses
+            holder.binding.textViewTopik.text = "Topik = ${model.topic}"
+            holder.binding.textViewMataPelajaran.text = "Mata Pelajaran = ${model.courses}"
 
+            when (model.fileType) {
+                "pdf" -> holder.binding.imageViewPdfLogo.setImageResource(R.drawable.pdf)
+                "doc", "docx" -> holder.binding.imageViewPdfLogo.setImageResource(R.drawable.word)
+                "ppt", "pptx" -> holder.binding.imageViewPdfLogo.setImageResource(R.drawable.ppt)
+                else -> holder.binding.imageViewPdfLogo.setImageResource(R.drawable.pdf)
+            }
 
             holder.itemView.setOnClickListener {
                 val index = list.indexOf(model) // Dapatkan indeks model

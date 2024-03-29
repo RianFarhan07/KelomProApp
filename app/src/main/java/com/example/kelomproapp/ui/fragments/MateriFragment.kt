@@ -1,19 +1,24 @@
 package com.example.kelomproapp.ui.fragments
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.KelompokItemsAdapter
+import com.example.kelomproapp.adapter.MateriItemsAdapter
 import com.example.kelomproapp.databinding.FragmentMateriBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.ui.activities.CreateMateriActivity
 import com.example.kelomproapp.ui.activities.TaskListActivity
 import com.example.kelomproapp.utils.Constants
@@ -65,7 +70,7 @@ class MateriFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-//        getKelompokItemList()
+        getMateriItemList()
     }
 
     override fun onDestroyView() {
@@ -75,30 +80,28 @@ class MateriFragment : BaseFragment() {
 
 
 
-    fun getKelompokItemList(){
+    fun getMateriItemList(){
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
-//        FirestoreClass().getAllKelompokList(this)
+        FirestoreClass().getAllMateriList(this)
     }
 
-    fun successKelompokItemsList(kelompokItemsList: ArrayList<Kelompok>){
+    fun successMateriItemsList(materiItemsList: ArrayList<Materi>){
         hideProgressDialog()
 
-        if (kelompokItemsList.size > 0){
+        if (materiItemsList.size > 0){
             binding.rvMateriList.visibility = View.VISIBLE
             binding.tvTidakAdaMateri.visibility = View.GONE
 
             binding.rvMateriList.layoutManager = LinearLayoutManager(activity)
             binding.rvMateriList.setHasFixedSize(true)
 
-            val kelompokdAdapter = KelompokItemsAdapter(requireActivity(),kelompokItemsList)
-            binding.rvMateriList.adapter = kelompokdAdapter
+            val materiAdapter = MateriItemsAdapter(requireActivity(),materiItemsList)
+            binding.rvMateriList.adapter = materiAdapter
 
-            kelompokdAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
-                override fun onClick(position: Int, kelompok: Kelompok) {
-                    val intent = Intent(context, TaskListActivity::class.java)
-                    intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
-                    startActivity(intent)
+            materiAdapter.setOnClickListener(object : MateriItemsAdapter.OnClickListener{
+                override fun onClick(position: Int, model: Materi) {
+                    TODO("Not yet implemented")
                 }
             })
 
@@ -137,4 +140,6 @@ class MateriFragment : BaseFragment() {
             }
         })
     }
+
+
 }

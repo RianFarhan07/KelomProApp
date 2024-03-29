@@ -6,10 +6,11 @@ import java.util.*
 
 @Parcelize
 data class Materi(
-    val id: String = UUID.randomUUID().toString(),
+    var id: String = UUID.randomUUID().toString(),
     val name: String = "",
     val courses: String = "",
     val topic: String = "",
     val url: String = "",
+    val fileType: String = ""
 
     ) : Parcelable

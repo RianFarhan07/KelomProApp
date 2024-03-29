@@ -1,9 +1,11 @@
 package com.example.kelomproapp.ui.activities
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityCreateMateriBinding
@@ -16,7 +18,8 @@ import java.util.*
 
 class CreateMateriActivity : BaseActivity() {
     private var binding: ActivityCreateMateriBinding? = null
-    private var selectedFileUri: Uri? = null
+    private var mSelectedFileUri: Uri? = null
+    private var mFileType: String? = ""
     private var storageReference: StorageReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +40,7 @@ class CreateMateriActivity : BaseActivity() {
 
         binding?.btnCreate?.setOnClickListener {
             // Check if a file is selected
-            selectedFileUri?.let { uri ->
+            mSelectedFileUri?.let { uri ->
                 uploadFileToFirebase(uri)
             } ?: Toast.makeText(this, "Please Select File To Upload", Toast.LENGTH_LONG).show()
         }
@@ -58,8 +61,9 @@ class CreateMateriActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             // Get selected file URI
-            selectedFileUri = data.data
-            binding?.textViewUploadedPdfName?.text = selectedFileUri?.lastPathSegment
+            mSelectedFileUri = data.data
+            mFileType = getFileType(mSelectedFileUri)
+            binding?.textViewUploadedPdfName?.text = mSelectedFileUri?.lastPathSegment
         }
     }
 
@@ -86,7 +90,8 @@ class CreateMateriActivity : BaseActivity() {
                         name = binding?.etMateriName?.text.toString(),
                         courses = binding?.etCourse?.text.toString(),
                         topic = binding?.etTopic?.text.toString(),
-                        url = downloadUrl
+                        url = downloadUrl,
+                        fileType = mFileType.toString()
                     )
 
                     // Save the Materi object to Firestore
@@ -107,5 +112,15 @@ class CreateMateriActivity : BaseActivity() {
         hideProgressDialog()
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    private fun getFileType(uri: Uri?): String? {
+        return if (uri == null) {
+            null
+        } else {
+            val contentResolver: ContentResolver = this.contentResolver
+            val mimeTypeMap = MimeTypeMap.getSingleton()
+            mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri))
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.example.kelomproapp.models.*
 import com.example.kelomproapp.ui.activities.*
 import com.example.kelomproapp.ui.fragments.GuruFragment
 import com.example.kelomproapp.ui.fragments.KelompokFragment
+import com.example.kelomproapp.ui.fragments.MateriFragment
 import com.example.kelomproapp.ui.fragments.SiswaFragment
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
@@ -568,6 +569,26 @@ class FirestoreClass {
             }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error membuat materi", e)
+            }
+    }
+
+    fun getAllMateriList(fragment: MateriFragment){
+        mFireStore.collection(Constants.MATERI)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(fragment.javaClass.simpleName, document.documents.toString())
+                val materiList : ArrayList<Materi> = ArrayList()
+                for(i in document.documents){
+                    val materi = i.toObject(Materi::class.java)!!
+                    materi.id = i.id
+                    materiList.add(materi)
+                }
+
+                fragment.successMateriItemsList(materiList)
+            }.addOnFailureListener {
+                fragment.hideProgressDialog()
+                Log.e(fragment.javaClass.simpleName, "Error mendapatkan kelompok")
             }
     }
 
