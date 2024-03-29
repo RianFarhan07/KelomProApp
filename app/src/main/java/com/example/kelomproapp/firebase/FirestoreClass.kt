@@ -23,6 +23,9 @@ class FirestoreClass {
     interface KelompokSearchListener {
         fun onSearchComplete(kelompokList: ArrayList<Kelompok>)
     }
+    interface MateriSearchListener {
+        fun onSearchComplete(materi: ArrayList<Materi>)
+    }
 
 
     fun registerSiswa(activity: SignUpActivity, siswaInfo: Siswa){
@@ -589,6 +592,26 @@ class FirestoreClass {
             }.addOnFailureListener {
                 fragment.hideProgressDialog()
                 Log.e(fragment.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+    fun searchMateriList(query: String?, listener: MateriSearchListener) {
+        val lowerCaseQuery = query?.toLowerCase() // Mengonversi query ke huruf kecil
+
+        mFireStore.collection(Constants.MATERI)
+            .get()
+            .addOnSuccessListener { documents ->
+                val searchResults = ArrayList<Materi>()
+                for (document in documents) {
+                    val materi = document.toObject(Materi::class.java)
+                    val topic = materi.topic?.toLowerCase() // Mengonversi topik kelompok ke huruf kecil
+                    if (topic != null && lowerCaseQuery != null && topic.contains(lowerCaseQuery)) {
+                        searchResults.add(materi)
+                    }
+                }
+                listener.onSearchComplete(searchResults)
+            }
+            .addOnFailureListener { exception ->
+                listener.onSearchComplete(ArrayList()) // Jika ada kesalahan, kembalikan daftar kosong
             }
     }
 

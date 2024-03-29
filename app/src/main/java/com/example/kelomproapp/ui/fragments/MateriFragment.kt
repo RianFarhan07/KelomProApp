@@ -114,23 +114,23 @@ class MateriFragment : BaseFragment() {
     }
 
     private fun searchInFirebase(query: String?) {
-        FirestoreClass().searchKelompokList(query, object : FirestoreClass.KelompokSearchListener {
-            override fun onSearchComplete(kelompokList: ArrayList<Kelompok>) {
+        FirestoreClass().searchMateriList(query, object : FirestoreClass.MateriSearchListener {
+            override fun onSearchComplete(materiList: ArrayList<Materi>) {
 
 
-                if (kelompokList.isNotEmpty()) {
+                if (materiList.isNotEmpty()) {
 
                     binding.rvMateriList.visibility = View.VISIBLE
                     binding.tvTidakAdaMateri.visibility = View.GONE
 
 
-                    val kelompokdAdapter = KelompokItemsAdapter(requireActivity(),kelompokList)
+                    val kelompokdAdapter = MateriItemsAdapter(requireActivity(),materiList)
                     binding.rvMateriList.adapter = kelompokdAdapter
 
-                    kelompokdAdapter.setOnClickListener(object : KelompokItemsAdapter.OnClickListener{
-                        override fun onClick(position: Int, kelompok: Kelompok) {
-                            val intent = Intent(requireContext(), TaskListActivity::class.java)
-                            intent.putExtra(Constants.DOCUMENT_ID,kelompok.documentId)
+                    kelompokdAdapter.setOnClickListener(object : MateriItemsAdapter.OnClickListener{
+                        override fun onClick(position: Int, model: Materi) {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(model.url)
                             startActivity(intent)
                         }
                     })
