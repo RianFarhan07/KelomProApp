@@ -1,5 +1,6 @@
 package com.example.kelomproapp.ui.fragments
 
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
@@ -10,8 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.adapter.MateriItemsAdapter
@@ -22,12 +26,19 @@ import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.ui.activities.CreateMateriActivity
 import com.example.kelomproapp.ui.activities.TaskListActivity
 import com.example.kelomproapp.utils.Constants
+import com.example.kelomproapp.utils.SwipeToDeleteCallback
+import com.example.kelomproapp.utils.SwipeToEditCallback
 import com.example.shopeekwapp.ui.fragments.BaseFragment
 
 class MateriFragment : BaseFragment() {
 
     private var _binding: FragmentMateriBinding? = null
     private val binding get() = _binding!!
+
+    companion object {
+        private const val EDIT_MATERI_REQUEST_CODE = 100
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,6 +118,36 @@ class MateriFragment : BaseFragment() {
                 }
             })
 
+            val editSwipeHandler = object : SwipeToEditCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val adapter = binding.rvMateriList.adapter as MateriItemsAdapter
+                    val position = viewHolder.adapterPosition
+                    val materi = materiItemsList[position]
+
+                    val intent = Intent(requireContext(), CreateMateriActivity::class.java)
+                    intent.putExtra(Constants.MATERI_ID, materi.id)
+                    startActivityForResult(intent, EDIT_MATERI_REQUEST_CODE)
+
+                    adapter.notifyItemChanged(position)
+                }
+            }
+
+
+
+            val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
+            editItemTouchHelper.attachToRecyclerView(binding.rvMateriList)
+
+            val deleteSwipeHandler = object: SwipeToDeleteCallback(requireContext()) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    showProgressDialog(resources.getString(R.string.mohon_tunggu))
+                    FirestoreClass().deleteMateri(this@MateriFragment,
+                        materiItemsList[viewHolder.adapterPosition].id)
+                }
+            }
+
+            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+            deleteItemTouchHelper.attachToRecyclerView(binding.rvMateriList)
+
         }else{
             binding.rvMateriList.visibility = View.GONE
             binding.tvTidakAdaMateri.visibility = View.VISIBLE
@@ -141,6 +182,14 @@ class MateriFragment : BaseFragment() {
                 }
             }
         })
+    }
+
+    fun materiDeleteSuccess(){
+        hideProgressDialog()
+        Toast.makeText(context,"Berhasil menghapus materi",
+            Toast.LENGTH_LONG).show()
+
+        getMateriItemList()
     }
 
 

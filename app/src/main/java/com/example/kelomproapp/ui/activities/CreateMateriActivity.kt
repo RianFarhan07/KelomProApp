@@ -21,6 +21,7 @@ class CreateMateriActivity : BaseActivity() {
     private var mSelectedFileUri: Uri? = null
     private var mFileType: String? = ""
     private var storageReference: StorageReference? = null
+    private var materiId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCreateMateriBinding.inflate(layoutInflater)
@@ -28,6 +29,12 @@ class CreateMateriActivity : BaseActivity() {
         setContentView(binding?.root)
 
         setupActionBar()
+
+        if (intent.hasExtra(Constants.MATERI_ID)){
+            materiId = intent.getStringExtra(Constants.MATERI_ID)
+            showProgressDialog("Loading Materi...")
+            FirestoreClass().getMateriDetails(this, materiId!!)
+        }
 
         storageReference = FirebaseStorage.getInstance().reference
 
@@ -39,11 +46,16 @@ class CreateMateriActivity : BaseActivity() {
         }
 
         binding?.btnCreate?.setOnClickListener {
-            // Check if a file is selected
-            mSelectedFileUri?.let { uri ->
-                uploadFileToFirebase(uri)
-            } ?: Toast.makeText(this, "Please Select File To Upload", Toast.LENGTH_LONG).show()
+            if (mSelectedFileUri != null) {
+                // Jika file dipilih, upload ke Firebase
+                uploadFileToFirebase(mSelectedFileUri!!)
+            } else {
+                // Jika tidak ada file yang dipilih, tampilkan pesan kesalahan
+                Toast.makeText(this, "Please Select File To Upload", Toast.LENGTH_LONG).show()
+            }
         }
+
+
     }
 
     private fun setupActionBar() {
@@ -121,6 +133,17 @@ class CreateMateriActivity : BaseActivity() {
             val contentResolver: ContentResolver = this.contentResolver
             val mimeTypeMap = MimeTypeMap.getSingleton()
             mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri))
+        }
+    }
+
+    fun showMateriDetails(materi: Materi) {
+        binding?.apply {
+            etMateriName.setText(materi.name)
+            etCourse.setText(materi.courses)
+            etTopic.setText(materi.topic)
+            // Tampilkan nama file PDF jika ada
+            textViewUploadedPdfName.text = materi.url
+            hideProgressDialog()
         }
     }
 }

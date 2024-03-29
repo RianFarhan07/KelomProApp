@@ -71,7 +71,22 @@ class FirestoreClass {
             }
             .addOnFailureListener { e ->
                 fragment.hideProgressDialog()
-                Log.e(fragment.javaClass.simpleName, "Error while deleting guru", e)
+                Log.e(fragment.javaClass.simpleName, "Error while deleting siswa", e)
+            }
+    }
+
+    fun deleteMateri(fragment: MateriFragment, materiId: String) {
+        mFireStore.collection(Constants.MATERI)
+            .document(materiId)
+            .delete()
+            .addOnSuccessListener {
+                fragment.materiDeleteSuccess()
+
+
+            }
+            .addOnFailureListener { e ->
+                fragment.hideProgressDialog()
+                Log.e(fragment.javaClass.simpleName, "Error while deleting materi", e)
             }
     }
 
@@ -641,6 +656,25 @@ class FirestoreClass {
             }.addOnFailureListener {
                 Activity.hideProgressDialog()
                 Log.e(Activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+    fun getMateriDetails(activity: CreateMateriActivity, documentId: String) {
+        mFireStore.collection(Constants.MATERI)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                val materi = document.toObject(Materi::class.java)
+                materi?.id = document.id
+                if (materi != null) {
+                    activity.showMateriDetails(materi)
+                }
+
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+
+                Log.e(activity.javaClass.simpleName, "Error fetching materi details: ${e.message}")
             }
     }
 

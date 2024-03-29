@@ -1,6 +1,9 @@
 package com.example.kelomproapp.adapter
 
+import android.app.Activity
+import android.app.Fragment
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +12,8 @@ import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ItemMateriBinding
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Materi
+import com.example.kelomproapp.ui.activities.CreateMateriActivity
+import com.example.kelomproapp.utils.Constants
 
 class MateriItemsAdapter (private val context: Context,
                           private var list : ArrayList<Materi> ) :
@@ -59,6 +64,10 @@ class MateriItemsAdapter (private val context: Context,
         this.onClickListener = onClickListener
     }
 
+
+
     inner class MateriViewHolder(val binding: ItemMateriBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+
 }

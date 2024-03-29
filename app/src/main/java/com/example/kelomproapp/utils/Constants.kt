@@ -29,8 +29,10 @@ object Constants {
     const val READ_STORAGE_PERMISSION_CODE = 1
     const val PICK_IMAGE_REQUEST_CODE = 2
     const val PICK_FILE_REQUEST_CODE = 3
+
     const val DOCUMENT_ID : String = "documentId"
     const val TASK_ID : String = "taskDocumentId"
+    const val MATERI_ID : String = "materiId"
     const val TASK_LIST : String = "taskList"
     const val KELOMPOK_DETAIL : String = "kelompok_detail"
     const val ID: String = "id"
