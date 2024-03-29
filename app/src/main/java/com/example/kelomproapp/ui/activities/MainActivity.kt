@@ -17,6 +17,7 @@ import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.ActivityMainBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -123,6 +124,12 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 finish()
             }
 
+            R.id.nav_materi -> {
+                val intent = Intent(this, MateriActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
+            }
         }
         binding?.drawerLayout?.closeDrawer(GravityCompat.START)
 

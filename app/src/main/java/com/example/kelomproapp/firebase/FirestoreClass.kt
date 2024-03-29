@@ -595,6 +595,28 @@ class FirestoreClass {
                 Log.e(fragment.javaClass.simpleName, "Error mendapatkan kelompok")
             }
     }
+
+    fun getAllMateriList(Activity: MateriActivity){
+        mFireStore.collection(Constants.MATERI)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(Activity.javaClass.simpleName, document.documents.toString())
+                val materiList : ArrayList<Materi> = ArrayList()
+                for(i in document.documents){
+                    val materi = i.toObject(Materi::class.java)!!
+                    materi.id = i.id
+                    materiList.add(materi)
+                }
+
+                Activity.populateMateriListToUI(materiList)
+            }.addOnFailureListener {
+                Activity.hideProgressDialog()
+                Log.e(Activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+
     fun searchMateriList(query: String?, listener: MateriSearchListener) {
         val lowerCaseQuery = query?.toLowerCase() // Mengonversi query ke huruf kecil
 

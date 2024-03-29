@@ -1,6 +1,7 @@
 package com.example.kelomproapp.ui.activities
 
 import android.app.Dialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -75,4 +76,6 @@ open class BaseActivity : AppCompatActivity() {
 
         Handler().postDelayed({doubleBackToExitPressedOnce = false},2000)
     }
+
+
 }

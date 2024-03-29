@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_kelompok"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_baseline_kelompok"
         android:title="Kelompok" />
 
     <item
         android:id="@+id/navigation_siswa"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/siswa"
         android:title="Siswa" />
 
     <item
         android:id="@+id/navigation_guru"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/guru"
         android:title="Guru" />
 
     <item
         android:id="@+id/navigation_materi"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_baseline_menu_materi"
         android:title="Materi" />
 
 </menu>

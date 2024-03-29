@@ -9,7 +9,7 @@ import android.view.WindowManager
 import com.example.kelomproapp.databinding.ActivitySplashBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
     private var binding : ActivitySplashBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +45,6 @@ class SplashActivity : AppCompatActivity() {
             FirestoreClass().getUserRole(currentUserID) { role ->
                 if (role != null) {
                     handleUserRole(role)
-                } else {
-                    startActivity(Intent(this, IntroActivity::class.java))
                 }
             }
         } else {
@@ -55,7 +53,7 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun handleUserRole(role: String) {
+    fun handleUserRole(role: String) {
         when(role) {
             "siswa" -> {
                 startActivity(Intent(this, MainActivity::class.java))
@@ -63,9 +61,8 @@ class SplashActivity : AppCompatActivity() {
             "guru" -> {
                 startActivity(Intent(this, MainGuruActivity::class.java))
             }
-            else -> {
-                startActivity(Intent(this, IntroActivity::class.java))
-            }
         }
     }
+
+
 }
