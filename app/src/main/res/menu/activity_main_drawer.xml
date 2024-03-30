@@ -22,6 +22,11 @@
             android:icon="@drawable/ic_nav_sign_out"
             android:title="Sign Out"></item>
 
+        <item
+            android:id="@+id/nav_delete_akun"
+            android:icon="@drawable/ic_delete"
+            android:title="Delete Akun"></item>
+
 
 
     </group>

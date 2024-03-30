@@ -1,12 +1,14 @@
 package com.example.kelomproapp.ui.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +30,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
 
     private var binding: ActivityMainBinding? = null
     private lateinit var mUserName : String
+    private lateinit var mSiswaId : String
 
     companion object{
         const val MY_PROFILE_REQUEST_CODE = 11
@@ -130,6 +133,10 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 startActivity(intent)
                 finish()
             }
+
+            R.id.nav_delete_akun -> {
+                showDialogToDeleteAccount()
+            }
         }
         binding?.drawerLayout?.closeDrawer(GravityCompat.START)
 
@@ -138,6 +145,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
 
     fun updateNavigationUserDetails(siswa : Siswa, readKelompokList: Boolean){
         mUserName = "${siswa.firstName} ${siswa.lastName}"
+        mSiswaId = siswa.id
 
         Glide
             .with(this)
@@ -184,5 +192,50 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
             rvKelompokList.visibility = View.GONE
             tvNoKelompokAvailable.visibility  = View.VISIBLE
         }
+    }
+
+    private fun showDialogToDeleteAccount() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Konfirmasi")
+        builder.setMessage("Apakah Anda yakin ingin menghapus akun?")
+
+        // Tombol untuk konfirmasi penghapusan akun
+        builder.setPositiveButton("Ya") { dialog, which ->
+            deleteAkunSiswa()
+        }
+
+        // Tombol untuk pembatalan penghapusan akun
+        builder.setNegativeButton("Tidak") { dialog, which ->
+            dialog.dismiss()
+        }
+
+        // Menampilkan dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    private fun deleteAkunSiswa() {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.delete()
+            ?.addOnSuccessListener {
+                // Menghapus data siswa dari Firestore
+                FirestoreClass().deleteSiswa(this@MainActivity, mSiswaId)
+
+                Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, IntroActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
+            }
+            ?.addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to delete account: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+
+    fun deleteSiswaSuccess(){
+        Toast.makeText(this,"Berhasil menghapus akun siswa",
+            Toast.LENGTH_LONG).show()
     }
 }

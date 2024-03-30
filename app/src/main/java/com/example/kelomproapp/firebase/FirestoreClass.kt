@@ -75,6 +75,20 @@ class FirestoreClass {
             }
     }
 
+    fun deleteSiswa(Activity: MainActivity, siswaId: String) {
+        mFireStore.collection(Constants.SISWA)
+            .document(siswaId)
+            .delete()
+            .addOnSuccessListener {
+                Activity.deleteSiswaSuccess()
+
+            }
+            .addOnFailureListener { e ->
+                Activity.hideProgressDialog()
+                Log.e(Activity.javaClass.simpleName, "Error while deleting siswa", e)
+            }
+    }
+
     fun deleteMateri(fragment: MateriFragment, materiId: String) {
         mFireStore.collection(Constants.MATERI)
             .document(materiId)
