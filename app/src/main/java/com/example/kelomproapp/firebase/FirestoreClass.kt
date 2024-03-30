@@ -606,7 +606,7 @@ class FirestoreClass {
 
     fun createMateri(activity: CreateMateriActivity, materi: Materi) {
         mFireStore.collection(Constants.MATERI)
-            .document()
+            .document(materi.id)
             .set(materi, SetOptions.merge())
             .addOnSuccessListener {
                 Log.e(activity.javaClass.simpleName, "Materi berhasil dibuat")
@@ -619,7 +619,7 @@ class FirestoreClass {
             }
     }
 
-    fun getAllMateriList(fragment: MateriFragment){
+    fun getAllMateriListFragment(fragment: MateriFragment){
         mFireStore.collection(Constants.MATERI)
             .get()
             .addOnSuccessListener {
@@ -677,6 +677,21 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName, "Error fetching materi details: ${e.message}")
             }
     }
+
+    fun updateMateri(activity: CreateMateriActivity, materiId: String, materi: Materi) {
+        mFireStore.collection(Constants.MATERI)
+            .document(materiId)
+            .set(materi, SetOptions.merge())
+            .addOnSuccessListener {
+                activity.materiUpdatedSuccessfully()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while updating materi", e)
+                Toast.makeText(activity, "Failed to update materi: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
 
 
     fun searchMateriList(query: String?, listener: MateriSearchListener) {

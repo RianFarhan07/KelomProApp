@@ -13,6 +13,7 @@ import com.example.kelomproapp.databinding.ItemMateriBinding
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.ui.activities.CreateMateriActivity
+import com.example.kelomproapp.ui.fragments.MateriFragment
 import com.example.kelomproapp.utils.Constants
 
 class MateriItemsAdapter (private val context: Context,
@@ -64,7 +65,12 @@ class MateriItemsAdapter (private val context: Context,
         this.onClickListener = onClickListener
     }
 
-
+    fun notifyEditItem(fragment: MateriFragment, position: Int){
+        val intent = Intent(context,CreateMateriActivity::class.java)
+        intent.putExtra(Constants.MATERI_ID,list[position].id)
+        fragment.startActivityForResult(intent, MateriFragment.EDIT_MATERI_REQUEST_CODE)
+        notifyItemChanged(position)
+    }
 
     inner class MateriViewHolder(val binding: ItemMateriBinding) :
         RecyclerView.ViewHolder(binding.root)

@@ -36,7 +36,7 @@ class MateriFragment : BaseFragment() {
     private val binding get() = _binding!!
 
     companion object {
-        private const val EDIT_MATERI_REQUEST_CODE = 100
+        const val EDIT_MATERI_REQUEST_CODE = 100
     }
 
 
@@ -77,6 +77,8 @@ class MateriFragment : BaseFragment() {
             startActivity(intent)
         }
 
+
+
     }
 
     override fun onResume() {
@@ -89,12 +91,17 @@ class MateriFragment : BaseFragment() {
         _binding = null
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_MATERI_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            FirestoreClass().getAllMateriListFragment(this)
+        }
+    }
 
 
     fun getMateriItemList(){
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
-
-        FirestoreClass().getAllMateriList(this)
+        FirestoreClass().getAllMateriListFragment(this)
     }
 
     fun successMateriItemsList(materiItemsList: ArrayList<Materi>){
@@ -121,14 +128,10 @@ class MateriFragment : BaseFragment() {
             val editSwipeHandler = object : SwipeToEditCallback(requireContext()) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val adapter = binding.rvMateriList.adapter as MateriItemsAdapter
-                    val position = viewHolder.adapterPosition
-                    val materi = materiItemsList[position]
-
-                    val intent = Intent(requireContext(), CreateMateriActivity::class.java)
-                    intent.putExtra(Constants.MATERI_ID, materi.id)
-                    startActivityForResult(intent, EDIT_MATERI_REQUEST_CODE)
-
-                    adapter.notifyItemChanged(position)
+                    adapter.notifyEditItem(
+                        this@MateriFragment,
+                        viewHolder.adapterPosition
+                    )
                 }
             }
 

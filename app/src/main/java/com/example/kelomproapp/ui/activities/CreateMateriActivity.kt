@@ -22,6 +22,11 @@ class CreateMateriActivity : BaseActivity() {
     private var mFileType: String? = ""
     private var storageReference: StorageReference? = null
     private var materiId: String? = null
+    private var isUpdatingMateri: Boolean = false
+
+    companion object {
+        private const val EDIT_MATERI_REQUEST_CODE = 100
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCreateMateriBinding.inflate(layoutInflater)
@@ -34,12 +39,13 @@ class CreateMateriActivity : BaseActivity() {
             materiId = intent.getStringExtra(Constants.MATERI_ID)
             showProgressDialog("Loading Materi...")
             FirestoreClass().getMateriDetails(this, materiId!!)
+            binding?.btnCreate?.text = "UPDATE"
+            isUpdatingMateri = true
         }
 
         storageReference = FirebaseStorage.getInstance().reference
 
         binding?.btnUploadPdf?.setOnClickListener {
-            // Launch file picker intent
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "*/*"
             startActivityForResult(intent, Constants.PICK_FILE_REQUEST_CODE)
@@ -47,15 +53,16 @@ class CreateMateriActivity : BaseActivity() {
 
         binding?.btnCreate?.setOnClickListener {
             if (mSelectedFileUri != null) {
-                // Jika file dipilih, upload ke Firebase
                 uploadFileToFirebase(mSelectedFileUri!!)
             } else {
-                // Jika tidak ada file yang dipilih, tampilkan pesan kesalahan
-                Toast.makeText(this, "Please Select File To Upload", Toast.LENGTH_LONG).show()
+                if (isUpdatingMateri){
+                    Toast.makeText(this, "Tolong upload lagi file materi", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(this, "Tolong upload file materi", Toast.LENGTH_LONG).show()
+                }
+
             }
         }
-
-
     }
 
     private fun setupActionBar() {
@@ -82,13 +89,9 @@ class CreateMateriActivity : BaseActivity() {
     private fun uploadFileToFirebase(fileUri: Uri) {
         showProgressDialog("Uploading File...")
 
-        // Generate a random file name for the uploaded file
         val fileName = UUID.randomUUID().toString()
-
-        // Reference to the file location in Firebase Storage
         val fileRef = storageReference!!.child(Constants.MATERI).child(fileName)
 
-        // Upload file to Firebase Storage
         fileRef.putFile(fileUri)
             .addOnSuccessListener { taskSnapshot ->
                 hideProgressDialog()
@@ -106,8 +109,12 @@ class CreateMateriActivity : BaseActivity() {
                         fileType = mFileType.toString()
                     )
 
-                    // Save the Materi object to Firestore
-                    createMateri(materi)
+                    // Save or update the Materi object to Firestore
+                    if (isUpdatingMateri) {
+                        updateMateri(materiId!!, materi)
+                    } else {
+                        createMateri(materi)
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -120,8 +127,19 @@ class CreateMateriActivity : BaseActivity() {
         FirestoreClass().createMateri(this, materi)
     }
 
+    private fun updateMateri(materiId: String, materi: Materi) {
+        FirestoreClass().updateMateri(this, materiId, materi)
+    }
+
     fun materiCreatedSuccessfully() {
         hideProgressDialog()
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
+    fun materiUpdatedSuccessfully() {
+        hideProgressDialog()
+        Toast.makeText(this, "Materi updated successfully", Toast.LENGTH_SHORT).show()
         setResult(Activity.RESULT_OK)
         finish()
     }
@@ -141,9 +159,10 @@ class CreateMateriActivity : BaseActivity() {
             etMateriName.setText(materi.name)
             etCourse.setText(materi.courses)
             etTopic.setText(materi.topic)
-            // Tampilkan nama file PDF jika ada
             textViewUploadedPdfName.text = materi.url
             hideProgressDialog()
         }
     }
+
+
 }
