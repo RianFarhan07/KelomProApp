@@ -16,6 +16,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.adapter.MateriItemsAdapter
@@ -168,10 +169,12 @@ class MateriFragment : BaseFragment() {
                     binding.tvTidakAdaMateri.visibility = View.GONE
 
 
-                    val kelompokdAdapter = MateriItemsAdapter(requireActivity(),materiList)
-                    binding.rvMateriList.adapter = kelompokdAdapter
+                    val materiAdapter = MateriItemsAdapter(requireActivity(),materiList)
+                    binding.rvMateriList.adapter = materiAdapter
+                    //TODO NOTIFY SEARCH ITEM
+//                    materiAdapter.notifySearchItem(this,.)
 
-                    kelompokdAdapter.setOnClickListener(object : MateriItemsAdapter.OnClickListener{
+                    materiAdapter.setOnClickListener(object : MateriItemsAdapter.OnClickListener{
                         override fun onClick(position: Int, model: Materi) {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.data = Uri.parse(model.url)

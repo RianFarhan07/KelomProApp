@@ -72,6 +72,10 @@ class MateriItemsAdapter (private val context: Context,
         notifyItemChanged(position)
     }
 
+    fun notifySearchItem(fragment: MateriFragment,position: Int){
+        notifyItemChanged(position)
+    }
+
     inner class MateriViewHolder(val binding: ItemMateriBinding) :
         RecyclerView.ViewHolder(binding.root)
 

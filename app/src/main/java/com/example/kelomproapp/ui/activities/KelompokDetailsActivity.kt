@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -190,7 +191,15 @@ class KelompokDetailsActivity : BaseActivity() {
 
     fun kelompokDeleteSuccess(){
         hideProgressDialog()
-        startActivity(Intent(this,MainActivity::class.java))
+        val currentUserID = FirestoreClass().getCurrentUserID()
+        FirestoreClass().getUserRole(currentUserID) { role ->
+            if (role == "guru") {
+                startActivity(Intent(this, MainGuruActivity::class.java))
+            } else {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
+
     }
 
     private fun uploadKelompokImage(){

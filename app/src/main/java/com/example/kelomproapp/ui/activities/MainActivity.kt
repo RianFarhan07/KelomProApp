@@ -137,6 +137,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
             R.id.nav_delete_akun -> {
                 showDialogToDeleteAccount()
             }
+
         }
         binding?.drawerLayout?.closeDrawer(GravityCompat.START)
 
@@ -199,17 +200,14 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         builder.setTitle("Konfirmasi")
         builder.setMessage("Apakah Anda yakin ingin menghapus akun?")
 
-        // Tombol untuk konfirmasi penghapusan akun
         builder.setPositiveButton("Ya") { dialog, which ->
             deleteAkunSiswa()
         }
 
-        // Tombol untuk pembatalan penghapusan akun
         builder.setNegativeButton("Tidak") { dialog, which ->
             dialog.dismiss()
         }
 
-        // Menampilkan dialog
         val dialog: AlertDialog = builder.create()
         dialog.show()
     }
@@ -218,7 +216,6 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         val user = FirebaseAuth.getInstance().currentUser
         user?.delete()
             ?.addOnSuccessListener {
-                // Menghapus data siswa dari Firestore
                 FirestoreClass().deleteSiswa(this@MainActivity, mSiswaId)
 
                 Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show()

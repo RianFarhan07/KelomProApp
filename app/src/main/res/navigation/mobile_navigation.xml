@@ -26,6 +26,6 @@
     <fragment
         android:id="@+id/navigation_materi"
         android:name="com.example.kelomproapp.ui.fragments.MateriFragment"
-        android:label="Pengaturan"
+        android:label="Materi"
         tools:layout="@layout/fragment_materi" />
 </navigation>
