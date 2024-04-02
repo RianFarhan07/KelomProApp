@@ -35,9 +35,6 @@ class MyTaskItemsAdapter(
         val horizontalView = holder.itemView.findViewById<View>(R.id.horizontal_only)
         val tvStatus = holder.itemView.findViewById<TextView>(R.id.tv_status)
         val tvSisaWaktu = holder.itemView.findViewById<TextView>(R.id.tv_sisa_waktu)
-//        val kelompok: Kelompok = task.kelompok ?: Kelompok()
-
-
 
 
         if (isCompleted) {

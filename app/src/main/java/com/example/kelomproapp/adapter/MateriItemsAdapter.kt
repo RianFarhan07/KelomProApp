@@ -1,7 +1,5 @@
 package com.example.kelomproapp.adapter
 
-import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,17 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ItemMateriBinding
-import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.ui.activities.CreateMateriActivity
 import com.example.kelomproapp.ui.fragments.MateriFragment
 import com.example.kelomproapp.utils.Constants
 
-class MateriItemsAdapter (private val context: Context,
-                          private var list : ArrayList<Materi> ) :
-    RecyclerView.Adapter<MateriItemsAdapter.MateriViewHolder>(){
+class MateriItemsAdapter(
+    private val context: Context,
+    private var list: ArrayList<Materi>
+) :
+    RecyclerView.Adapter<MateriItemsAdapter.MateriViewHolder>() {
 
-    private var onClickListener : OnClickListener? = null
+    private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MateriViewHolder {
         val binding = ItemMateriBinding.inflate(
@@ -31,7 +30,7 @@ class MateriItemsAdapter (private val context: Context,
     override fun onBindViewHolder(holder: MateriViewHolder, position: Int) {
         val model = list[position]
 
-        if (holder is MateriViewHolder){
+        if (holder is MateriViewHolder) {
 
             holder.binding.tvNamaMateri.text = model.name
             holder.binding.textViewTopik.text = "Topik = ${model.topic}"
@@ -57,27 +56,26 @@ class MateriItemsAdapter (private val context: Context,
         return list.size
     }
 
-    interface OnClickListener{
-        fun onClick(position: Int,model: Materi)
+    interface OnClickListener {
+        fun onClick(position: Int, model: Materi)
     }
 
-    fun setOnClickListener(onClickListener: OnClickListener){
+    fun setOnClickListener(onClickListener: OnClickListener) {
         this.onClickListener = onClickListener
     }
 
-    fun notifyEditItem(fragment: MateriFragment, position: Int){
-        val intent = Intent(context,CreateMateriActivity::class.java)
-        intent.putExtra(Constants.MATERI_ID,list[position].id)
+    fun notifyEditItem(fragment: MateriFragment, position: Int) {
+        val intent = Intent(context, CreateMateriActivity::class.java)
+        intent.putExtra(Constants.MATERI_ID, list[position].id)
         fragment.startActivityForResult(intent, MateriFragment.EDIT_MATERI_REQUEST_CODE)
         notifyItemChanged(position)
     }
 
-    fun notifySearchItem(fragment: MateriFragment,position: Int){
-        notifyItemChanged(position)
+    fun notifySearchItem(list: ArrayList<Materi>) {
+        this.list = list
+        notifyDataSetChanged()
     }
 
     inner class MateriViewHolder(val binding: ItemMateriBinding) :
         RecyclerView.ViewHolder(binding.root)
-
-
 }
