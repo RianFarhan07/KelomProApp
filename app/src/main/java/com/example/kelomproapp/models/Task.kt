@@ -13,6 +13,9 @@ data class Task (
     val dueDate: Long = 0,
     val pdfUrl: String = "",
     val nilai: String = "",
+    val kelompokName: String = "",
+    val kelompokCourse: String = "",
+    val kelompokTopic: String = "",
     val taskDocumentId: String = UUID.randomUUID().toString()
 ) : Parcelable{
 

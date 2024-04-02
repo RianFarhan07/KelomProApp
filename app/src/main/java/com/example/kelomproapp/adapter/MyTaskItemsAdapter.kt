@@ -1,6 +1,7 @@
 package com.example.kelomproapp.adapter
 
 import android.content.Context
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,9 +71,10 @@ class MyTaskItemsAdapter(
         }
 
         holder.binding.llMyTask.visibility = View.VISIBLE
-//        holder.binding.tvKelompok.text = kelompok.name
-//        holder.binding.tvMataPelajaran.text = kelompok.course
-//        holder.binding.tvTopik.text = kelompok.topic
+        holder.binding.tvKelompok.text = Html.fromHtml("<b>Kelompok:</b> ${task.kelompokName}")
+        holder.binding.tvMataPelajaran.text = Html.fromHtml("<b>Mata Pelajaran:</b> ${task.kelompokCourse}")
+        holder.binding.tvTopik.text = Html.fromHtml("<b>Topik:</b> ${task.kelompokTopic}")
+
     }
 
 

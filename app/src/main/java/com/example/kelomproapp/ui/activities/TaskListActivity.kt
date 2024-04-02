@@ -138,7 +138,13 @@
 
 
             val currentUserId = FirestoreClass().getCurrentUserID()
-            val task = Task(taskListName, currentUserId, taskAssignedUserList)
+            val task = Task(
+                name = taskListName,
+                createdBy =  currentUserId,
+                assignedTo =  taskAssignedUserList,
+                kelompokName = mKelompokDetails.name.toString(),
+                kelompokCourse = mKelompokDetails.course.toString(),
+                kelompokTopic = mKelompokDetails.topic.toString())
 
             mKelompokDetails.taskList.add(0,task)
     //        mKelompokDetails.taskList.removeAt(mKelompokDetails.taskList.size -1)

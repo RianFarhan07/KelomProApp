@@ -290,12 +290,12 @@
             val pdfUriString = mUploadedPdfUri?.toString() ?: originalPdfUrl
 
             val task = Task(
-                binding?.etNameTaskDetails?.text.toString(),
-                mKelompokDetails.taskList[mTaskListPosition].createdBy,
-                mKelompokDetails.taskList[mTaskListPosition].assignedTo,
-                mSelectedDueDateMilliSeconds,
-                pdfUriString,
-                binding?.etNilai?.text.toString()
+                name = binding?.etNameTaskDetails?.text.toString(),
+                createdBy = mKelompokDetails.taskList[mTaskListPosition].createdBy,
+                assignedTo =  mKelompokDetails.taskList[mTaskListPosition].assignedTo,
+                dueDate =  mSelectedDueDateMilliSeconds,
+                pdfUrl =  pdfUriString,
+                nilai = binding?.etNilai?.text.toString()
 
             )
 

@@ -34,8 +34,9 @@
             android:id="@+id/tv_card_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="5dp"
             android:textSize="16dp"
+            android:textStyle="bold"
             tools:text="Task Name" />
 
         <!-- Anggota -->
@@ -56,9 +57,9 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:paddingStart="10dp"
-            android:paddingTop="8dp"
+            android:paddingTop="4dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="4dp">
 
             <!-- Kelompok -->
             <TextView
