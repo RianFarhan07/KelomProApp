@@ -11,4 +11,13 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="screen1">Pengelolaan Tugas</string>
+    <string name="screen2">Pemantauan Progres</string>
+    <string name="screen3">Pusat Materi</string>
+
+    <string name="screen1desc">Optimalkan pengelolaan tugas dengan lebih efektif dan teratur.</string>
+    <string name="screen2desc">Pantau progres setiap tugas untuk meningkatkan kinerja tim.</string>
+    <string name="screen3desc">Temukan dan unduh materi penting dengan cepat dan mudah.</string>
+
 </resources>

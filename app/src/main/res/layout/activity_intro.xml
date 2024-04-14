@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".ui.activities.IntroActivity">
+    android:gravity="center_horizontal">
 
     <com.example.kelomproapp.utils.KMPTextView
         android:id="@+id/tv_app_name"
@@ -16,42 +14,35 @@
         android:text="@string/app_name"
         android:textColor="@color/black"
         android:textSize="40sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true" />
 
-    <ImageView
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        android:layout_below="@id/tv_app_name"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:contentDescription="image"
-        android:src="@drawable/ic_task_image" />
-
-    <com.example.kelomproapp.utils.KMPTextViewBold
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="Baso Rian Farhan Mallanti"
-        android:textColor="@color/colorSecondaryText"
-        android:textSize="25sp" />
-
-    <com.example.kelomproapp.utils.KMPTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
+        android:id="@+id/dot_indicator"
+        android:layout_below="@id/view_pager"
         android:gravity="center"
-        android:lineSpacingExtra="5dp"
-        android:text="Aplikasi Manajemen Proyek Kerja Kelompok"
-        android:textColor="@color/colorSecondaryText"
-        android:textSize="16sp" />
+        android:layout_marginStart="175dp"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"/>
 
     <com.example.kelomproapp.utils.KMPButton
         android:id="@+id/btn_sign_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_below="@id/dot_indicator"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/button_background"
         android:foreground="?attr/selectableItemBackground"
@@ -60,13 +51,14 @@
         android:paddingBottom="8dp"
         android:text="SIGN IN"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true" />
 
     <com.example.kelomproapp.utils.KMPButton
         android:id="@+id/btn_sign_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_below="@id/btn_sign_in"
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="20dp"
@@ -77,5 +69,6 @@
         android:paddingBottom="8dp"
         android:text="SIGN UP"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp" />
-</LinearLayout>
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
