@@ -67,16 +67,6 @@ class GuruFragment : BaseFragment() {
             binding.rvGuruList.adapter = dashboardAdapter
 
 
-            val deleteSwipeHandler = object : SwipeToDeleteCallback(requireContext()) {
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    showProgressDialog(resources.getString(R.string.mohon_tunggu))
-                    FirestoreClass().deleteGuru(this@GuruFragment,
-                        guruItemList[viewHolder.adapterPosition].id)
-                }
-            }
-            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
-            deleteItemTouchHelper.attachToRecyclerView(binding.rvGuruList)
-
         }else{
             binding.rvGuruList.visibility = View.GONE
             binding.tvTidakAdaGuru.visibility = View.VISIBLE
