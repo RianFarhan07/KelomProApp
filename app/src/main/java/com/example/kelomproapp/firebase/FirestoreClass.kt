@@ -262,12 +262,18 @@ class FirestoreClass {
                     is MyProfileActivity -> {
                         activity.profileUpdateSuccess()
                     }
+                    is MainActivity -> {
+                        activity.tokenUpdateSuccess()
+                    }
                 }
             }
             .addOnFailureListener {
                     e->
                 when(activity) {
                     is MyProfileActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is MainActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

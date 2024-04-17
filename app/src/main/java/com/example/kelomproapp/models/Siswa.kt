@@ -12,6 +12,7 @@ data class Siswa(
         val classes: String = "",
         val image: String = "",
         val mobile: String = "",
+        val fcmToken: String = "",
         var selected: Boolean = false,
         val role : String = "siswa"
 ) : Parcelable

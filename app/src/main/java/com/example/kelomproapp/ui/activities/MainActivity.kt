@@ -2,7 +2,9 @@ package com.example.kelomproapp.ui.activities
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -25,12 +27,14 @@ import com.example.kelomproapp.utils.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedListener{
 
     private var binding: ActivityMainBinding? = null
     private lateinit var mUserName : String
     private lateinit var mSiswaId : String
+    private lateinit var mSharedPreferences : SharedPreferences
 
     companion object{
         const val MY_PROFILE_REQUEST_CODE = 11
@@ -47,6 +51,19 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
 
         binding?.navView?.setNavigationItemSelectedListener(this)
 
+        mSharedPreferences = this.getSharedPreferences(Constants.KELOMPRO_PREFERENCES,Context.MODE_PRIVATE)
+
+        val tokenUpdated = mSharedPreferences.getBoolean(Constants.FCM_TOKEN_UPDATED,false)
+
+        if(tokenUpdated){
+            showProgressDialog(resources.getString(R.string.mohon_tunggu))
+            FirestoreClass().getUserDetails(this,Constants.SISWA,true)
+        }else{
+            FirebaseMessaging.getInstance().token
+                .addOnSuccessListener { token ->
+                    updateFCMToken(token)
+                }
+        }
 
         FirestoreClass().getUserDetails(this,"siswa",true)
 
@@ -112,6 +129,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
             }
             R.id.nav_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
+                mSharedPreferences.edit().clear().apply()
 
                 val intent = Intent(this, IntroActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -152,6 +170,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
     }
 
     fun updateNavigationUserDetails(siswa : Siswa, readKelompokList: Boolean){
+        hideProgressDialog()
         mUserName = "${siswa.firstName} ${siswa.lastName}"
         mSiswaId = siswa.id
 
@@ -241,5 +260,21 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
     fun deleteSiswaSuccess(){
         Toast.makeText(this,"Berhasil menghapus akun siswa",
             Toast.LENGTH_LONG).show()
+    }
+
+    fun tokenUpdateSuccess(){
+        hideProgressDialog()
+        val editor : SharedPreferences.Editor = mSharedPreferences.edit()
+        editor.putBoolean(Constants.FCM_TOKEN_UPDATED,true)
+        editor.apply()
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        FirestoreClass().getUserDetails(this,Constants.SISWA,true)
+    }
+
+    private fun updateFCMToken(token: String){
+        val siswaHashMap = HashMap<String,Any>()
+        siswaHashMap[Constants.FCM_TOKEN] = token
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        FirestoreClass().updateUserProfileData(this, siswaHashMap)
     }
 }

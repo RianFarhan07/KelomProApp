@@ -19,5 +19,5 @@
     <string name="screen1desc">Optimalkan pengelolaan tugas dengan lebih efektif dan teratur.</string>
     <string name="screen2desc">Pantau progres setiap tugas untuk meningkatkan kinerja tim.</string>
     <string name="screen3desc">Temukan dan unduh materi penting dengan cepat dan mudah.</string>
-
+    <string name="default_notification_channel_id">KELOMPRO_notification_channel_id</string>
 </resources>
