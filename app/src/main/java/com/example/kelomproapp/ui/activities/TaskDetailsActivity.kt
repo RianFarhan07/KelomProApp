@@ -2,11 +2,16 @@
 
     import android.annotation.SuppressLint
     import android.app.Activity
+    import android.app.AlarmManager
     import android.app.DatePickerDialog
+    import android.app.NotificationChannel
+    import android.app.NotificationManager
+    import android.app.PendingIntent
     import android.content.Context
     import android.content.Intent
     import android.database.Cursor
     import android.net.Uri
+    import android.os.Build
     import android.os.Bundle
     import android.provider.OpenableColumns
     import android.text.InputType
@@ -26,6 +31,7 @@
     import com.example.kelomproapp.models.SelectedAnggota
     import com.example.kelomproapp.models.Task
     import com.example.kelomproapp.models.Siswa
+    import com.example.kelomproapp.utils.AlarmReceiver
     import com.example.kelomproapp.utils.Constants
     import com.google.firebase.storage.FirebaseStorage
     import com.google.firebase.storage.StorageReference
@@ -46,6 +52,9 @@
         private var selectedPdfFileName: String = ""
         private var mDatabasePdf: Uri? = null
         private var mUploadedPdfUri: Uri? = null
+
+        private lateinit var alarmManager : AlarmManager
+        private lateinit var pendingIntent: PendingIntent
 
         companion object {
             const val PICK_PDF_REQUEST_CODE = 1
@@ -140,6 +149,14 @@
                 R.id.action_delete_card -> {
                    alertDialogForDeleteTask (mKelompokDetails.taskList[mTaskListPosition].name)
                     return true
+                }
+                R.id.action_notif -> {
+                    if(mSelectedDueDateMilliSeconds > 0){
+                        setAlarm()
+                    }else{
+                        Toast.makeText(this,"Belum Ada Tenggat Waktu",Toast.LENGTH_LONG).show()
+                    }
+
                 }
             }
             return super.onOptionsItemSelected(item)
@@ -308,6 +325,8 @@
 
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
             FirestoreClass().addUpdateTaskList(this@TaskDetailsActivity,mKelompokDetails)
+
+
         }
 
         fun addUpdateTaskListSuccess(){
@@ -413,6 +432,58 @@
             intent.addCategory(Intent.CATEGORY_OPENABLE)
 
             startActivityForResult(intent, PICK_PDF_REQUEST_CODE)
+        }
+
+        private fun createNotificationChannel(){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                val name: CharSequence = "KelomproReminderChannel"
+                val description = "Channel For Alarm Manager"
+                val importance = NotificationManager.IMPORTANCE_HIGH
+                val channel = NotificationChannel("Kelompro",name,importance)
+                channel.description = description
+                val notificationManager = getSystemService(
+                    NotificationManager::class.java
+                )
+
+                notificationManager.createNotificationChannel(channel)
+            }
+        }
+
+        private fun setAlarm() {
+            createNotificationChannel()
+
+            val currentTimeMillis = System.currentTimeMillis()
+            val timeDifferenceMillis = mSelectedDueDateMilliSeconds - currentTimeMillis
+
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, AlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE) // Specify FLAG_IMMUTABLE
+
+            if (timeDifferenceMillis >= 3600000L) { // Check if the time difference is at least 1 hour
+                // Set the alarm to trigger 1 hour before the due date
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    mSelectedDueDateMilliSeconds - 3600000L,
+                    pendingIntent
+                )
+
+                Toast.makeText(this, "Alarm set for 1 hour before task due date", Toast.LENGTH_SHORT).show()
+            } else {
+                // If the time difference is less than 1 hour, cancel any existing alarm
+                cancelAlarm()
+            }
+        }
+
+
+        private fun cancelAlarm(){
+
+
+            alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this,AlarmReceiver::class.java)
+
+            pendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
+            alarmManager.cancel(pendingIntent)
+            Toast.makeText(this,"Alarm Canceled",Toast.LENGTH_LONG).show()
         }
 
     }
