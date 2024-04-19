@@ -1,6 +1,8 @@
 package com.example.kelomproapp.ui.activities
 
 import android.content.Intent
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
@@ -8,6 +10,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.ViewPagerAdapter
@@ -55,8 +58,10 @@ class IntroActivity : AppCompatActivity() {
         // Add the ViewPager listener
         slideViewPager.addOnPageChangeListener(viewPagerListener)
 
-        val typeFaceAmorria: Typeface = Typeface.createFromAsset(assets,"Amorria-Brush.ttf")
-        binding?.tvAppName?.typeface = typeFaceAmorria
+        val uniSans: Typeface = Typeface.createFromAsset(assets,"Uni Sans Heavy.otf")
+        binding?.tvAppName?.typeface = uniSans
+
+        setGradientText(binding?.tvAppName)
 
         binding?.btnSignIn?.setOnClickListener{
             val intent = Intent(this, SignInActivity::class.java)
@@ -67,6 +72,19 @@ class IntroActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun setGradientText(textView: TextView?) {
+        val shader = LinearGradient(
+            0f, 0f, 0f, textView?.textSize ?: 0f,
+            intArrayOf(
+                ContextCompat.getColor(this, R.color.black),
+                ContextCompat.getColor(this, R.color.green_gpt)
+            ),
+            null,
+            Shader.TileMode.CLAMP
+        )
+        textView?.paint?.shader = shader
     }
 
     private fun setDotIndicator(currentPosition: Int) {
