@@ -117,7 +117,9 @@
 
             if (mDatabasePdf!= null) {
                 selectedPdfFileName = mDatabasePdf.toString()
-                binding?.textViewUploadedPdfName?.text = "$selectedPdfFileName"
+                binding?.textViewUploadedPdfName?.text = mKelompokDetails.taskList[mTaskListPosition].pdfUrlName
+            }else{
+                binding?.textViewUploadedPdfName?.text = "Belum ada file terupload"
             }
 
             binding?.textViewUploadedPdfName?.setOnClickListener {
@@ -312,6 +314,7 @@
                 assignedTo =  mKelompokDetails.taskList[mTaskListPosition].assignedTo,
                 dueDate =  mSelectedDueDateMilliSeconds,
                 pdfUrl =  pdfUriString,
+                pdfUrlName= selectedPdfFileName,
                 nilai = binding?.etNilai?.text.toString()
 
             )

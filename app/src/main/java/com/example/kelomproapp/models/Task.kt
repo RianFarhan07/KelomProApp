@@ -12,6 +12,7 @@ data class Task (
     val assignedTo: ArrayList<String> = ArrayList(),
     val dueDate: Long = 0,
     val pdfUrl: String = "",
+    val pdfUrlName: String = "",
     val nilai: String = "",
     val kelompokName: String = "",
     val kelompokCourse: String = "",
