@@ -30,11 +30,13 @@ import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
 
-class AnggotaActivity : BaseActivity() {
+class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickListener  {
     private var binding : ActivityAnggotaBinding? = null
     private lateinit var mKelompokDetails : Kelompok
     private lateinit var mAssignedAnggotaList : ArrayList<Siswa>
     private var anyChangesMade : Boolean = false
+    private lateinit var adapter: SiswaItemsAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,18 +88,17 @@ class AnggotaActivity : BaseActivity() {
         super.onBackPressed()
     }
 
-    fun setupAnggotaList(list: ArrayList<Siswa>){
+    fun setupAnggotaList(list: ArrayList<Siswa>) {
         hideProgressDialog()
         mAssignedAnggotaList = list
 
         binding?.rvAnggotaList?.layoutManager = LinearLayoutManager(this)
         binding?.rvAnggotaList?.setHasFixedSize(true)
 
-        val adapter = SiswaItemsAdapter(this,list)
+        adapter = SiswaItemsAdapter(this, list, true)
+        adapter.setOnDeleteAnggotaClickListener(this)
 
         binding?.rvAnggotaList?.adapter = adapter
-
-
     }
 
     fun anggotaDetails(siswa: Siswa){
@@ -139,6 +140,30 @@ class AnggotaActivity : BaseActivity() {
 
         dialog.show()
     }
+
+    override fun onDeleteAnggotaClick(position: Int) {
+        val siswa = mAssignedAnggotaList[position]
+
+        if (siswa.id == FirestoreClass().getCurrentUserID()) {
+            Toast.makeText(this, "Anda tidak dapat menghapus diri sendiri dari kelompok", Toast.LENGTH_SHORT).show()
+        } else {
+            mKelompokDetails.assignedTo.remove(siswa.id)
+            mAssignedAnggotaList.removeAt(position)
+            adapter.notifyDataSetChanged()
+
+            FirestoreClass().unassignAnggotaFromKelompok(this, mKelompokDetails, siswa)
+        }
+    }
+
+
+    fun anggotaUnassignedSuccess(siswa: Siswa) {
+        // Update UI or perform any necessary actions
+        Toast.makeText(this, "Anggota ${siswa.firstName} dihapus dari kelompok", Toast.LENGTH_SHORT).show()
+        anyChangesMade = true
+        mAssignedAnggotaList.remove(siswa)
+        adapter.notifyDataSetChanged()
+    }
+
 
     private inner class SendNotificationToUserAsyncTask(val namaKelompok :String, val token: String)
         : AsyncTask<Any,Void,String>(){

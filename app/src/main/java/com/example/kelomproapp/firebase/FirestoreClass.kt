@@ -3,7 +3,6 @@ package com.example.kelomproapp.firebase
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.example.kelomproapp.models.*
 import com.example.kelomproapp.ui.activities.*
 import com.example.kelomproapp.ui.fragments.GuruFragment
@@ -14,7 +13,6 @@ import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlin.math.log
 
 class FirestoreClass {
 
@@ -552,6 +550,36 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName, "Error memasukkan anggota",e)
             }
     }
+
+    fun unassignAnggotaFromKelompok(activity: Activity, kelompok: Kelompok, siswa: Siswa) {
+        val assignedTo = kelompok.assignedTo
+        assignedTo.remove(siswa.id) // Menghapus ID anggota dari ArrayList assignedTo
+
+        val assignedToHashMap = HashMap<String, Any>()
+        assignedToHashMap[Constants.ASSIGNED_TO] = assignedTo
+
+        mFireStore.collection(Constants.KELOMPOK)
+            .document(kelompok.documentId.toString())
+            .update(assignedToHashMap)
+            .addOnSuccessListener {
+
+                when(activity) {
+                    is AnggotaActivity ->  {
+                        activity.anggotaUnassignedSuccess(siswa)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                when(activity) {
+                    is AnggotaActivity ->  {
+                        activity.hideProgressDialog()
+                    }
+                }
+
+                Log.e(activity.javaClass.simpleName, "Error mengunassign anggota", e)
+            }
+    }
+
 
 
 //    fun getTaskDetails(activity: TaskDetailsActivity, documentId: String) {
