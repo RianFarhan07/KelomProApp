@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -176,6 +175,7 @@ class KelompokDetailsActivity : BaseActivity() {
         builder.setPositiveButton("Iya") { dialogInterface, _ ->
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
             FirestoreClass().deleteKelompok(this@KelompokDetailsActivity, kelompokId)
+//            FirestoreClass().deleteKelompokFromCourse(this@KelompokDetailsActivity, ,kelompokId)
             dialogInterface.dismiss()
         }
 

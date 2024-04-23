@@ -212,6 +212,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 override fun onClick(position: Int, model: Kelompok) {
                     val intent = Intent(this@MainActivity, TaskListActivity::class.java)
                     intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    Log.e("KELOMPOK","ID : ${model.documentId}")
                     startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)
                 }
             })

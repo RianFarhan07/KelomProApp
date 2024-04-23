@@ -61,7 +61,7 @@ class SplashActivity : BaseActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
             }
             "guru" -> {
-                startActivity(Intent(this, MainGuruActivity::class.java))
+                startActivity(Intent(this, GuruCourseActivity::class.java))
             }
         }
         finish()

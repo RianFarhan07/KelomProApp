@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityCreateKelompokBinding
 import com.example.kelomproapp.firebase.FirestoreClass
+import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
@@ -99,11 +100,11 @@ class CreateKelompokActivity : BaseActivity() {
         }
     }
 
-    private fun createKelompok(){
-        val assignedUserArrayList : ArrayList<String> = ArrayList()
+    private fun createKelompok() {
+        val assignedUserArrayList: ArrayList<String> = ArrayList()
         assignedUserArrayList.add(FirestoreClass().getCurrentUserID())
 
-        var kelompok = Kelompok(
+        val kelompok = Kelompok(
             binding?.etKelompokName?.text.toString(),
             mKelompokImageURL,
             mUsername,
@@ -113,8 +114,37 @@ class CreateKelompokActivity : BaseActivity() {
             binding?.etTopic?.text.toString()
         )
 
-        FirestoreClass().createKelompok(this,kelompok)
+        val courseName = binding?.etCourse?.text.toString()
+
+//        FirestoreClass().getCourseList { courseList ->
+//            var existingCourse: Course? = null
+//
+//            for (course in courseList) {
+//                if (course.name == courseName) {
+//                    existingCourse = course
+//                    break
+//                }
+//            }
+//
+//            if (existingCourse != null) {
+//                existingCourse.kelompok?.add(kelompok)
+//                FirestoreClass().updateCourse(this, existingCourse)
+//            } else {
+//                val assignedKelompokArrayList: ArrayList<Kelompok> = ArrayList()
+//                assignedKelompokArrayList.add(kelompok)
+//
+//                val newClass = Course(
+//                    courseName,
+//                    assignedKelompokArrayList
+//                )
+//
+//                FirestoreClass().createCourse(this,newClass)
+//            }
+
+            FirestoreClass().createKelompok(this,kelompok)
+//        }
     }
+
 
     fun kelompokCreatedSuccessfully(){
         hideProgressDialog()
@@ -123,6 +153,8 @@ class CreateKelompokActivity : BaseActivity() {
 
         finish()
     }
+
+
 
     private fun uploadKelompokImage(){
         showProgressDialog(resources.getString(R.string.mohon_tunggu))

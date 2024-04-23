@@ -184,6 +184,7 @@ class FirestoreClass {
                                 is KelompokDetailsActivity -> {
                                     activity.setUserDataInUI(siswa)
                                 }
+
                             }
                         }
                     } else if (role == "guru") {
@@ -197,6 +198,9 @@ class FirestoreClass {
                                 }
                                 is GuruMainActivity -> {
                                     activity.updateNavigationGuruDetails(guru, readKelompokList)
+                                }
+                                is GuruCourseActivity -> {
+                                    activity.getGuruName(guru)
                                 }
                             }
                         }
@@ -414,6 +418,195 @@ class FirestoreClass {
                 Toast.makeText(activity,"ERROR while update a profile", Toast.LENGTH_LONG).show()
             }
     }
+
+    fun createCourse(activity : GuruCourseActivity, course: Course){
+        mFireStore.collection(Constants.COURSE)
+            .document()
+            .set(course, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "course berhasil dibuat")
+                Toast.makeText(activity,"Berhasil membuat course", Toast.LENGTH_LONG).show()
+                activity.courseCreatedSuccessfully()
+
+            }.addOnFailureListener {
+                    e->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error membuat course",e)
+            }
+    }
+
+    fun updateCourse(activity: CreateKelompokActivity, course: Course) {
+        mFireStore.collection(Constants.COURSE)
+            .document(course.documentId)
+            .set(course, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("FirestoreClass", "Corse updated successfully")
+                Toast.makeText(activity,"Berhasil mengupdate course", Toast.LENGTH_LONG).show()
+                activity.kelompokCreatedSuccessfully()
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreClass", "Error updating course: ${exception.message}")
+            }
+    }
+
+    fun getCourseList(activity: GuruCourseActivity){
+        mFireStore.collection(Constants.COURSE)
+//            .whereArrayContains(Constants.GURU_MAPEL, guruName)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                val courseList : ArrayList<Course> = ArrayList()
+                for(i in document.documents){
+                    val course = i.toObject(Course::class.java)!!
+                    course.documentId = i.id
+                    courseList.add(course)
+                }
+
+                activity.populateCourseListToUI(courseList)
+            }.addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+    fun getCourseDetails(activity: Activity, documentId: String) {
+        mFireStore.collection(Constants.COURSE)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                val course = document.toObject(Course::class.java)
+                course?.documentId = document.id
+
+                when (activity) {
+                    is GuruTopicActivity -> {
+                        activity.CourseDetails(course!!)
+                    }
+
+                }
+            }
+            .addOnFailureListener { e ->
+
+                when (activity) {
+                    is GuruTopicActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+                Log.e(activity.javaClass.simpleName, "Error fetching kelompok details: ${e.message}")
+            }
+    }
+
+//    fun getCourseListForKelompokDelete(activity: KelompokDetailsActivity, kelompokId: String) {
+//        mFireStore.collection(Constants.COURSE)
+//            .whereArrayContains("kelompok", kelompokId)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                if (!documents.isEmpty) {
+//                    val kelasId = documents.documents[0].id
+//                    deleteKelompokFromClasses(activity, kelasId, kelompokId)
+//                } else {
+//                    activity.hideProgressDialog()
+//                    Toast.makeText(activity, "Kelas tidak ditemukan", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                activity.hideProgressDialog()
+//                Log.e(activity.javaClass.simpleName, "Error fetching classes list: ${e.message}")
+//                Toast.makeText(activity, "Gagal mengambil data kelas", Toast.LENGTH_SHORT).show()
+//            }
+//    }
+//
+//    fun deleteKelompokFromCourse(
+//        activity: KelompokDetailsActivity,
+//        courseId: String,
+//        kelompokId: String
+//    ) {
+//        mFireStore.collection(Constants.COURSE)
+//            .document(courseId)
+//            .get()
+//            .addOnSuccessListener { documentSnapshot ->
+//                val course = documentSnapshot.toObject(Course::class.java)
+//                if (course != null) {
+//                    val updatedKelompokList = course.kelompok.filter { it.documentId != kelompokId }
+//                    course.kelompok = ArrayList(updatedKelompokList)
+//
+//                    mFireStore.collection(Constants.COURSE)
+//                        .document(courseId)
+//                        .set(course)
+//                        .addOnSuccessListener {
+//                            Log.e(activity.javaClass.simpleName, "Kelompok berhasil dihapus dari kelas")
+//                            Toast.makeText(
+//                                activity,
+//                                "Berhasil menghapus kelompok dari kelas",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                            // Update UI atau lakukan tindakan lain setelah penghapusan kelompok dari kelas
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Log.e(activity.javaClass.simpleName, "Error menghapus kelompok dari kelas", e)
+//                            Toast.makeText(
+//                                activity,
+//                                "Gagal menghapus kelompok dari kelas",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        }
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e(activity.javaClass.simpleName, "Error mendapatkan data kelas", e)
+//                Toast.makeText(activity, "Gagal mendapatkan data kelas", Toast.LENGTH_LONG).show()
+//            }
+//    }
+
+    fun getTopicList(activity: GuruTopicActivity){
+        mFireStore.collection(Constants.TOPIC)
+//            .whereArrayContains(Constants.GURU_MAPEL, guruName)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                val topicList : ArrayList<Topic> = ArrayList()
+                for(i in document.documents){
+                    val topic = i.toObject(Topic::class.java)!!
+                    topic.documentId = i.id
+                    topicList.add(topic)
+                }
+
+                activity.populateTopicListToUI(topicList)
+            }.addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+    fun addUpdateTopicList(activity: Activity, course: Course){
+        val topicListHashMap = HashMap<String, Any>()
+        topicListHashMap[Constants.TOPIC_LIST] = course.topicList
+
+        mFireStore.collection(Constants.COURSE)
+            .document(course.documentId.toString())
+            .update(topicListHashMap)
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "TaskList updated successfully")
+                when (activity) {
+                    is GuruTopicActivity -> {
+                        activity.topicCreatedSuccessfully()
+                    }
+
+                }
+            }
+            .addOnFailureListener {
+                    exception ->
+                when(activity) {
+                    is GuruTopicActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+
+                Log.e(activity.javaClass.simpleName,"Error while updating TaskList")
+            }
+    }
+
 
     fun getAssignedAnggotaListDetails(activity: Activity, assignedTo: ArrayList<String>){
         mFireStore.collection(Constants.SISWA)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
+import com.example.kelomproapp.models.Topic
 
 object Constants {
 
@@ -12,6 +13,9 @@ object Constants {
     const val GURU: String = "guru"
     const val KELOMPOK: String = "kelompok"
     const val MATERI: String = "materi"
+    const val COURSE: String = "course"
+    const val TOPIC: String = "topic"
+
 
     const val IMAGE : String = "image"
     const val NAME : String = "name"
@@ -20,6 +24,7 @@ object Constants {
     const val MOBILE : String = "mobile"
     const val CLASSES : String = "classes"
     const val ASSIGNED_TO : String = "assignedTo"
+    const val GURU_MAPEL: String = "guru"
 
     const val KELOMPOK_IMAGE : String = "image"
     const val KELOMPOK_NAME : String = "name"
@@ -34,6 +39,7 @@ object Constants {
     const val TASK_ID : String = "taskDocumentId"
     const val MATERI_ID : String = "materiId"
     const val TASK_LIST : String = "taskList"
+    const val TOPIC_LIST : String = "topicList"
     const val KELOMPOK_DETAIL : String = "kelompok_detail"
     const val ID: String = "id"
     const val EMAIL: String = "email"
