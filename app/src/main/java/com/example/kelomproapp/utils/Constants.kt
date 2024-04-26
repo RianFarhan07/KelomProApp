@@ -31,6 +31,12 @@ object Constants {
     const val KELOMPOK_CLASSES : String = "classes"
     const val KELOMPOK_COURSES : String = "course"
 
+    const val TO_COURSE : String = "toCourse"
+
+    const val TOPIC_LIST_ITEM_POSITION: String = "topic_list_item_position"
+    const val KELOMPOK_LIST_ITEM_POSITION: String = "kelompok_list_item_position"
+    const val TASK_COURSE_LIST_ITEM_POSITION: String = "task_list_item_position"
+
     const val READ_STORAGE_PERMISSION_CODE = 1
     const val PICK_IMAGE_REQUEST_CODE = 2
     const val PICK_FILE_REQUEST_CODE = 3
@@ -41,6 +47,7 @@ object Constants {
     const val TASK_LIST : String = "taskList"
     const val TOPIC_LIST : String = "topicList"
     const val KELOMPOK_DETAIL : String = "kelompok_detail"
+    const val COURSE_DETAIL : String = "course_detail"
     const val ID: String = "id"
     const val EMAIL: String = "email"
     const val LIST_ANGGOTA_KELOMPOK = "list_anggota_kelompok"

@@ -25,8 +25,10 @@ class CreateKelompokActivity : BaseActivity() {
 
     private var binding : ActivityCreateKelompokBinding? = null
     private lateinit var mUsername : String
+    private var mToCourse : Boolean = false
     private var mSelectedImageFileUri : Uri? = null
     private var mKelompokImageURL : String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCreateKelompokBinding.inflate(layoutInflater)
@@ -38,6 +40,9 @@ class CreateKelompokActivity : BaseActivity() {
 
         if (intent.hasExtra(Constants.NAME)){
             mUsername = intent.getStringExtra(Constants.NAME).toString()
+        }
+        if (intent.hasExtra(Constants.TO_COURSE)){
+            mToCourse = intent.getBooleanExtra(Constants.TO_COURSE,false)
         }
 
         binding?.ivKelompokImage?.setOnClickListener {

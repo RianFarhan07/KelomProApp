@@ -71,6 +71,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         fabCreateKelompok.setOnClickListener {
             val intent = Intent(this, CreateKelompokActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
+            intent.putExtra(Constants.TO_COURSE, false)
             startActivityForResult(intent, CREATE_KELOMPOK_REQUEST_CODE)
         }
     }

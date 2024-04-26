@@ -92,10 +92,7 @@ class GuruTopicActivity : BaseActivity() {
 
             adapter.setOnClickListener(object: TopicItemsAdapter.OnClickListener{
                 override fun onClick(position: Int, model: Topic) {
-                    val intent = Intent(this@GuruTopicActivity, MainActivity::class.java)
-                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
-                    Log.e("TOPIC", "ID : ${model.documentId}")
-                    startActivity(intent)
+                   topicDetails(position)
                 }
             })
         } else {
@@ -122,5 +119,13 @@ class GuruTopicActivity : BaseActivity() {
 //        hideProgressDialog()
 //        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         populateTopicListToUI(mCourseDetail.topicList)
+    }
+
+    fun topicDetails(topicListPosition: Int){
+        val intent = Intent(this, KelompokCourseActivity::class.java)
+        intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,topicListPosition)
+        intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
+        intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
+        startActivity(intent)
     }
 }

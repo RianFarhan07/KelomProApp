@@ -482,6 +482,9 @@ class FirestoreClass {
                     is GuruTopicActivity -> {
                         activity.CourseDetails(course!!)
                     }
+                    is KelompokCourseActivity -> {
+                        activity.courseDetails(course!!)
+                    }
 
                 }
             }
@@ -489,6 +492,9 @@ class FirestoreClass {
 
                 when (activity) {
                     is GuruTopicActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is KelompokCourseActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -576,6 +582,32 @@ class FirestoreClass {
             }.addOnFailureListener {
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+            }
+    }
+
+    fun getTopicDetails(activity: Activity, documentId: String) {
+        mFireStore.collection(Constants.TOPIC)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                val topic = document.toObject(Topic::class.java)
+                topic?.documentId = document.id
+
+                when (activity) {
+                    is KelompokCourseActivity -> {
+                        activity.TopicDetails(topic!!)
+                    }
+
+                }
+            }
+            .addOnFailureListener { e ->
+
+                when (activity) {
+                    is GuruTopicActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+                Log.e(activity.javaClass.simpleName, "Error fetching kelompok details: ${e.message}")
             }
     }
 
