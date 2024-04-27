@@ -16,6 +16,7 @@ import com.example.kelomproapp.databinding.ActivityCreateKelompokBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.models.Topic
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -28,6 +29,8 @@ class CreateKelompokActivity : BaseActivity() {
     private var mToCourse : Boolean = false
     private var mSelectedImageFileUri : Uri? = null
     private var mKelompokImageURL : String = ""
+    private var mTopicListPosition = -1
+    private lateinit var mCourseDetail : Course
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +43,20 @@ class CreateKelompokActivity : BaseActivity() {
 
         if (intent.hasExtra(Constants.NAME)){
             mUsername = intent.getStringExtra(Constants.NAME).toString()
+            Log.e("NAMA GURU ",mUsername)
         }
         if (intent.hasExtra(Constants.TO_COURSE)){
             mToCourse = intent.getBooleanExtra(Constants.TO_COURSE,false)
+            Log.e("TOCOURSE ", mToCourse.toString())
         }
+        if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)){
+            mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION,-1)
+            Log.e("mtopiclistposition ", mTopicListPosition.toString())
+        }
+        if (intent.hasExtra(Constants.COURSE_DETAIL)){
+            mCourseDetail = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
+        }
+
 
         binding?.ivKelompokImage?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -66,7 +79,11 @@ class CreateKelompokActivity : BaseActivity() {
                 uploadKelompokImage()
             }else{
                 showProgressDialog(resources.getString(R.string.mohon_tunggu))
-                createKelompok()
+                if (mToCourse){
+                    createKelompokInTopicList()
+                }else{
+                    createKelompok()
+                }
             }
         }
     }
@@ -194,6 +211,29 @@ class CreateKelompokActivity : BaseActivity() {
             hideProgressDialog()
         }
     }
+
+    fun CourseDetails(course: Course){
+        mCourseDetail = course
+    }
+
+    fun createKelompokInTopicList(){
+        val assignedUserArrayList: ArrayList<String> = ArrayList()
+        assignedUserArrayList.add(FirestoreClass().getCurrentUserID())
+
+        val kelompok = Kelompok(
+            binding?.etKelompokName?.text.toString(),
+            mKelompokImageURL,
+            mUsername,
+            assignedUserArrayList,
+            binding?.etCourse?.text.toString(),
+            binding?.etClasses?.text.toString(),
+            binding?.etTopic?.text.toString()
+        )
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        mCourseDetail.topicList[mTopicListPosition].kelompok.add(0,kelompok)
+        FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+    }
+
 
 
 

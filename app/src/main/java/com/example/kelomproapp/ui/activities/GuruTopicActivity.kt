@@ -13,6 +13,7 @@ import com.example.kelomproapp.adapter.TopicItemsAdapter
 import com.example.kelomproapp.databinding.ActivityGuruTopicBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
+import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Topic
 import com.example.kelomproapp.utils.Constants
 
@@ -20,6 +21,7 @@ class GuruTopicActivity : BaseActivity() {
     private var binding : ActivityGuruTopicBinding? = null
     private lateinit var mCourseDetail : Course
     private lateinit var mCourseDocumentId : String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityGuruTopicBinding.inflate(layoutInflater)
@@ -30,14 +32,15 @@ class GuruTopicActivity : BaseActivity() {
             mCourseDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
             Log.e("document","document $mCourseDocumentId")
 
-            FirestoreClass().getCourseDetails(this@GuruTopicActivity, mCourseDocumentId)
+
         } else {
             Log.e("document", "No document ID provided.")
             // Handle the case when no document ID is provided, such as showing an error message or finishing the activity.
             finish()
         }
 
-        setupActionBar()
+        FirestoreClass().getCourseDetails(this@GuruTopicActivity, mCourseDocumentId)
+
 
         binding!!.tvAddTopic.setOnClickListener {
             binding!!.tvAddTopic.visibility = View.GONE
@@ -64,14 +67,14 @@ class GuruTopicActivity : BaseActivity() {
     }
 
     private fun setupActionBar(){
-        setSupportActionBar(binding?.toolbarTopicListActivity)
+        setSupportActionBar(binding?.toolbarTopikListActivity)
         val toolbar = supportActionBar
         if (toolbar != null){
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
-            supportActionBar?.title = "Daftar Topic"
+            supportActionBar?.title = "Daftar Topic Matkul ${mCourseDetail.name}"
         }
-        binding?.toolbarTopicListActivity?.setNavigationOnClickListener {
+        binding?.toolbarTopikListActivity?.setNavigationOnClickListener {
             onBackPressed()
         }
     }
@@ -101,6 +104,8 @@ class GuruTopicActivity : BaseActivity() {
         }
     }
 
+
+
     fun createTopicList(topicListName: String){
         val topic = Topic(name = topicListName)
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
@@ -128,4 +133,6 @@ class GuruTopicActivity : BaseActivity() {
         intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
         startActivity(intent)
     }
+
+
 }

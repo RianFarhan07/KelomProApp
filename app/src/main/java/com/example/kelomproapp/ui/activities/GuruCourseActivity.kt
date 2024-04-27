@@ -46,8 +46,8 @@ class GuruCourseActivity : BaseActivity() {
         }
 
         binding!!.ibDoneListName.setOnClickListener{
-            val listName = binding!!.etClassListName.text.toString()
-            val listClasses = binding!!.etCourseListName.text.toString()
+            val listName = binding!!.etCourseListName.text.toString()
+            val listClasses = binding!!.etClassListName.text.toString()
 
             if (listName.isNotEmpty()){
                 createCourseList(listName,listClasses,mGuruName!!)

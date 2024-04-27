@@ -185,6 +185,7 @@ class FirestoreClass {
                                     activity.setUserDataInUI(siswa)
                                 }
 
+
                             }
                         }
                     } else if (role == "guru") {
@@ -200,6 +201,9 @@ class FirestoreClass {
                                     activity.updateNavigationGuruDetails(guru, readKelompokList)
                                 }
                                 is GuruCourseActivity -> {
+                                    activity.getGuruName(guru)
+                                }
+                                is KelompokCourseActivity -> {
                                     activity.getGuruName(guru)
                                 }
                             }
@@ -483,7 +487,10 @@ class FirestoreClass {
                         activity.CourseDetails(course!!)
                     }
                     is KelompokCourseActivity -> {
-                        activity.courseDetails(course!!)
+                        activity.CourseDetails(course!!)
+                    }
+                    is CreateKelompokActivity -> {
+                        activity.CourseDetails(course!!)
                     }
 
                 }
@@ -495,6 +502,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is KelompokCourseActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CreateKelompokActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -612,6 +622,40 @@ class FirestoreClass {
     }
 
     fun addUpdateTopicList(activity: Activity, course: Course){
+        val topicListHashMap = HashMap<String, Any>()
+        topicListHashMap[Constants.TOPIC_LIST] = course.topicList
+
+        mFireStore.collection(Constants.COURSE)
+            .document(course.documentId.toString())
+            .update(topicListHashMap)
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "TaskList updated successfully")
+                when (activity) {
+                    is GuruTopicActivity -> {
+                        activity.topicCreatedSuccessfully()
+                    }
+                    is CreateKelompokActivity -> {
+                        activity.kelompokCreatedSuccessfully()
+                    }
+
+                }
+            }
+            .addOnFailureListener {
+                    exception ->
+                when(activity) {
+                    is GuruTopicActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CreateKelompokActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
+
+                Log.e(activity.javaClass.simpleName,"Error while updating TaskList")
+            }
+    }
+
+    fun addUpdateKelompokList(activity: Activity, course: Course){
         val topicListHashMap = HashMap<String, Any>()
         topicListHashMap[Constants.TOPIC_LIST] = course.topicList
 

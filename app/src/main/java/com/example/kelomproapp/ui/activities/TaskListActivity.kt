@@ -26,6 +26,7 @@
         private lateinit var mKelompokDocumentId : String
         lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
 
+
         companion object {
             const val TASK_DETAILS_REQUEST_CODE : Int = 15
             const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 14
@@ -35,6 +36,7 @@
             binding = ActivityTaskListBinding.inflate(layoutInflater)
             super.onCreate(savedInstanceState)
             setContentView(binding?.root)
+
 
             if (intent.hasExtra(Constants.DOCUMENT_ID)){
                 mKelompokDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
@@ -119,7 +121,6 @@
 
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
             FirestoreClass().getAssignedAnggotaListDetails(this,mKelompokDetails.assignedTo)
-
 
         }
 
