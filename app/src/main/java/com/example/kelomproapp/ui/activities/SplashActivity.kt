@@ -2,7 +2,6 @@ package com.example.kelomproapp.ui.activities
 
 import android.content.Intent
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
@@ -61,7 +60,7 @@ class SplashActivity : BaseActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
             }
             "guru" -> {
-                startActivity(Intent(this, GuruCourseActivity::class.java))
+                startActivity(Intent(this, CourseActivity::class.java))
             }
         }
         finish()

@@ -1,25 +1,21 @@
 package com.example.kelomproapp.ui.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
-import com.example.kelomproapp.adapter.KelompokItemsAdapter
-import com.example.kelomproapp.adapter.TopicItemsAdapter
-import com.example.kelomproapp.databinding.ActivityKelompokCourseBinding
+import com.example.kelomproapp.adapter.KelompokInCourseAdapter
+import com.example.kelomproapp.databinding.ActivityCourseKelompokBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.*
 import com.example.kelomproapp.utils.Constants
-import kotlinx.android.synthetic.main.activity_kelompok_course.*
 
-class KelompokCourseActivity : BaseActivity() {
-    private var binding : ActivityKelompokCourseBinding? = null
+class CourseKelompokActivity : BaseActivity() {
+    private var binding : ActivityCourseKelompokBinding? = null
     private var mGuruName : String? = null
     private var mSiswaName : String? = null
     private lateinit var mCourseDetail: Course
@@ -30,7 +26,7 @@ class KelompokCourseActivity : BaseActivity() {
     private var mKelompokListPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityKelompokCourseBinding.inflate(layoutInflater)
+        binding = ActivityCourseKelompokBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
@@ -67,9 +63,11 @@ class KelompokCourseActivity : BaseActivity() {
     private fun getIntentData() {
         if (intent.hasExtra(Constants.COURSE_DETAIL)) {
             mCourseDetail = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
+
         }
         if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)) {
             mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION, -1)
+            Log.e("TOPIC_ITEM_POSITION", mTopicListPosition.toString())
         }
         if (intent.hasExtra(Constants.DOCUMENT_ID)) {
             mCourseDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
@@ -93,15 +91,12 @@ class KelompokCourseActivity : BaseActivity() {
             rvKelompokList.layoutManager = LinearLayoutManager(this)
             rvKelompokList.setHasFixedSize(true)
 
-            val adapter = KelompokItemsAdapter(this,kelompokList)
+            val adapter = KelompokInCourseAdapter(this,kelompokList)
             rvKelompokList.adapter = adapter
 
-            adapter.setOnClickListener(object: KelompokItemsAdapter.OnClickListener{
-                override fun onClick(position: Int, model: Kelompok) {
-                    val intent = Intent(this@KelompokCourseActivity, TaskListActivity::class.java)
-                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
-                    Log.e("KELOMPOK","ID : ${model.documentId}")
-                    startActivityForResult(intent, MainActivity.UPDATE_KELOMPOK_REQUEST_CODE)
+            adapter.setOnClickListener(object: KelompokInCourseAdapter.OnClickListener{
+                override fun onClick(position: Int) {
+                    KelompokDetails(position)
                 }
             })
         }else{
@@ -125,14 +120,14 @@ class KelompokCourseActivity : BaseActivity() {
 //        populateKelompokListToUI(mCourseDetail.topicList[.)
     }
 
-//    fun KelompokDetails(topicListPosition: Int, kelompokPosition: Int){
-//        val intent = Intent(this, TaskCourseActivity::class.java)
-//        intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,topicListPosition)
-//        intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,kelompokPosition)
-//        intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
-//        intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
-//        startActivity(intent)
-//    }
+    fun KelompokDetails(kelompokPosition: Int){
+        val intent = Intent(this, CourseTaskActivity::class.java)
+        intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
+        intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,kelompokPosition)
+        intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
+        intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
+        startActivity(intent)
+    }
 
 
 

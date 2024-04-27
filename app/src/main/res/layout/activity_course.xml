@@ -9,31 +9,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".ui.activities.GuruTopicActivity">
+        tools:context=".ui.activities.CourseActivity">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_course_list_activity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppBarOverlay">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/app_gradient_color_background">
 
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_topik_list_activity"
+            <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@drawable/app_gradient_color_background"
-                app:popupTheme="@style/AppBarOverlay" />
-        </com.google.android.material.appbar.AppBarLayout>
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingStart="25dp"
+                android:paddingEnd="0dp"
+                android:text="DAFTAR MATA PELAJARAN"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_topic_list"
+            android:id="@+id/rv_course_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cv_add_topic_list_name"
+            android:id="@+id/cv_add_course_list_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -56,16 +61,31 @@
                     android:padding="10dp"
                     android:src="@drawable/ic_cancel" />
 
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
                     <EditText
-                        android:id="@+id/et_topic_list_name"
-                        android:layout_width="0dp"
+                        android:id="@+id/et_course_list_name"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:autofillHints="Nama Topic"
-                        android:hint="Nama Topic"
+                        android:autofillHints="Nama Mata Pelajaran"
+                        android:hint="Nama Mata Pelajaran"
+                        android:imeOptions="actionDone"
+                        android:inputType="text" />
+                    <EditText
+                        android:id="@+id/et_class_list_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="Kelas"
+                        android:hint="Kelas"
                         android:imeOptions="actionDone"
                         android:inputType="text" />
 
+
+                </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/ib_done_list_name"
@@ -78,7 +98,7 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/tv_add_topic"
+            android:id="@+id/tv_add_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -86,19 +106,19 @@
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:padding="12dp"
-            android:text="Tambah Topic"
+            android:text="Tambah Mata Pelajaran"
             android:textColor="@color/blue_gpt"
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/tv_no_topic_available"
+            android:id="@+id/tv_no_course_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="250dp"
             android:layout_gravity="center"
             android:textSize="24dp"
-            android:text="Belum ada Topic!!!!"
+            android:text="Belum ada Mata Pelajaran!!!!"
             android:textColor="@color/dark_grey" />
 
     </LinearLayout>

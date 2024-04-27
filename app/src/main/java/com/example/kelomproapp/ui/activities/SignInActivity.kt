@@ -106,7 +106,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         hideProgressDialog()
 
         if (user is Guru) {
-            val intent = Intent(this@SignInActivity, GuruCourseActivity::class.java)
+            val intent = Intent(this@SignInActivity, CourseActivity::class.java)
             startActivity(intent)
         } else if (user is Siswa) {
             val intent = Intent(this@SignInActivity, MainActivity::class.java)

@@ -30,7 +30,7 @@
         android:theme="@style/Theme.KelomProApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.KelompokCourseActivity"
+            android:name=".ui.activities.CourseTaskActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -39,7 +39,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.activities.GuruTopicActivity"
+            android:name=".ui.activities.CourseKelompokActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -48,7 +48,16 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.activities.GuruCourseActivity"
+            android:name=".ui.activities.CourseTopicActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.activities.CourseActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">

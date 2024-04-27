@@ -200,10 +200,10 @@ class FirestoreClass {
                                 is GuruMainActivity -> {
                                     activity.updateNavigationGuruDetails(guru, readKelompokList)
                                 }
-                                is GuruCourseActivity -> {
+                                is CourseActivity -> {
                                     activity.getGuruName(guru)
                                 }
-                                is KelompokCourseActivity -> {
+                                is CourseKelompokActivity -> {
                                     activity.getGuruName(guru)
                                 }
                             }
@@ -423,7 +423,7 @@ class FirestoreClass {
             }
     }
 
-    fun createCourse(activity : GuruCourseActivity, course: Course){
+    fun createCourse(activity : CourseActivity, course: Course){
         mFireStore.collection(Constants.COURSE)
             .document()
             .set(course, SetOptions.merge())
@@ -453,7 +453,7 @@ class FirestoreClass {
             }
     }
 
-    fun getCourseList(activity: GuruCourseActivity){
+    fun getCourseList(activity: CourseActivity){
         mFireStore.collection(Constants.COURSE)
 //            .whereArrayContains(Constants.GURU_MAPEL, guruName)
             .get()
@@ -483,10 +483,10 @@ class FirestoreClass {
                 course?.documentId = document.id
 
                 when (activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.CourseDetails(course!!)
                     }
-                    is KelompokCourseActivity -> {
+                    is CourseKelompokActivity -> {
                         activity.CourseDetails(course!!)
                     }
                     is CreateKelompokActivity -> {
@@ -498,10 +498,10 @@ class FirestoreClass {
             .addOnFailureListener { e ->
 
                 when (activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.hideProgressDialog()
                     }
-                    is KelompokCourseActivity -> {
+                    is CourseKelompokActivity -> {
                         activity.hideProgressDialog()
                     }
                     is CreateKelompokActivity -> {
@@ -574,7 +574,7 @@ class FirestoreClass {
 //            }
 //    }
 
-    fun getTopicList(activity: GuruTopicActivity){
+    fun getTopicList(activity: CourseTopicActivity){
         mFireStore.collection(Constants.TOPIC)
 //            .whereArrayContains(Constants.GURU_MAPEL, guruName)
             .get()
@@ -604,7 +604,7 @@ class FirestoreClass {
                 topic?.documentId = document.id
 
                 when (activity) {
-                    is KelompokCourseActivity -> {
+                    is CourseKelompokActivity -> {
                         activity.TopicDetails(topic!!)
                     }
 
@@ -613,7 +613,7 @@ class FirestoreClass {
             .addOnFailureListener { e ->
 
                 when (activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -631,7 +631,7 @@ class FirestoreClass {
             .addOnSuccessListener {
                 Log.e(activity.javaClass.simpleName, "TaskList updated successfully")
                 when (activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.topicCreatedSuccessfully()
                     }
                     is CreateKelompokActivity -> {
@@ -643,7 +643,7 @@ class FirestoreClass {
             .addOnFailureListener {
                     exception ->
                 when(activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.hideProgressDialog()
                     }
                     is CreateKelompokActivity -> {
@@ -665,7 +665,7 @@ class FirestoreClass {
             .addOnSuccessListener {
                 Log.e(activity.javaClass.simpleName, "TaskList updated successfully")
                 when (activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.topicCreatedSuccessfully()
                     }
 
@@ -674,7 +674,7 @@ class FirestoreClass {
             .addOnFailureListener {
                     exception ->
                 when(activity) {
-                    is GuruTopicActivity -> {
+                    is CourseTopicActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

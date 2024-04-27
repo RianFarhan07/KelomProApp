@@ -10,21 +10,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.TopicItemsAdapter
-import com.example.kelomproapp.databinding.ActivityGuruTopicBinding
+import com.example.kelomproapp.databinding.ActivityCourseTopicBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
-import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.models.Topic
 import com.example.kelomproapp.utils.Constants
 
-class GuruTopicActivity : BaseActivity() {
-    private var binding : ActivityGuruTopicBinding? = null
+class CourseTopicActivity : BaseActivity() {
+    private var binding : ActivityCourseTopicBinding? = null
     private lateinit var mCourseDetail : Course
     private lateinit var mCourseDocumentId : String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityGuruTopicBinding.inflate(layoutInflater)
+        binding = ActivityCourseTopicBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
@@ -39,7 +38,7 @@ class GuruTopicActivity : BaseActivity() {
             finish()
         }
 
-        FirestoreClass().getCourseDetails(this@GuruTopicActivity, mCourseDocumentId)
+        FirestoreClass().getCourseDetails(this@CourseTopicActivity, mCourseDocumentId)
 
 
         binding!!.tvAddTopic.setOnClickListener {
@@ -115,7 +114,7 @@ class GuruTopicActivity : BaseActivity() {
 
     fun topicCreatedSuccessfully(){
         hideProgressDialog()
-        FirestoreClass().getCourseDetails(this@GuruTopicActivity, mCourseDetail.documentId.toString())
+        FirestoreClass().getCourseDetails(this@CourseTopicActivity, mCourseDetail.documentId.toString())
     }
 
     fun CourseDetails(course: Course){
@@ -127,7 +126,7 @@ class GuruTopicActivity : BaseActivity() {
     }
 
     fun topicDetails(topicListPosition: Int){
-        val intent = Intent(this, KelompokCourseActivity::class.java)
+        val intent = Intent(this, CourseKelompokActivity::class.java)
         intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,topicListPosition)
         intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
         intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)

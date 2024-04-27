@@ -1,33 +1,27 @@
 package com.example.kelomproapp.ui.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.CourseItemsAdapter
-import com.example.kelomproapp.adapter.TaskItemsAdapter
-import com.example.kelomproapp.databinding.ActivityGuruCourseBinding
-import com.example.kelomproapp.databinding.ActivityIntroBinding
+import com.example.kelomproapp.databinding.ActivityCourseBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Guru
-import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Task
 import com.example.kelomproapp.utils.Constants
 
-class GuruCourseActivity : BaseActivity() {
-    private var binding : ActivityGuruCourseBinding? = null
+class CourseActivity : BaseActivity() {
+    private var binding : ActivityCourseBinding? = null
     private var mGuruName : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityGuruCourseBinding.inflate(layoutInflater)
+        binding = ActivityCourseBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
 
@@ -102,7 +96,7 @@ class GuruCourseActivity : BaseActivity() {
 
             adapter.setOnClickListener(object: CourseItemsAdapter.OnClickListener{
                 override fun onClick(position: Int,model: Course) {
-                    val intent = Intent(this@GuruCourseActivity, GuruTopicActivity::class.java)
+                    val intent = Intent(this@CourseActivity, CourseTopicActivity::class.java)
                     intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
                     Log.e("KELOMPOK","ID : ${model.documentId}")
                     startActivity(intent)
