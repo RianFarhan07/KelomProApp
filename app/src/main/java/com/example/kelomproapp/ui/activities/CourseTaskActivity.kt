@@ -1,5 +1,6 @@
 package com.example.kelomproapp.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityCourseTaskBinding
+import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
@@ -24,6 +26,11 @@ class CourseTaskActivity : AppCompatActivity() {
     private var mTopicListPosition = -1
     private var mKelompokListPosition = -1
     lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
+
+    companion object {
+        const val UPDATE_KELOMPOK_REQUEST_CODE : Int = 20
+        const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 21
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCourseTaskBinding.inflate(layoutInflater)
@@ -52,6 +59,16 @@ class CourseTaskActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE){
+            FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+        }
+        else{
+            Log.e("cancelled","cancelled")
+        }
+    }
+
     private fun setupActionBar(){
         setSupportActionBar(binding?.toolbarTaskCourseActivity)
         val toolbar = supportActionBar
@@ -74,9 +91,13 @@ class CourseTaskActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_edit_kelompok -> {
-                val intent = Intent(this, KelompokDetailsActivity::class.java)
+                val intent = Intent(this, CourseKelompokDetailActivity::class.java)
                 intent.putExtra(Constants.DOCUMENT_ID,mCourseDocumentId)
-                startActivity(intent)
+                intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
+                intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,mKelompokListPosition)
+                intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
+                intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
+                startActivityForResult(intent,UPDATE_KELOMPOK_REQUEST_CODE)
 
                 return true
             }

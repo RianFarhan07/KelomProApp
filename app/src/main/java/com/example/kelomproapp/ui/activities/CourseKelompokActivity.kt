@@ -1,5 +1,6 @@
 package com.example.kelomproapp.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -24,6 +25,11 @@ class CourseKelompokActivity : BaseActivity() {
     private lateinit var mCourseDocumentId : String
     private var mTopicListPosition = -1
     private var mKelompokListPosition = -1
+
+    companion object {
+        const val UPDATE_KELOMPOK_REQUEST_CODE : Int = 20
+        const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 21
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCourseKelompokBinding.inflate(layoutInflater)
@@ -72,6 +78,16 @@ class CourseKelompokActivity : BaseActivity() {
         if (intent.hasExtra(Constants.DOCUMENT_ID)) {
             mCourseDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
             Log.e("document", "document $mCourseDocumentId")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE){
+            FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+        }
+        else{
+            Log.e("cancelled","cancelled")
         }
     }
 
@@ -125,8 +141,9 @@ class CourseKelompokActivity : BaseActivity() {
         intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
         intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,kelompokPosition)
         intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
+        intent.putExtra(Constants.NAME,mGuruName)
         intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
-        startActivity(intent)
+        startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)
     }
 
 

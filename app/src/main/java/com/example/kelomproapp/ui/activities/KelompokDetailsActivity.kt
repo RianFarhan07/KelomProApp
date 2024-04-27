@@ -25,7 +25,6 @@ import java.io.IOException
 class KelompokDetailsActivity : BaseActivity() {
 
     private var binding : ActivityKelompokDetailsBinding? = null
-    private lateinit var mSiswaDetails : Siswa
     private lateinit var mKelompokDetails : Kelompok
     private lateinit var mKelompokDocumentId : String
     private var mSelectedImageFileUri : Uri? = null

@@ -364,6 +364,7 @@ class FirestoreClass {
                     activity.kelompokDetails(kelompok!!)
                 }
 
+
             }
             .addOnFailureListener { e ->
 
@@ -371,6 +372,9 @@ class FirestoreClass {
                     activity.hideProgressDialog()
                 }
                 if (activity is TaskListActivity) {
+                    activity.hideProgressDialog()
+                }
+                if (activity is CourseKelompokDetailActivity){
                     activity.hideProgressDialog()
                 }
 
@@ -637,6 +641,9 @@ class FirestoreClass {
                     is CreateKelompokActivity -> {
                         activity.kelompokCreatedSuccessfully()
                     }
+                    is CourseKelompokDetailActivity -> {
+                        activity.addUpdateTopicListSuccess()
+                    }
 
                 }
             }
@@ -647,6 +654,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is CreateKelompokActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseKelompokDetailActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
