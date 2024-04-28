@@ -28,7 +28,7 @@ class CourseKelompokActivity : BaseActivity() {
 
     companion object {
         const val UPDATE_KELOMPOK_REQUEST_CODE : Int = 20
-        const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 21
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

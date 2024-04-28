@@ -39,6 +39,10 @@ class CourseKelompokDetailActivity : BaseActivity() {
     private var mKelompokListPosition = -1
     lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
 
+    companion object{
+        const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 21
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,11 +85,15 @@ class CourseKelompokDetailActivity : BaseActivity() {
                 mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name!!)
         }
 
-//        binding?.tvSelectMembers?.setOnClickListener {
-//            val intent = Intent(this,AnggotaActivity::class.java)
-//            intent.putExtra(Constants.KELOMPOK_DETAIL,mKelompokDetails)
-//            startActivityForResult(intent, KelompokDetailsActivity.ANGGOTA_REQUEST_CODE)
-//        }
+        binding?.tvSelectMembers?.setOnClickListener {
+            val intent = Intent(this,AnggotaActivity::class.java)
+            intent.putExtra(Constants.DOCUMENT_ID,mCourseDocumentId)
+            intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
+            intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,mKelompokListPosition)
+            intent.putExtra(Constants.COURSE_DETAIL,mCourseDetails)
+            intent.putExtra(Constants.TO_COURSE,true)
+            startActivityForResult(intent, KelompokDetailsActivity.ANGGOTA_REQUEST_CODE)
+        }
 
         binding?.btnUpdate?.setOnClickListener {
             if (mSelectedImageFileUri != null){
@@ -117,6 +125,16 @@ class CourseKelompokDetailActivity : BaseActivity() {
         }
         if (intent.hasExtra(Constants.NAME)){
             mGuruName = intent.getStringExtra(Constants.NAME)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == ANGGOTA_DETAILS_REQUEST_CODE){
+            FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+        }
+        else{
+            Log.e("cancelled","cancelled")
         }
     }
 

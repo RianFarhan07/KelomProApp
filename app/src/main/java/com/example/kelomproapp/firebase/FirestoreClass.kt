@@ -644,6 +644,9 @@ class FirestoreClass {
                     is CourseKelompokDetailActivity -> {
                         activity.addUpdateTopicListSuccess()
                     }
+//                    is AnggotaActivity -> {
+//                        activity
+//                }
 
                 }
             }

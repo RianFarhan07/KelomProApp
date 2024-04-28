@@ -86,7 +86,7 @@ class CourseTopicActivity : BaseActivity() {
             rvTopicList.visibility = View.VISIBLE
             tvNoTopicAvailable.visibility  = View.GONE
 
-            rvTopicList.layoutManager = GridLayoutManager(this,2)
+            rvTopicList.layoutManager = GridLayoutManager(this,3)
             rvTopicList.setHasFixedSize(true)
 
             val adapter = TopicItemsAdapter(this, topicList)

@@ -16,6 +16,7 @@ import com.example.kelomproapp.adapter.SiswaItemsAdapter
 import com.example.kelomproapp.databinding.ActivityAnggotaBinding
 import com.example.kelomproapp.databinding.DialogSearchAnggotaBinding
 import com.example.kelomproapp.firebase.FirestoreClass
+import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
@@ -33,7 +34,11 @@ import java.net.URL
 class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickListener  {
     private var binding : ActivityAnggotaBinding? = null
     private lateinit var mKelompokDetails : Kelompok
+    private lateinit var mCourseDetail : Course
     private lateinit var mAssignedAnggotaList : ArrayList<Siswa>
+    private var mToCourse : Boolean = false
+    private var mTopicListPosition = -1
+    private var mKelompokListPosition = -1
     private var anyChangesMade : Boolean = false
     private lateinit var adapter: SiswaItemsAdapter
 
@@ -47,9 +52,31 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
             mKelompokDetails = intent.getParcelableExtra<Kelompok>(Constants.KELOMPOK_DETAIL)!!
         }
 
+        if (intent.hasExtra(Constants.TO_COURSE)){
+            mToCourse = intent.getBooleanExtra(Constants.TO_COURSE,false)
+            Log.e("TOCOURSE ", mToCourse.toString())
+        }
+        if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)){
+            mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION,-1)
+            Log.e("mtopiclistposition ", mTopicListPosition.toString())
+        }
+        if (intent.hasExtra(Constants.KELOMPOK_LIST_ITEM_POSITION)){
+            mKelompokListPosition = intent.getIntExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,-1)
+        }
+        if (intent.hasExtra(Constants.COURSE_DETAIL)){
+            mCourseDetail = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
+        }
+
+
         setupActionBar()
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
-        FirestoreClass().getAssignedAnggotaListDetails(this,mKelompokDetails.assignedTo)
+        if (mToCourse){
+            FirestoreClass().getAssignedAnggotaListDetails(this,
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo)
+        }else{
+            FirestoreClass().getAssignedAnggotaListDetails(this,mKelompokDetails.assignedTo)
+        }
+
 
 
     }
@@ -101,10 +128,18 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         binding?.rvAnggotaList?.adapter = adapter
     }
 
-    fun anggotaDetails(siswa: Siswa){
-        mKelompokDetails.assignedTo.add(siswa.id)
-        FirestoreClass().assignedAnggotaToKelompok(this,mKelompokDetails,siswa)
+    fun anggotaDetails(siswa: Siswa) {
+        if (mToCourse) {
+            mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.add(siswa.id)
+            anggotaAssignedSuccess(siswa)
+            FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+        } else {
+            mKelompokDetails.assignedTo.add(siswa.id)
+            anggotaAssignedSuccess(siswa)
+            FirestoreClass().assignedAnggotaToKelompok(this, mKelompokDetails, siswa)
+        }
     }
+
 
     fun anggotaAssignedSuccess(siswa: Siswa){
         hideProgressDialog()
@@ -112,7 +147,13 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         setupAnggotaList(mAssignedAnggotaList)
         anyChangesMade = true
 
-        SendNotificationToUserAsyncTask(mKelompokDetails.name!!,siswa.fcmToken!!).execute()
+        if (mToCourse){
+            SendNotificationToUserAsyncTask(
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name!!,siswa.fcmToken!!).execute()
+        }else{
+            SendNotificationToUserAsyncTask(mKelompokDetails.name!!,siswa.fcmToken!!).execute()
+        }
+
     }
 
     private fun dialogSearchAnggota() {
@@ -147,11 +188,20 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         if (siswa.id == FirestoreClass().getCurrentUserID()) {
             Toast.makeText(this, "Anda tidak dapat menghapus diri sendiri dari kelompok", Toast.LENGTH_SHORT).show()
         } else {
-            mKelompokDetails.assignedTo.remove(siswa.id)
-            mAssignedAnggotaList.removeAt(position)
-            adapter.notifyDataSetChanged()
+            if(mToCourse){
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.remove(siswa.id)
+                mAssignedAnggotaList.removeAt(position)
+                adapter.notifyDataSetChanged()
 
-            FirestoreClass().unassignAnggotaFromKelompok(this, mKelompokDetails, siswa)
+                FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+            }else{
+                mKelompokDetails.assignedTo.remove(siswa.id)
+                mAssignedAnggotaList.removeAt(position)
+                adapter.notifyDataSetChanged()
+
+                FirestoreClass().unassignAnggotaFromKelompok(this, mKelompokDetails, siswa)
+            }
+
         }
     }
 

@@ -47,7 +47,7 @@
             android:id="@+id/textViewTopicName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:text="Nama Topic" />
