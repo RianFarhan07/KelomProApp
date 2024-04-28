@@ -652,7 +652,10 @@ class FirestoreClass {
                     }
                     is CourseTaskActivity -> {
                         activity.courseCreatedSuccessfully()
-                }
+                    }
+                    is CourseTaskDetailActivity -> {
+                        activity.addUpdateTopicListSuccess()
+                    }
 
                 }
             }
@@ -669,6 +672,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is CourseTaskActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseTaskDetailActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

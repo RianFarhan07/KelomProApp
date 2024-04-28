@@ -29,11 +29,13 @@ class CourseTaskActivity : BaseActivity() {
     private lateinit var mCourseDocumentId : String
     private var mTopicListPosition = -1
     private var mKelompokListPosition = -1
+    private var mTaskListPosition = -1
     lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
 
     companion object {
         const val UPDATE_KELOMPOK_REQUEST_CODE : Int = 20
         const val ANGGOTA_DETAILS_REQUEST_CODE : Int = 21
+        const val UPDATE_TASK_REQUEST_CODE : Int = 22
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +94,7 @@ class CourseTaskActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_TASK_REQUEST_CODE){
             FirestoreClass().getCourseDetails(this,mCourseDocumentId)
         }
         else{
@@ -160,11 +162,11 @@ class CourseTaskActivity : BaseActivity() {
             val adapter = TaskInCourseAdapter(this,taskList)
             rvTaskList.adapter = adapter
 
-//            adapter.setOnClickListener(object: TaskItemsAdapter.OnClickListener{
-//                override fun onClick(position: Int) {
-//                    taskDetails(position)
-//                }
-//            })
+            adapter.setOnClickListener(object: TaskInCourseAdapter.OnClickListener{
+                override fun onClick(position: Int) {
+                    taskDetails(position)
+                }
+            })
         }else{
             rvTaskList.visibility = View.GONE
             tvNoTaskAvailable.visibility  = View.VISIBLE
@@ -190,6 +192,17 @@ class CourseTaskActivity : BaseActivity() {
 
         populateTaskListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList)
 
+    }
+
+    fun taskDetails(taskPosition: Int){
+        val intent = Intent(this, CourseTaskDetailActivity::class.java)
+        intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
+        intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,mKelompokListPosition)
+        intent.putExtra(Constants.TASK_LIST_ITEM_POSITION,taskPosition)
+        intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
+        intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
+        intent.putExtra(Constants.LIST_ANGGOTA_KELOMPOK,mAssignedAnggotaDetailList)
+        startActivityForResult(intent,UPDATE_TASK_REQUEST_CODE)
     }
 
 

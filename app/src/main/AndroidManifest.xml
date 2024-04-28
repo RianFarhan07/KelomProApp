@@ -30,8 +30,10 @@
         android:theme="@style/Theme.KelomProApp"
         tools:targetApi="31">
         <activity
-            android:name=".AnggotaKelompokInCourseActivity"
-            android:exported="false">
+            android:name=".ui.activities.CourseTaskDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
