@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -50,7 +52,8 @@ class MateriActivity : BaseActivity() {
     fun getMateriItemList(){
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
-        FirestoreClass().getAllMateriList(this)
+        FirestoreClass().getClassMateriList(this)
+
     }
 
     fun populateMateriListToUI(materiList: ArrayList<Materi>){

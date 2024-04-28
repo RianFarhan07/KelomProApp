@@ -1,9 +1,17 @@
 package com.example.kelomproapp.ui.activities
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,10 +23,12 @@ import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Guru
 import com.example.kelomproapp.utils.Constants
+import com.google.firebase.auth.FirebaseAuth
 
 class CourseActivity : BaseActivity() {
     private var binding : ActivityCourseBinding? = null
     private var mGuruName : String? = null
+    private var mListClasses : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCourseBinding.inflate(layoutInflater)
@@ -41,21 +51,38 @@ class CourseActivity : BaseActivity() {
 
         binding!!.ibDoneListName.setOnClickListener{
             val listName = binding!!.etCourseListName.text.toString()
-            val listClasses = binding!!.etClassListName.text.toString()
 
-            if (listName.isNotEmpty()){
-                createCourseList(listName,listClasses,mGuruName!!)
-                binding!!.etClassListName.text.clear()
+            // Validasi mListClasses sebelum digunakan
+            if (listName.isNotEmpty() && mListClasses!!.isNotEmpty() && mGuruName != null){
+                createCourseList(listName, mListClasses!!, mGuruName!!)
                 binding!!.etCourseListName.text.clear()
                 binding!!.tvAddCourse.visibility = View.VISIBLE
                 binding!!.cvAddCourseListName.visibility = View.GONE
-            }else{
+            } else {
                 Toast.makeText(this,"Please enter course name or class",
                     Toast.LENGTH_LONG).show()
             }
         }
 
-        FirestoreClass().getCourseList(this)
+
+
+        binding?.etClassListName?.setOnClickListener{
+            showClassSelectionDialog(this)
+        }
+        val currentUserID = FirestoreClass().getCurrentUserID()
+        if (currentUserID.isNotEmpty()) {
+            FirestoreClass().getUserRole(currentUserID) { role ->
+                if (role == "siswa") {
+                    FirestoreClass().getCourseListClasses(this)
+                    binding?.tvAddCourse?.visibility = View.GONE
+                    binding?.cvAddCourseListName?.visibility = View.GONE
+                }else{
+                    FirestoreClass().getCourseList(this)
+                }
+            }
+        }
+
+
     }
 
     private fun setupActionBar(){
@@ -69,6 +96,40 @@ class CourseActivity : BaseActivity() {
         binding?.toolbarCourseListActivity?.setNavigationOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_home_course, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val  id = item.itemId
+
+        when(id){
+            R.id.action_home -> {
+
+                val currentUserID = FirestoreClass().getCurrentUserID()
+                if (currentUserID.isNotEmpty()) {
+                    FirestoreClass().getUserRole(currentUserID) { role ->
+                        if (role == "siswa") {
+                            val intent = Intent(this, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+                        }else if(role == "guru"){
+                            val intent = Intent(this, MainGuruActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+                        }
+                    }
+                }
+
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun getGuruName(guru: Guru) {
@@ -109,9 +170,13 @@ class CourseActivity : BaseActivity() {
     }
 
     fun createCourseList(courseListName: String, courseClasses: String,guruName : String){
+        val assignedUserArrayList: ArrayList<String> = ArrayList()
+        assignedUserArrayList.add(FirestoreClass().getCurrentUserID())
+
         val course = Course(
             name = courseListName,
             guru =  guruName,
+            assignedTo = assignedUserArrayList,
             classes = courseClasses )
 
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
@@ -123,5 +188,46 @@ class CourseActivity : BaseActivity() {
     fun courseCreatedSuccessfully(){
         hideProgressDialog()
         FirestoreClass().getCourseList(this)
+    }
+
+    fun showClassSelectionDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Pilih Kelas")
+
+        // Inisialisasi RadioGroup
+        val radioGroup = RadioGroup(context)
+        radioGroup.orientation = RadioGroup.VERTICAL
+
+        // Array dengan daftar kelas yang tersedia
+        val classes = arrayOf("X", "XI", "XII")
+
+        // Tambahkan radio button untuk setiap kelas ke dalam RadioGroup
+        for (i in classes.indices) {
+            val radioButton = RadioButton(context)
+            radioButton.text = classes[i]
+            radioButton.id = i
+            radioGroup.addView(radioButton)
+        }
+
+        builder.setView(radioGroup)
+
+        // Set action ketika radio button dipilih
+        builder.setPositiveButton("Pilih") { dialog, _ ->
+            val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+            val selectedClass = classes[selectedRadioButtonId]
+            dialog.dismiss()
+
+            binding?.etClassListName?.text = selectedClass
+            mListClasses = selectedClass
+
+        }
+
+        // Set action ketika dialog dibatalkan
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // Tampilkan dialog
+        builder.create().show()
     }
 }

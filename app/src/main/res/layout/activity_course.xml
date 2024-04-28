@@ -75,12 +75,13 @@
                         android:hint="Nama Mata Pelajaran"
                         android:imeOptions="actionDone"
                         android:inputType="text" />
-                    <EditText
+                    <TextView
                         android:id="@+id/et_class_list_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:autofillHints="Kelas"
                         android:hint="Kelas"
+                        android:textSize="18sp"
                         android:imeOptions="actionDone"
                         android:inputType="text" />
 

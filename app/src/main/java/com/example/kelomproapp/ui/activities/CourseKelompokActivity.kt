@@ -99,17 +99,27 @@ class CourseKelompokActivity : BaseActivity() {
     }
 
     fun populateKelompokListToUI(kelompokList: ArrayList<Kelompok>){
+        val filteredKelompokList = ArrayList<Kelompok>()
+
+        val currentUserID = FirestoreClass().getCurrentUserID()
+
+        for (kelompok in kelompokList) {
+            if (kelompok.assignedTo.contains(currentUserID)) {
+                filteredKelompokList.add(kelompok)
+            }
+        }
+
         val rvKelompokList : RecyclerView = findViewById(R.id.rv_kelompok_list)
         val tvNoKelompokAvailable : TextView = findViewById(R.id.tv_no_kelompok_available)
 
-        if (kelompokList.size >0){
+        if (filteredKelompokList.isNotEmpty()){
             rvKelompokList.visibility = View.VISIBLE
             tvNoKelompokAvailable.visibility  = View.GONE
 
             rvKelompokList.layoutManager = LinearLayoutManager(this)
             rvKelompokList.setHasFixedSize(true)
 
-            val adapter = KelompokInCourseAdapter(this,kelompokList)
+            val adapter = KelompokInCourseAdapter(this, filteredKelompokList)
             rvKelompokList.adapter = adapter
 
             adapter.setOnClickListener(object: KelompokInCourseAdapter.OnClickListener{
@@ -129,13 +139,6 @@ class CourseKelompokActivity : BaseActivity() {
 //        hideProgressDialog()
 //        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         populateKelompokListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok)
-    }
-
-    fun TopicDetails(topic: Topic){
-        mTopicDetail = topic
-//        hideProgressDialog()
-//        showProgressDialog(resources.getString(R.string.mohon_tunggu))
-//        populateKelompokListToUI(mCourseDetail.topicList[.)
     }
 
     fun KelompokDetails(kelompokPosition: Int){

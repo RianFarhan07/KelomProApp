@@ -141,6 +141,8 @@
                     android:id="@+id/et_classes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:focusable="false"
                     android:padding="16dp"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="16sp"/>

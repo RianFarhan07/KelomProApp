@@ -112,12 +112,10 @@ class MateriFragment : BaseFragment() {
     }
 
     private fun getMateriItemList() {
-        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getAllMateriListFragment(this)
     }
 
     fun successMateriItemsList(materiItemsList: ArrayList<Materi>) {
-        hideProgressDialog()
 
         materiList.clear()
         materiList.addAll(materiItemsList)

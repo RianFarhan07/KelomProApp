@@ -1,11 +1,15 @@
 package com.example.kelomproapp.ui.activities
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivitySignUpBinding
@@ -17,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 class SignUpActivity : BaseActivity() {
 
     private var binding : ActivitySignUpBinding? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -137,4 +142,6 @@ class SignUpActivity : BaseActivity() {
        val intent = Intent(this,SignInActivity::class.java)
         startActivity(intent)
     }
+
+
 }

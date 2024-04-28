@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ItemCourseBinding
 import com.example.kelomproapp.databinding.ItemTopicBinding
 import com.example.kelomproapp.models.Course
@@ -26,6 +27,7 @@ class TopicItemsAdapter (private val context: Context,
 
         if (holder is TopicViewHolder){
             holder.binding.textViewTopicName.text = model.name
+            holder.binding.ivCourseItemImage.setImageResource(R.drawable.course)
 
         }
 

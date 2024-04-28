@@ -153,6 +153,13 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 finish()
             }
 
+            R.id.nav_course -> {
+                val intent = Intent(this, CourseActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
+            }
+
             R.id.nav_panduan -> {
                 val intent = Intent(this, PanduanActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)

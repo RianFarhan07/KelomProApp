@@ -18,6 +18,11 @@
             android:title="Materi Saya"></item>
 
         <item
+            android:id="@+id/nav_course"
+            android:icon="@drawable/course"
+            android:title="Mata Pelajaran"></item>
+
+        <item
             android:id="@+id/nav_panduan"
             android:icon="@drawable/ic_baseline_panduan_24"
             android:title="Panduan Penggunaan"></item>

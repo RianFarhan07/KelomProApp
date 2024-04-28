@@ -33,6 +33,12 @@ class CourseItemsAdapter (private val context: Context,
             holder.binding.textViewGuru.text = "Guru ${model.guru}"
             holder.binding.textViewClasses.text = "Kelas ${model.classes}"
 
+            when (model.classes) {
+                "X" -> holder.binding.ivCourseItemImage.setImageResource(R.drawable.ten_number_icon)
+                "XI" -> holder.binding.ivCourseItemImage.setImageResource(R.drawable.eleven_number_icon)
+                "XII" -> holder.binding.ivCourseItemImage.setImageResource(R.drawable.twelve_number_icon)
+            }
+
         }
 
         holder.binding.root.setOnClickListener {

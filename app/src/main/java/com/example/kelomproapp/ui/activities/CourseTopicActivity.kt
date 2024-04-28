@@ -63,6 +63,16 @@ class CourseTopicActivity : BaseActivity() {
                     Toast.LENGTH_LONG).show()
             }
         }
+
+        val currentUserID = FirestoreClass().getCurrentUserID()
+        if (currentUserID.isNotEmpty()) {
+            FirestoreClass().getUserRole(currentUserID) { role ->
+                if (role == "siswa") {
+                    binding?.tvAddTopic?.visibility = View.GONE
+                    binding?.cvAddTopicListName?.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun setupActionBar(){

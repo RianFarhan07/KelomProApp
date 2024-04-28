@@ -2,11 +2,16 @@ package com.example.kelomproapp.ui.activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,6 +31,7 @@ class MyProfileActivity : BaseActivity() {
     private lateinit var mSiswaDetails : Siswa
     private var mSelectedImageFileUri :Uri? = null
     private var mUserProfileImageURL: String = ""
+    private var mListClasses : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMyProfileBinding.inflate(layoutInflater)
@@ -48,6 +54,12 @@ class MyProfileActivity : BaseActivity() {
                     Constants.READ_STORAGE_PERMISSION_CODE
                 )
             }
+        }
+
+        binding?.etClasses?.inputType = InputType.TYPE_NULL
+
+        binding?.etClasses?.setOnClickListener {
+            showClassSelectionDialog(this)
         }
 
         binding?.btnSubmit?.setOnClickListener{
@@ -209,5 +221,47 @@ class MyProfileActivity : BaseActivity() {
         setResult(Activity.RESULT_OK)
 
         finish()
+    }
+
+    fun showClassSelectionDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Pilih Kelas")
+
+        // Inisialisasi RadioGroup
+        val radioGroup = RadioGroup(context)
+        radioGroup.orientation = RadioGroup.VERTICAL
+
+        // Array dengan daftar kelas yang tersedia
+        val classes = arrayOf("X", "XI", "XII")
+
+        // Tambahkan radio button untuk setiap kelas ke dalam RadioGroup
+        for (i in classes.indices) {
+            val radioButton = RadioButton(context)
+            radioButton.text = classes[i]
+            radioButton.id = i
+            radioGroup.addView(radioButton)
+        }
+
+        builder.setView(radioGroup)
+
+        // Set action ketika radio button dipilih
+        builder.setPositiveButton("Pilih") { dialog, _ ->
+            val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+            val selectedClass = classes[selectedRadioButtonId]
+            dialog.dismiss()
+
+            binding?.etClasses?.setText(selectedClass)
+            mListClasses = selectedClass
+
+
+        }
+
+        // Set action ketika dialog dibatalkan
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // Tampilkan dialog
+        builder.create().show()
     }
 }

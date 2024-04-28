@@ -156,6 +156,25 @@ class FirestoreClass {
             }
     }
 
+    fun getClassesForSiswa(userId: String, onComplete: (String?) -> Unit) {
+        mFireStore.collection(Constants.SISWA)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val siswa = documentSnapshot.toObject(Siswa::class.java)
+                    val classes = siswa?.classes
+                    onComplete(classes)
+                } else {
+                    onComplete(null)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreClass", "Error getting classes for siswa: ${e.message}", e)
+                onComplete(null)
+            }
+    }
+
 
 
     fun getUserDetails(activity: Activity, role: String, readKelompokList: Boolean = false) {
@@ -459,7 +478,7 @@ class FirestoreClass {
 
     fun getCourseList(activity: CourseActivity){
         mFireStore.collection(Constants.COURSE)
-//            .whereArrayContains(Constants.GURU_MAPEL, guruName)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
             .get()
             .addOnSuccessListener {
                     document ->
@@ -478,13 +497,40 @@ class FirestoreClass {
             }
     }
 
-    fun getCourseDetails(activity: Activity, documentId: String) {
+    fun getCourseListClasses(activity: CourseActivity) {
+        getClassesForSiswa(getCurrentUserID()) { classes ->
+            if (classes != null) {
+                Log.e("CLASS SISWA", classes)
+                // Setelah mendapatkan kelas siswa, lakukan query di koleksi Constants.MATERI
+                mFireStore.collection(Constants.COURSE)
+                    .whereEqualTo(Constants.CLASSES, classes)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        Log.e(activity.javaClass.simpleName, document.documents.toString())
+                        val courseList: ArrayList<Course> = ArrayList()
+                        for (i in document.documents) {
+                            val course = i.toObject(Course::class.java)!!
+                            course.documentId = i.id
+                            courseList.add(course)
+                        }
+
+                        activity.populateCourseListToUI(courseList)
+                    }.addOnFailureListener {
+                        activity.hideProgressDialog()
+                        Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
+                    }
+            }
+        }
+    }
+
+            fun getCourseDetails(activity: Activity, documentId: String) {
         mFireStore.collection(Constants.COURSE)
             .document(documentId)
             .get()
             .addOnSuccessListener { document ->
                 val course = document.toObject(Course::class.java)
                 course?.documentId = document.id
+
 
                 when (activity) {
                     is CourseTopicActivity -> {
@@ -602,32 +648,6 @@ class FirestoreClass {
             }.addOnFailureListener {
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error mendapatkan kelompok")
-            }
-    }
-
-    fun getTopicDetails(activity: Activity, documentId: String) {
-        mFireStore.collection(Constants.TOPIC)
-            .document(documentId)
-            .get()
-            .addOnSuccessListener { document ->
-                val topic = document.toObject(Topic::class.java)
-                topic?.documentId = document.id
-
-                when (activity) {
-                    is CourseKelompokActivity -> {
-                        activity.TopicDetails(topic!!)
-                    }
-
-                }
-            }
-            .addOnFailureListener { e ->
-
-                when (activity) {
-                    is CourseTopicActivity -> {
-                        activity.hideProgressDialog()
-                    }
-                }
-                Log.e(activity.javaClass.simpleName, "Error fetching kelompok details: ${e.message}")
             }
     }
 
@@ -1014,6 +1034,39 @@ class FirestoreClass {
                 Activity.hideProgressDialog()
                 Log.e(Activity.javaClass.simpleName, "Error mendapatkan kelompok")
             }
+    }
+
+    fun getClassMateriList(Activity: MateriActivity) {
+        // Mendapatkan kelas siswa menggunakan getClassesForSiswa
+        getClassesForSiswa(getCurrentUserID()) { classes ->
+            if (classes != null) {
+                Log.e("CLASS SISWA",classes)
+                // Setelah mendapatkan kelas siswa, lakukan query di koleksi Constants.MATERI
+                mFireStore.collection(Constants.MATERI)
+                    .whereEqualTo(Constants.CLASSES, classes)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        Log.e(Activity.javaClass.simpleName, document.documents.toString())
+                        val materiList: ArrayList<Materi> = ArrayList()
+                        for (i in document.documents) {
+                            val materi = i.toObject(Materi::class.java)!!
+                            materi.id = i.id
+                            materiList.add(materi)
+
+                        }
+
+                        Log.e("MATERI LIST", materiList.toString())
+                        Activity.populateMateriListToUI(materiList)
+                    }.addOnFailureListener {
+                        Activity.hideProgressDialog()
+                        Log.e(Activity.javaClass.simpleName, "Error mendapatkan kelompok")
+                    }
+            } else {
+                // Jika kelas siswa tidak ditemukan, handle sesuai kebutuhan Anda
+                Log.e(Activity.javaClass.simpleName, "Kelas siswa tidak ditemukan")
+                // Misalnya, tampilkan pesan kepada pengguna atau lakukan tindakan lain
+            }
+        }
     }
 
     fun getMateriDetails(activity: CreateMateriActivity, documentId: String) {
