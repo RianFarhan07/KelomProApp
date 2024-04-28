@@ -26,6 +26,8 @@ class CourseKelompokActivity : BaseActivity() {
     private var mTopicListPosition = -1
     private var mKelompokListPosition = -1
 
+    lateinit var mAssignedAnggotaDetailList: ArrayList<Siswa>
+
     companion object {
         const val UPDATE_KELOMPOK_REQUEST_CODE : Int = 20
 
@@ -143,8 +145,19 @@ class CourseKelompokActivity : BaseActivity() {
         intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
         intent.putExtra(Constants.NAME,mGuruName)
         intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
+//        intent.putExtra(Constants.LIST_ANGGOTA_KELOMPOK,mAssignedAnggotaDetailList)
         startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)
     }
+
+//
+//    fun anggotaKelompokDetailList(list: ArrayList<Siswa>){
+//        mAssignedAnggotaDetailList = list
+//
+//        hideProgressDialog()
+//
+//        populateKelompokListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok)
+//
+//    }
 
 
 

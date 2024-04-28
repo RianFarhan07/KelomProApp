@@ -496,6 +496,9 @@ class FirestoreClass {
                     is CreateKelompokActivity -> {
                         activity.CourseDetails(course!!)
                     }
+                    is CourseTaskActivity -> {
+                        activity.CourseDetails(course!!)
+                }
 
                 }
             }
@@ -509,6 +512,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is CreateKelompokActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseTaskActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -644,9 +650,9 @@ class FirestoreClass {
                     is CourseKelompokDetailActivity -> {
                         activity.addUpdateTopicListSuccess()
                     }
-//                    is AnggotaActivity -> {
-//                        activity
-//                }
+                    is CourseTaskActivity -> {
+                        activity.courseCreatedSuccessfully()
+                }
 
                 }
             }
@@ -660,6 +666,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is CourseKelompokDetailActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseTaskActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -719,6 +728,12 @@ class FirestoreClass {
                     is TaskListActivity -> {
                         activity.anggotaKelompokDetailList(siswaList)
                     }
+                    is CourseTaskActivity -> {
+                        activity.anggotaKelompokDetailList(siswaList)
+                    }
+//                    is CourseKelompokActivity -> {
+//                        activity.anggotaKelompokDetailList(siswaList)
+//                    }
                 }
 
             }
@@ -729,6 +744,12 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is TaskListActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseTaskActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CourseKelompokActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

@@ -7,16 +7,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
+import com.example.kelomproapp.adapter.TaskInCourseAdapter
+import com.example.kelomproapp.adapter.TaskItemsAdapter
 import com.example.kelomproapp.databinding.ActivityCourseTaskBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.Course
-import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Siswa
-import com.example.kelomproapp.models.Topic
+import com.example.kelomproapp.models.*
 import com.example.kelomproapp.utils.Constants
 
-class CourseTaskActivity : AppCompatActivity() {
+class CourseTaskActivity : BaseActivity() {
 
     private var binding : ActivityCourseTaskBinding? = null
     private lateinit var mCourseDetail: Course
@@ -39,6 +43,30 @@ class CourseTaskActivity : AppCompatActivity() {
 
         getIntentData()
         setupActionBar()
+        FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+
+        binding!!.tvAddTugas.setOnClickListener {
+            binding!!.tvAddTugas.visibility = View.GONE
+            binding!!.cvAddTaskListName.visibility = View.VISIBLE
+        }
+
+        binding!!.ibCloseListName.setOnClickListener {
+            binding!!.tvAddTugas.visibility = View.VISIBLE
+            binding!!.cvAddTaskListName.visibility = View.GONE
+        }
+
+        binding!!.ibDoneListName.setOnClickListener{
+            val listName = binding!!.etTaskListName.text.toString()
+
+            if (listName.isNotEmpty()){
+                createTugasList(listName)
+                binding!!.tvAddTugas.visibility = View.VISIBLE
+                binding!!.cvAddTaskListName.visibility = View.GONE
+            } else {
+                Toast.makeText(this,"Please enter task name",
+                    Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun getIntentData() {
@@ -56,6 +84,9 @@ class CourseTaskActivity : AppCompatActivity() {
         if (intent.hasExtra(Constants.DOCUMENT_ID)) {
             mCourseDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
             Log.e("document", "document $mCourseDocumentId")
+        }
+        if (intent.hasExtra(Constants.LIST_ANGGOTA_KELOMPOK)){
+            mAssignedAnggotaDetailList = intent.getParcelableArrayListExtra(Constants.LIST_ANGGOTA_KELOMPOK)!!
         }
     }
 
@@ -103,4 +134,63 @@ class CourseTaskActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    fun CourseDetails(course: Course){
+        mCourseDetail = course
+        setupActionBar()
+//        hideProgressDialog()
+//        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        FirestoreClass().getAssignedAnggotaListDetails(this,
+            mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo)
+    }
+
+    fun populateTaskListToUI(taskList: ArrayList<Task>){
+
+        val rvTaskList : RecyclerView = findViewById(R.id.rv_task_list)
+        val tvNoTaskAvailable : TextView = findViewById(R.id.tv_no_task_available)
+
+
+        if (taskList.size > 0){
+            rvTaskList.visibility = View.VISIBLE
+            tvNoTaskAvailable.visibility  = View.GONE
+
+            rvTaskList.layoutManager = LinearLayoutManager(this)
+            rvTaskList.setHasFixedSize(true)
+
+            val adapter = TaskInCourseAdapter(this,taskList)
+            rvTaskList.adapter = adapter
+
+//            adapter.setOnClickListener(object: TaskItemsAdapter.OnClickListener{
+//                override fun onClick(position: Int) {
+//                    taskDetails(position)
+//                }
+//            })
+        }else{
+            rvTaskList.visibility = View.GONE
+            tvNoTaskAvailable.visibility  = View.VISIBLE
+        }
+    }
+
+    fun createTugasList(tugasListName: String){
+        val tugas = Task(name = tugasListName)
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList.add(0,tugas)
+        FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+    }
+
+    fun courseCreatedSuccessfully(){
+        hideProgressDialog()
+        populateTaskListToUI(
+            mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList)
+    }
+
+    fun anggotaKelompokDetailList(list: ArrayList<Siswa>){
+        mAssignedAnggotaDetailList = list
+
+
+        populateTaskListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList)
+
+    }
+
+
 }
