@@ -48,7 +48,7 @@ class CourseKelompokActivity : BaseActivity() {
             intent.putExtra(Constants.TO_COURSE,true)
             intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
             intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
-            startActivity(intent)
+            startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)
         }
 
     }

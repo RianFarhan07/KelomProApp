@@ -96,7 +96,6 @@ class CourseTaskActivity : AppCompatActivity() {
                 intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
                 intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,mKelompokListPosition)
                 intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
-                intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
                 startActivityForResult(intent,UPDATE_KELOMPOK_REQUEST_CODE)
 
                 return true

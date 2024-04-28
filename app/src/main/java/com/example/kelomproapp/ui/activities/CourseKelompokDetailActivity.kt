@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract.Root
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -32,7 +33,6 @@ class CourseKelompokDetailActivity : BaseActivity() {
     private var mSelectedImageFileUri : Uri? = null
     private var mKelompokImageURL : String = ""
     private var mGuruName : String? = null
-    private lateinit var mCourseDetail: Course
     private lateinit var mTopicDetail: Topic
     private var mTopicListPosition = -1
 
@@ -50,15 +50,15 @@ class CourseKelompokDetailActivity : BaseActivity() {
         setupActionBar()
 
         Glide.with(this)
-            .load(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].image)
+            .load(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].image)
             .centerCrop()
             .placeholder(R.drawable.kelompok_placeholder)
             .into(binding?.ivProfileKelompokImage!!)
 
-        binding?.etNameDetails?.setText(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name)
-        binding?.etCourseDetails?.setText(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].course)
-        binding?.etClassesDetails?.setText(mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].classes)
-        binding?.tvKetuaName?.text = mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].createdBy
+        binding?.etNameDetails?.setText(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name)
+        binding?.etCourseDetails?.setText(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].course)
+        binding?.etClassesDetails?.setText(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].classes)
+        binding?.tvKetuaName?.text = mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].createdBy
 
         binding?.ivProfileKelompokImage?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -76,6 +76,17 @@ class CourseKelompokDetailActivity : BaseActivity() {
             }
         }
 
+        binding?.btnDelete?.setOnClickListener {
+            showAlertDialogToDeleteKelompok(
+                mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name!!)
+        }
+
+//        binding?.tvSelectMembers?.setOnClickListener {
+//            val intent = Intent(this,AnggotaActivity::class.java)
+//            intent.putExtra(Constants.KELOMPOK_DETAIL,mKelompokDetails)
+//            startActivityForResult(intent, KelompokDetailsActivity.ANGGOTA_REQUEST_CODE)
+//        }
+
         binding?.btnUpdate?.setOnClickListener {
             if (mSelectedImageFileUri != null){
                 uploadKelompokImage()
@@ -89,7 +100,8 @@ class CourseKelompokDetailActivity : BaseActivity() {
 
     private fun getIntentData() {
         if (intent.hasExtra(Constants.COURSE_DETAIL)) {
-            mCourseDetail = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
+            mCourseDetails = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
+            Log.e("COURSE_DETAIL", mCourseDetails.toString())
         }
         if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)) {
             mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION, -1)
@@ -136,13 +148,13 @@ class CourseKelompokDetailActivity : BaseActivity() {
 //
 ////        mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition] = kelompok
 
-        mCourseDetail.topicList[mTopicListPosition].kelompok.removeAt(mKelompokListPosition)
+        mCourseDetails.topicList[mTopicListPosition].kelompok.removeAt(mKelompokListPosition)
 
-        mCourseDetail.topicList[mTopicListPosition].kelompok.add(mKelompokListPosition, kelompok)
+        mCourseDetails.topicList[mTopicListPosition].kelompok.add(mKelompokListPosition, kelompok)
 
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
-        FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+        FirestoreClass().addUpdateTopicList(this, mCourseDetails)
     }
 
     private fun uploadKelompokImage(){
@@ -182,8 +194,51 @@ class CourseKelompokDetailActivity : BaseActivity() {
     fun addUpdateTopicListSuccess(){
 
         setResult(Activity.RESULT_OK)
-        finish()
+        val intent = Intent(this,CourseTopicActivity::class.java)
+        intent.putExtra(Constants.DOCUMENT_ID,mCourseDocumentId)
+        startActivity(intent)
     }
+
+    private fun showAlertDialogToDeleteKelompok(kelompokName: String) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("DELETE")
+        builder.setMessage("Apakah anda yakin ingin menghapus kelompok $kelompokName")
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        builder.setPositiveButton("Iya") { dialogInterface, _ ->
+            showProgressDialog(resources.getString(R.string.mohon_tunggu))
+            deleteKelompok()
+            dialogInterface.dismiss()
+        }
+
+        builder.setNegativeButton("Tidak") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+    }
+
+    private fun deleteKelompok() {
+        val kelompokList: ArrayList<Kelompok> = mCourseDetails.topicList[mTopicListPosition].kelompok
+        kelompokList.removeAt(mKelompokListPosition)
+
+        // Remove the topic only if there are no more kelompok in it
+//        if (kelompokList.isEmpty()) {
+//            mCourseDetails.topicList.removeAt(mTopicListPosition)
+//        } else {
+            // Update the kelompok list for the specific topic
+            mCourseDetails.topicList[mTopicListPosition].kelompok = kelompokList
+//        }
+
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        FirestoreClass().addUpdateTopicList(this, mCourseDetails)
+    }
+
+
 
 
 }
