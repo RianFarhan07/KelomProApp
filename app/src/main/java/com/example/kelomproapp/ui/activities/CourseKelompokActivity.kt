@@ -3,6 +3,7 @@ package com.example.kelomproapp.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -17,7 +18,7 @@ import com.example.kelomproapp.utils.Constants
 
 class CourseKelompokActivity : BaseActivity() {
     private var binding : ActivityCourseKelompokBinding? = null
-    private var mGuruName : String? = null
+    private var mUserName : String? = null
     private var mSiswaName : String? = null
     private lateinit var mCourseDetail: Course
     private lateinit var mTopicDetail: Topic
@@ -40,19 +41,33 @@ class CourseKelompokActivity : BaseActivity() {
 
         getIntentData()
         setupActionBar()
-        FirestoreClass().getUserDetails(this,"guru",false)
-        FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+
 
         binding?.fabCreateKelompok?.setOnClickListener{
             val intent = Intent(this, CreateKelompokActivity::class.java)
 
-            intent.putExtra(Constants.NAME,mGuruName)
+            intent.putExtra(Constants.NAME,mUserName)
             intent.putExtra(Constants.TO_COURSE,true)
             intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
             intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
             startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val currentUserID = FirestoreClass().getCurrentUserID()
+        if (currentUserID.isNotEmpty()) {
+            FirestoreClass().getUserRole(currentUserID) { role ->
+                if (role == "siswa") {
+                    FirestoreClass().getUserDetails(this,"siswa",false)
+                }else{
+                    FirestoreClass().getUserDetails(this,"guru",false)
+                }
+            }
+        }
+        FirestoreClass().getCourseDetails(this,mCourseDocumentId)
     }
 
     private fun setupActionBar(){
@@ -95,7 +110,12 @@ class CourseKelompokActivity : BaseActivity() {
 
     fun getGuruName(guru: Guru) {
         // Set data guru ke UI sesuai kebutuhan
-        mGuruName = guru.name
+        mUserName = guru.name
+    }
+
+    fun getSiswaName(siswa: Siswa) {
+        // Set data guru ke UI sesuai kebutuhan
+        mUserName = "${siswa.firstName} ${siswa.lastName}"
     }
 
     fun populateKelompokListToUI(kelompokList: ArrayList<Kelompok>){
@@ -133,12 +153,48 @@ class CourseKelompokActivity : BaseActivity() {
         }
     }
 
+    fun populateKelompokListToUIToGuru(kelompokList: ArrayList<Kelompok>){
+        val rvKelompokList : RecyclerView = findViewById(R.id.rv_kelompok_list)
+        val tvNoKelompokAvailable : TextView = findViewById(R.id.tv_no_kelompok_available)
+
+        if (kelompokList.size >0){
+            rvKelompokList.visibility = View.VISIBLE
+            tvNoKelompokAvailable.visibility  = View.GONE
+
+            rvKelompokList.layoutManager = LinearLayoutManager(this)
+            rvKelompokList.setHasFixedSize(true)
+
+            val adapter = KelompokInCourseAdapter(this,kelompokList)
+            rvKelompokList.adapter = adapter
+
+            adapter.setOnClickListener(object: KelompokInCourseAdapter.OnClickListener{
+                override fun onClick(position: Int) {
+                    KelompokDetails(position)
+                }
+            })
+        }else{
+            rvKelompokList.visibility = View.GONE
+            tvNoKelompokAvailable.visibility  = View.VISIBLE
+        }
+    }
+
     fun CourseDetails(course: Course){
         mCourseDetail = course
         setupActionBar()
 //        hideProgressDialog()
 //        showProgressDialog(resources.getString(R.string.mohon_tunggu))
-        populateKelompokListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok)
+
+        val currentUserID = FirestoreClass().getCurrentUserID()
+        if (currentUserID.isNotEmpty()) {
+            FirestoreClass().getUserRole(currentUserID) { role ->
+                if (role == "siswa") {
+                    populateKelompokListToUI(mCourseDetail.topicList[mTopicListPosition].kelompok)
+                }else{
+                    populateKelompokListToUIToGuru(mCourseDetail.topicList[mTopicListPosition].kelompok)
+                }
+            }
+        }
+
     }
 
     fun KelompokDetails(kelompokPosition: Int){
@@ -146,7 +202,7 @@ class CourseKelompokActivity : BaseActivity() {
         intent.putExtra(Constants.TOPIC_LIST_ITEM_POSITION,mTopicListPosition)
         intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,kelompokPosition)
         intent.putExtra(Constants.COURSE_DETAIL,mCourseDetail)
-        intent.putExtra(Constants.NAME,mGuruName)
+        intent.putExtra(Constants.NAME,mUserName)
         intent.putExtra(Constants.DOCUMENT_ID, mCourseDocumentId)
 //        intent.putExtra(Constants.LIST_ANGGOTA_KELOMPOK,mAssignedAnggotaDetailList)
         startActivityForResult(intent, UPDATE_KELOMPOK_REQUEST_CODE)

@@ -57,6 +57,12 @@ class MainGuruActivity : AppCompatActivity() {
                 finish()
                 return true
             }
+            R.id.action_course -> {
+                val intent = Intent(this, CourseActivity::class.java)
+                startActivity(intent)
+                finish()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }

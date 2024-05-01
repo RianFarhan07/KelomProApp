@@ -203,6 +203,9 @@ class FirestoreClass {
                                 is KelompokDetailsActivity -> {
                                     activity.setUserDataInUI(siswa)
                                 }
+                                is CourseKelompokActivity -> {
+                                    activity.getSiswaName(siswa)
+                                }
 
 
                             }
@@ -215,9 +218,6 @@ class FirestoreClass {
                             when (activity) {
                                 is SignInActivity -> {
                                     activity.userLoggedInSuccess(guru)
-                                }
-                                is GuruMainActivity -> {
-                                    activity.updateNavigationGuruDetails(guru, readKelompokList)
                                 }
                                 is CourseActivity -> {
                                     activity.getGuruName(guru)
@@ -238,9 +238,6 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is MainActivity -> {
-                        activity.hideProgressDialog()
-                    }
-                    is GuruMainActivity -> {
                         activity.hideProgressDialog()
                     }
                     is MyProfileActivity -> {

@@ -19,7 +19,7 @@
 
         <item
             android:id="@+id/nav_course"
-            android:icon="@drawable/course"
+            android:icon="@drawable/course_book"
             android:title="Mata Pelajaran"></item>
 
         <item

@@ -89,12 +89,7 @@ class CourseActivity : BaseActivity() {
         setSupportActionBar(binding?.toolbarCourseListActivity)
         val toolbar = supportActionBar
         if (toolbar != null){
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
             supportActionBar?.title = "Daftar Materi"
-        }
-        binding?.toolbarCourseListActivity?.setNavigationOnClickListener {
-            onBackPressed()
         }
     }
 
@@ -105,32 +100,28 @@ class CourseActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val  id = item.itemId
+        val id = item.itemId
 
-        when(id){
+        when(id) {
             R.id.action_home -> {
-
                 val currentUserID = FirestoreClass().getCurrentUserID()
                 if (currentUserID.isNotEmpty()) {
                     FirestoreClass().getUserRole(currentUserID) { role ->
                         if (role == "siswa") {
                             val intent = Intent(this, MainActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(intent)
-                        }else if(role == "guru"){
+                        } else if (role == "guru") {
                             val intent = Intent(this, MainGuruActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(intent)
                         }
                     }
                 }
-
-                finish()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
 
     fun getGuruName(guru: Guru) {
         // Set data guru ke UI sesuai kebutuhan
