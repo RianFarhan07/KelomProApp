@@ -76,6 +76,11 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        FirestoreClass().getKelompokList(this)
+    }
+
     private fun setupActionBar() {
         val toolbar : Toolbar = findViewById(R.id.toolbar_main_activity)
 

@@ -17,10 +17,7 @@ import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
 import com.example.kelomproapp.databinding.ActivityCourseKelompokDetailBinding
 import com.example.kelomproapp.firebase.FirestoreClass
-import com.example.kelomproapp.models.Course
-import com.example.kelomproapp.models.Kelompok
-import com.example.kelomproapp.models.Siswa
-import com.example.kelomproapp.models.Topic
+import com.example.kelomproapp.models.*
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -32,7 +29,9 @@ class CourseKelompokDetailActivity : BaseActivity() {
     private lateinit var mCourseDocumentId : String
     private var mSelectedImageFileUri : Uri? = null
     private var mKelompokImageURL : String = ""
-    private var mGuruName : String? = null
+    private var mUsername : String? = null
+    private var mTopic : String? = null
+    lateinit var mTaskList: ArrayList<Task>
     private lateinit var mTopicDetail: Topic
     private var mTopicListPosition = -1
 
@@ -52,6 +51,7 @@ class CourseKelompokDetailActivity : BaseActivity() {
 
         getIntentData()
         setupActionBar()
+        FirestoreClass().getCourseDetails(this,mCourseDocumentId)
 
         Glide.with(this)
             .load(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].image)
@@ -63,6 +63,9 @@ class CourseKelompokDetailActivity : BaseActivity() {
         binding?.etCourseDetails?.setText(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].course)
         binding?.etClassesDetails?.setText(mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].classes)
         binding?.tvKetuaName?.text = mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].createdBy
+
+        mTopic = mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].topic
+        mTaskList = mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList
 
         binding?.ivProfileKelompokImage?.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -92,7 +95,7 @@ class CourseKelompokDetailActivity : BaseActivity() {
             intent.putExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,mKelompokListPosition)
             intent.putExtra(Constants.COURSE_DETAIL,mCourseDetails)
             intent.putExtra(Constants.TO_COURSE,true)
-            startActivityForResult(intent, KelompokDetailsActivity.ANGGOTA_REQUEST_CODE)
+            startActivityForResult(intent, ANGGOTA_DETAILS_REQUEST_CODE)
         }
 
         binding?.btnUpdate?.setOnClickListener {
@@ -124,7 +127,7 @@ class CourseKelompokDetailActivity : BaseActivity() {
             Log.e("document", "document $mCourseDocumentId")
         }
         if (intent.hasExtra(Constants.NAME)){
-            mGuruName = intent.getStringExtra(Constants.NAME)
+            mUsername = intent.getStringExtra(Constants.NAME)
         }
     }
 
@@ -132,6 +135,7 @@ class CourseKelompokDetailActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == ANGGOTA_DETAILS_REQUEST_CODE){
             FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+            FirestoreClass().getUserDetails(this,Constants.SISWA)
         }
         else{
             Log.e("cancelled","cancelled")
@@ -155,12 +159,16 @@ class CourseKelompokDetailActivity : BaseActivity() {
         assignedUserArrayList.add(FirestoreClass().getCurrentUserID())
 
         val kelompok = Kelompok(
-            binding?.etNameDetails?.text.toString(),
-            mKelompokImageURL,
-            mGuruName,
-            assignedUserArrayList,
-            binding?.etCourseDetails?.text.toString(),
-            binding?.etClassesDetails?.text.toString(),
+            name = binding?.etNameDetails?.text.toString(),
+            image = mKelompokImageURL,
+            createdBy = mUsername,
+            assignedTo =  mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo,
+            course = binding?.
+            etCourseDetails?.text.toString(),
+            classes = binding?.etClassesDetails?.text.toString(),
+            topic = mTopic,
+            taskList = mTaskList
+
         )
 //        val kelompokList : ArrayList<Kelompok> = mCourseDetail.topicList[mTopicListPosition].kelompok
 //
@@ -212,9 +220,10 @@ class CourseKelompokDetailActivity : BaseActivity() {
     fun addUpdateTopicListSuccess(){
 
         setResult(Activity.RESULT_OK)
-        val intent = Intent(this,CourseTopicActivity::class.java)
-        intent.putExtra(Constants.DOCUMENT_ID,mCourseDocumentId)
-        startActivity(intent)
+        finish()
+//        val intent = Intent(this,CourseTopicActivity::class.java)
+//        intent.putExtra(Constants.DOCUMENT_ID,mCourseDocumentId)
+//        startActivity(intent)
     }
 
     private fun showAlertDialogToDeleteKelompok(kelompokName: String) {

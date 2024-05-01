@@ -36,7 +36,7 @@ class CourseActivity : BaseActivity() {
         setContentView(binding?.root)
 
         setupActionBar()
-
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getUserDetails(this,"guru",false)
 
         binding!!.tvAddCourse.setOnClickListener {
@@ -73,6 +73,7 @@ class CourseActivity : BaseActivity() {
         if (currentUserID.isNotEmpty()) {
             FirestoreClass().getUserRole(currentUserID) { role ->
                 if (role == "siswa") {
+
                     FirestoreClass().getCourseListClasses(this)
                     binding?.tvAddCourse?.visibility = View.GONE
                     binding?.cvAddCourseListName?.visibility = View.GONE
@@ -131,7 +132,7 @@ class CourseActivity : BaseActivity() {
 
 
     fun populateCourseListToUI(courseList: ArrayList<Course>){
-
+        hideProgressDialog()
         val rvCourseList : RecyclerView = findViewById(R.id.rv_course_list)
         val tvNoTaskAvailable : TextView = findViewById(R.id.tv_no_course_available)
 

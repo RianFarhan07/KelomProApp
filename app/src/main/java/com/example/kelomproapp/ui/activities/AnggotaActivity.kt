@@ -133,6 +133,7 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
             mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.add(siswa.id)
             anggotaAssignedSuccess(siswa)
             FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+            anyChangesMade = true
         } else {
             mKelompokDetails.assignedTo.add(siswa.id)
             anggotaAssignedSuccess(siswa)
@@ -194,6 +195,7 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
                 adapter.notifyDataSetChanged()
 
                 FirestoreClass().addUpdateTopicList(this, mCourseDetail)
+                anyChangesMade = true
             }else{
                 mKelompokDetails.assignedTo.remove(siswa.id)
                 mAssignedAnggotaList.removeAt(position)
@@ -207,7 +209,6 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
 
 
     fun anggotaUnassignedSuccess(siswa: Siswa) {
-        // Update UI or perform any necessary actions
         Toast.makeText(this, "Anggota ${siswa.firstName} dihapus dari kelompok", Toast.LENGTH_SHORT).show()
         anyChangesMade = true
         mAssignedAnggotaList.remove(siswa)

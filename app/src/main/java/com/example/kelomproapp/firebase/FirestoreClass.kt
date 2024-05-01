@@ -520,7 +520,7 @@ class FirestoreClass {
         }
     }
 
-            fun getCourseDetails(activity: Activity, documentId: String) {
+    fun getCourseDetails(activity: Activity, documentId: String) {
         mFireStore.collection(Constants.COURSE)
             .document(documentId)
             .get()
@@ -905,6 +905,8 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName, "Error mengunassign anggota", e)
             }
     }
+
+
 
 
 

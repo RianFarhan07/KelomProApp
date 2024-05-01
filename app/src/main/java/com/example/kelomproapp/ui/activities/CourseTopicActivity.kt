@@ -38,6 +38,7 @@ class CourseTopicActivity : BaseActivity() {
             finish()
         }
 
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getCourseDetails(this@CourseTopicActivity, mCourseDocumentId)
 
 
@@ -89,6 +90,7 @@ class CourseTopicActivity : BaseActivity() {
     }
 
     fun populateTopicListToUI(topicList: ArrayList<Topic>){
+        hideProgressDialog()
         val rvTopicList : RecyclerView = findViewById(R.id.rv_topic_list)
         val tvNoTopicAvailable : TextView = findViewById(R.id.tv_no_topic_available)
 

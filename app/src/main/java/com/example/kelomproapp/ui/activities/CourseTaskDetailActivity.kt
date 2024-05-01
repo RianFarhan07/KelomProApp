@@ -58,13 +58,18 @@ class CourseTaskDetailActivity : BaseActivity() {
     private lateinit var alarmManager : AlarmManager
     private lateinit var pendingIntent: PendingIntent
 
+    companion object {
+        const val PICK_PDF_REQUEST_CODE = 99
+        const val ANGGOTA_EDIT = 98
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCourseTaskDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding?.root)
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         getIntentData()
         setupActionBar()
-
         setupSelectedAnggotaList()
 
         binding?.etNameTaskDetails?.setText(
@@ -183,6 +188,8 @@ class CourseTaskDetailActivity : BaseActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_delete_card -> {
@@ -246,6 +253,7 @@ class CourseTaskDetailActivity : BaseActivity() {
     }
 
     private fun setupSelectedAnggotaList(){
+        hideProgressDialog()
         val taskAssignedMember =
             mCourseDetails.topicList[mTopicListPosition].kelompok[mKelompokListPosition].taskList[mTaskListPosition].
             assignedTo
@@ -379,7 +387,7 @@ class CourseTaskDetailActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TaskDetailsActivity.PICK_PDF_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_PDF_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data != null) {
 
                 showProgressDialog(resources.getString(R.string.mohon_tunggu))
@@ -445,7 +453,7 @@ class CourseTaskDetailActivity : BaseActivity() {
         intent.type = "application/pdf"
         intent.addCategory(Intent.CATEGORY_OPENABLE)
 
-        startActivityForResult(intent, TaskDetailsActivity.PICK_PDF_REQUEST_CODE)
+        startActivityForResult(intent, PICK_PDF_REQUEST_CODE)
     }
 
     private fun createNotificationChannel(){

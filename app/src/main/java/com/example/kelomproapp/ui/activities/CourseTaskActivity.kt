@@ -45,6 +45,7 @@ class CourseTaskActivity : BaseActivity() {
 
         getIntentData()
         setupActionBar()
+
         FirestoreClass().getCourseDetails(this,mCourseDocumentId)
 
         binding!!.tvAddTugas.setOnClickListener {
@@ -140,13 +141,13 @@ class CourseTaskActivity : BaseActivity() {
     fun CourseDetails(course: Course){
         mCourseDetail = course
         setupActionBar()
-//        hideProgressDialog()
-//        showProgressDialog(resources.getString(R.string.mohon_tunggu))
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getAssignedAnggotaListDetails(this,
             mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo)
     }
 
     fun populateTaskListToUI(taskList: ArrayList<Task>){
+        hideProgressDialog()
 
         val rvTaskList : RecyclerView = findViewById(R.id.rv_task_list)
         val tvNoTaskAvailable : TextView = findViewById(R.id.tv_no_task_available)

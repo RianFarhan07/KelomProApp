@@ -42,6 +42,8 @@ class CourseKelompokActivity : BaseActivity() {
         getIntentData()
         setupActionBar()
 
+        FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+
 
         binding?.fabCreateKelompok?.setOnClickListener{
             val intent = Intent(this, CreateKelompokActivity::class.java)
@@ -67,6 +69,7 @@ class CourseKelompokActivity : BaseActivity() {
                 }
             }
         }
+        showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getCourseDetails(this,mCourseDocumentId)
     }
 
@@ -102,6 +105,7 @@ class CourseKelompokActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE){
             FirestoreClass().getCourseDetails(this,mCourseDocumentId)
+            FirestoreClass().getUserDetails(this,Constants.SISWA)
         }
         else{
             Log.e("cancelled","cancelled")
@@ -119,6 +123,7 @@ class CourseKelompokActivity : BaseActivity() {
     }
 
     fun populateKelompokListToUI(kelompokList: ArrayList<Kelompok>){
+        hideProgressDialog()
         val filteredKelompokList = ArrayList<Kelompok>()
 
         val currentUserID = FirestoreClass().getCurrentUserID()
@@ -154,6 +159,7 @@ class CourseKelompokActivity : BaseActivity() {
     }
 
     fun populateKelompokListToUIToGuru(kelompokList: ArrayList<Kelompok>){
+        hideProgressDialog()
         val rvKelompokList : RecyclerView = findViewById(R.id.rv_kelompok_list)
         val tvNoKelompokAvailable : TextView = findViewById(R.id.tv_no_kelompok_available)
 
