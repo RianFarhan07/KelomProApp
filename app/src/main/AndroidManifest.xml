@@ -84,15 +84,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.activities.CourseListActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".ui.activities.PanduanActivity"
             android:exported="false"
             android:screenOrientation="portrait"

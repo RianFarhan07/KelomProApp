@@ -65,7 +65,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 }
         }
 
-        FirestoreClass().getUserDetails(this,"siswa",true)
+
 
         val fabCreateKelompok : FloatingActionButton = findViewById(R.id.fab_create_kelompok)
         fabCreateKelompok.setOnClickListener {
@@ -79,6 +79,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
     override fun onResume() {
         super.onResume()
         FirestoreClass().getKelompokList(this)
+        FirestoreClass().getUserDetails(this,"siswa",true)
     }
 
     private fun setupActionBar() {

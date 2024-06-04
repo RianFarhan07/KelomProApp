@@ -22,7 +22,9 @@
         android:contentDescription="image"
         android:minHeight="150dp"
         android:scaleType="fitXY"
-        android:src="@drawable/img_splash_background" />
+        android:src="@drawable/img_splash_background" >
+
+    </ImageView>
 
     <View
         android:id="@+id/view_divider"
@@ -42,6 +44,7 @@
         android:paddingTop="5dp"
         android:paddingEnd="10dp"
         android:paddingBottom="5dp">
+
 
         <TextView
             android:id="@+id/textViewCourseName"
@@ -69,6 +72,7 @@
             android:textSize="16sp"
             android:textColor="@color/dark_grey"
             android:text="Kelas: Kelas A" />
+
 
         <!-- View Divider -->
         <View

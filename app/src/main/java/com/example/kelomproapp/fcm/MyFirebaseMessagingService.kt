@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
@@ -16,10 +17,8 @@ import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.ui.activities.MainActivity
 import com.example.kelomproapp.ui.activities.SignInActivity
 import com.example.kelomproapp.utils.Constants
-import com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.firebase.messaging.remoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 

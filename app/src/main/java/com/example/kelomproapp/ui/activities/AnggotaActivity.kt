@@ -31,15 +31,15 @@ import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
 
-class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickListener  {
-    private var binding : ActivityAnggotaBinding? = null
-    private lateinit var mKelompokDetails : Kelompok
-    private lateinit var mCourseDetail : Course
-    private lateinit var mAssignedAnggotaList : ArrayList<Siswa>
-    private var mToCourse : Boolean = false
+class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickListener {
+    private var binding: ActivityAnggotaBinding? = null
+    private lateinit var mKelompokDetails: Kelompok
+    private lateinit var mCourseDetail: Course
+    private lateinit var mAssignedAnggotaList: ArrayList<Siswa>
+    private var mToCourse: Boolean = false
     private var mTopicListPosition = -1
     private var mKelompokListPosition = -1
-    private var anyChangesMade : Boolean = false
+    private var anyChangesMade: Boolean = false
     private lateinit var adapter: SiswaItemsAdapter
 
 
@@ -48,43 +48,44 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         binding = ActivityAnggotaBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        if (intent.hasExtra(Constants.KELOMPOK_DETAIL)){
+        if (intent.hasExtra(Constants.KELOMPOK_DETAIL)) {
             mKelompokDetails = intent.getParcelableExtra<Kelompok>(Constants.KELOMPOK_DETAIL)!!
         }
 
-        if (intent.hasExtra(Constants.TO_COURSE)){
-            mToCourse = intent.getBooleanExtra(Constants.TO_COURSE,false)
+        if (intent.hasExtra(Constants.TO_COURSE)) {
+            mToCourse = intent.getBooleanExtra(Constants.TO_COURSE, false)
             Log.e("TOCOURSE ", mToCourse.toString())
         }
-        if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)){
-            mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION,-1)
+        if (intent.hasExtra(Constants.TOPIC_LIST_ITEM_POSITION)) {
+            mTopicListPosition = intent.getIntExtra(Constants.TOPIC_LIST_ITEM_POSITION, -1)
             Log.e("mtopiclistposition ", mTopicListPosition.toString())
         }
-        if (intent.hasExtra(Constants.KELOMPOK_LIST_ITEM_POSITION)){
-            mKelompokListPosition = intent.getIntExtra(Constants.KELOMPOK_LIST_ITEM_POSITION,-1)
+        if (intent.hasExtra(Constants.KELOMPOK_LIST_ITEM_POSITION)) {
+            mKelompokListPosition = intent.getIntExtra(Constants.KELOMPOK_LIST_ITEM_POSITION, -1)
         }
-        if (intent.hasExtra(Constants.COURSE_DETAIL)){
+        if (intent.hasExtra(Constants.COURSE_DETAIL)) {
             mCourseDetail = intent.getParcelableExtra(Constants.COURSE_DETAIL)!!
         }
 
 
         setupActionBar()
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
-        if (mToCourse){
-            FirestoreClass().getAssignedAnggotaListDetails(this,
-                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo)
-        }else{
-            FirestoreClass().getAssignedAnggotaListDetails(this,mKelompokDetails.assignedTo)
+        if (mToCourse) {
+            FirestoreClass().getAssignedAnggotaListDetails(
+                this,
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo
+            )
+        } else {
+            FirestoreClass().getAssignedAnggotaListDetails(this, mKelompokDetails.assignedTo)
         }
-
 
 
     }
 
-    private fun setupActionBar(){
+    private fun setupActionBar() {
         setSupportActionBar(binding?.toolbarAnggotaActivity)
         val toolbar = supportActionBar
-        if (toolbar != null){
+        if (toolbar != null) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
@@ -94,12 +95,12 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_add_anggota,menu)
+        menuInflater.inflate(R.menu.menu_add_anggota, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_add_anggota -> {
                 dialogSearchAnggota()
                 return true
@@ -109,7 +110,7 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
     }
 
     override fun onBackPressed() {
-        if (anyChangesMade){
+        if (anyChangesMade) {
             setResult(Activity.RESULT_OK)
         }
         super.onBackPressed()
@@ -130,7 +131,9 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
 
     fun anggotaDetails(siswa: Siswa) {
         if (mToCourse) {
-            mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.add(siswa.id)
+            mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.add(
+                siswa.id
+            )
             anggotaAssignedSuccess(siswa)
             FirestoreClass().addUpdateTopicList(this, mCourseDetail)
             anyChangesMade = true
@@ -142,17 +145,19 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
     }
 
 
-    fun anggotaAssignedSuccess(siswa: Siswa){
+    fun anggotaAssignedSuccess(siswa: Siswa) {
         hideProgressDialog()
         mAssignedAnggotaList.add(siswa)
         setupAnggotaList(mAssignedAnggotaList)
         anyChangesMade = true
 
-        if (mToCourse){
+        if (mToCourse) {
             SendNotificationToUserAsyncTask(
-                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name!!,siswa.fcmToken!!).execute()
-        }else{
-            SendNotificationToUserAsyncTask(mKelompokDetails.name!!,siswa.fcmToken!!).execute()
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].name!!,
+                siswa.fcmToken
+            ).execute()
+        } else {
+            SendNotificationToUserAsyncTask(mKelompokDetails.name!!, siswa.fcmToken).execute()
         }
 
     }
@@ -168,11 +173,13 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
             if (email.isNotEmpty()) {
                 dialog.dismiss()
                 showProgressDialog(resources.getString(R.string.mohon_tunggu))
-                FirestoreClass().getAnggotaDetails(this,email)
+                FirestoreClass().getAnggotaDetails(this, email)
 
             } else {
-                Toast.makeText(this@AnggotaActivity, "Harap Masukkan Email Anggota",
-                    Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@AnggotaActivity, "Harap Masukkan Email Anggota",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -187,16 +194,22 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         val siswa = mAssignedAnggotaList[position]
 
         if (siswa.id == FirestoreClass().getCurrentUserID()) {
-            Toast.makeText(this, "Anda tidak dapat menghapus diri sendiri dari kelompok", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Anda tidak dapat menghapus diri sendiri dari kelompok",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
-            if(mToCourse){
-                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.remove(siswa.id)
+            if (mToCourse) {
+                mCourseDetail.topicList[mTopicListPosition].kelompok[mKelompokListPosition].assignedTo.remove(
+                    siswa.id
+                )
                 mAssignedAnggotaList.removeAt(position)
                 adapter.notifyDataSetChanged()
 
                 FirestoreClass().addUpdateTopicList(this, mCourseDetail)
                 anyChangesMade = true
-            }else{
+            } else {
                 mKelompokDetails.assignedTo.remove(siswa.id)
                 mAssignedAnggotaList.removeAt(position)
                 adapter.notifyDataSetChanged()
@@ -209,15 +222,18 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
 
 
     fun anggotaUnassignedSuccess(siswa: Siswa) {
-        Toast.makeText(this, "Anggota ${siswa.firstName} dihapus dari kelompok", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Anggota ${siswa.firstName} dihapus dari kelompok", Toast.LENGTH_SHORT)
+            .show()
         anyChangesMade = true
         mAssignedAnggotaList.remove(siswa)
         adapter.notifyDataSetChanged()
     }
 
 
-    private inner class SendNotificationToUserAsyncTask(val namaKelompok :String, val token: String)
-        : AsyncTask<Any,Void,String>(){
+    private inner class SendNotificationToUserAsyncTask(
+        val namaKelompok: String,
+        val token: String
+    ) : AsyncTask<Any, Void, String>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -225,67 +241,64 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         }
 
         override fun doInBackground(vararg p0: Any?): String {
-            var result : String
-            var connection : HttpURLConnection? = null
+            var result: String
+            var connection: HttpURLConnection? = null
             try {
                 val url = URL(Constants.FCM_BASE_URL)
                 connection = url.openConnection() as HttpURLConnection
                 connection.doOutput = true
                 connection.doInput = true
                 connection.instanceFollowRedirects = false
-                connection.requestMethod= "POST"
-
-                connection.setRequestProperty("Content-Type","application/json")
-                connection.setRequestProperty("Charset","utf-8")
-                connection.setRequestProperty("Accept", "application/json")
-
-                connection.setRequestProperty(
-                    Constants.FCM_AUTHORIZATION,"${Constants.FCM_KEY}= ${Constants.FCM_SERVER_KEY}")
-
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+                connection.setRequestProperty("Authorization", "key=${Constants.FCM_SERVER_KEY}")
                 connection.useCaches = false
 
                 val writer = DataOutputStream(connection.outputStream)
                 val jsonRequest = JSONObject()
-                val dataObject = JSONObject()
-                dataObject.put(Constants.FCM_KEY_TITLE, "Ditambahkan Ke Kelompok $namaKelompok")
-                dataObject.put(Constants.FCM_KEY_MESSAGE, "Kamu telah ditambahkan ke kelompok baru oleh ${mAssignedAnggotaList[0].firstName}")
+                val notificationObject = JSONObject()
+                notificationObject.put("title", "Ditambahkan Ke Kelompok $namaKelompok")
+                notificationObject.put(
+                    "body",
+                    "Kamu telah ditambahkan ke kelompok baru oleh ${mAssignedAnggotaList[0].firstName}"
+                )
 
-                jsonRequest.put(Constants.FCM_KEY_DATA, dataObject)
-                jsonRequest.put(Constants.FCM_KEY, token)
+                jsonRequest.put("to", token)
+                jsonRequest.put("notification", notificationObject)
 
+                Log.e("JSON Request", jsonRequest.toString())
                 writer.writeBytes(jsonRequest.toString())
                 writer.flush()
                 writer.close()
 
-                val httpResult : Int = connection.responseCode
-                if (httpResult == HttpURLConnection.HTTP_OK){
+                val httpResult: Int = connection.responseCode
+                if (httpResult == HttpURLConnection.HTTP_OK) {
                     val inputStream = connection.inputStream
-                    val reader = BufferedReader(
-                        InputStreamReader(inputStream))
-                    val sb = java.lang.StringBuilder()
-                    var line : String?
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    val sb = StringBuilder()
+                    var line: String?
                     try {
-                        while (reader.readLine().also {line=it} != null){
-                            sb.append(line+"\n")
+                        while (reader.readLine().also { line = it } != null) {
+                            sb.append(line + "\n")
                         }
-                    }catch (e: IOException){
+                    } catch (e: IOException) {
                         e.printStackTrace()
-                    }finally {
+                    } finally {
                         try {
                             inputStream.close()
-                        }catch (e: IOException){
+                        } catch (e: IOException) {
                             e.printStackTrace()
                         }
                     }
                     result = sb.toString()
-                }else{
+                } else {
                     result = connection.responseMessage
                 }
-            }catch (e: SocketTimeoutException){
+            } catch (e: SocketTimeoutException) {
                 result = "Connection TimeOut"
-            }catch (e: java.lang.Exception){
+            } catch (e: Exception) {
                 result = "Error: " + e.message
-            }finally {
+            } finally {
                 connection?.disconnect()
             }
             return result
@@ -294,7 +307,7 @@ class AnggotaActivity : BaseActivity(), SiswaItemsAdapter.OnDeleteAnggotaClickLi
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             hideProgressDialog()
-            Log.e("JSON Response Result",result!!)
+            Log.e("JSON Response Result", result ?: "Null Response")
         }
     }
 }
