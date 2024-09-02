@@ -14,6 +14,7 @@ import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Siswa
 
 class CourseItemsAdapter (private val context: Context,
+
                           private val list : ArrayList<Course>,)
     : RecyclerView.Adapter<CourseItemsAdapter.CourseViewHolder>() {
 

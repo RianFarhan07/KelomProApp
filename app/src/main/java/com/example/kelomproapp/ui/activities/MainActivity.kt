@@ -13,13 +13,16 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.kelomproapp.R
+import com.example.kelomproapp.adapter.CourseItemsAdapter
 import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.ActivityMainBinding
 import com.example.kelomproapp.firebase.FirestoreClass
+import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Kelompok
 import com.example.kelomproapp.models.Materi
 import com.example.kelomproapp.models.Siswa
@@ -65,20 +68,11 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
                 }
         }
 
-
-
-        val fabCreateKelompok : FloatingActionButton = findViewById(R.id.fab_create_kelompok)
-        fabCreateKelompok.setOnClickListener {
-            val intent = Intent(this, CreateKelompokActivity::class.java)
-            intent.putExtra(Constants.NAME, mUserName)
-            intent.putExtra(Constants.TO_COURSE, false)
-            startActivityForResult(intent, CREATE_KELOMPOK_REQUEST_CODE)
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        FirestoreClass().getKelompokList(this)
+        FirestoreClass().getCourseListClasses(this)
         FirestoreClass().getUserDetails(this,"siswa",true)
     }
 
@@ -119,9 +113,9 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         if (resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE){
             FirestoreClass().getUserDetails(this,Constants.SISWA)
         }else if (resultCode == Activity.RESULT_OK && requestCode == CREATE_KELOMPOK_REQUEST_CODE){
-            FirestoreClass().getKelompokList(this)
+            FirestoreClass().getCourseListClasses(this)
         }else if (resultCode == Activity.RESULT_OK && requestCode == UPDATE_KELOMPOK_REQUEST_CODE) {
-            FirestoreClass().getKelompokList(this)
+            FirestoreClass().getCourseListClasses(this)
         }
         else{
             Log.e("cancelled","cancelled")
@@ -201,7 +195,7 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         if (readKelompokList){
             showProgressDialog(resources.getString(R.string.mohon_tunggu))
 
-            FirestoreClass().getKelompokList(this)
+            FirestoreClass().getCourseListClasses(this)
         }
     }
 
@@ -233,6 +227,36 @@ class MainActivity : BaseActivity() , NavigationView.OnNavigationItemSelectedLis
         }else{
             rvKelompokList.visibility = View.GONE
             tvNoKelompokAvailable.visibility  = View.VISIBLE
+        }
+    }
+
+    fun populateCourseListToUI(courseList: ArrayList<Course>){
+        hideProgressDialog()
+        val rvCourseList : RecyclerView = findViewById(R.id.rv_kelompok_list)
+        val tvNoTaskAvailable : TextView = findViewById(R.id.tv_no_kelompok_available)
+
+
+        if (courseList.size > 0){
+            rvCourseList.visibility = View.VISIBLE
+            tvNoTaskAvailable.visibility  = View.GONE
+
+            rvCourseList.layoutManager = GridLayoutManager(this,2)
+            rvCourseList.setHasFixedSize(true)
+
+            val adapter = CourseItemsAdapter(this,courseList)
+            rvCourseList.adapter = adapter
+
+            adapter.setOnClickListener(object: CourseItemsAdapter.OnClickListener{
+                override fun onClick(position: Int,model: Course) {
+                    val intent = Intent(this@MainActivity, CourseTopicActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    Log.e("KELOMPOK","ID : ${model.documentId}")
+                    startActivity(intent)
+                }
+            })
+        }else{
+            rvCourseList.visibility = View.GONE
+            tvNoTaskAvailable.visibility  = View.VISIBLE
         }
     }
 

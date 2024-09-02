@@ -206,6 +206,9 @@ class FirestoreClass {
                                 is CourseKelompokActivity -> {
                                     activity.getSiswaName(siswa)
                                 }
+                                is CourseActivity -> {
+                                    activity.getSiswaName(siswa)
+                                }
 
 
                             }
@@ -324,7 +327,7 @@ class FirestoreClass {
             }
     }
 
-    fun getKelompokList(activity: MainActivity){
+    fun getKelompokList(activity: CourseActivity){
         mFireStore.collection(Constants.KELOMPOK)
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
             .get()
@@ -494,7 +497,7 @@ class FirestoreClass {
             }
     }
 
-    fun getCourseListClasses(activity: CourseActivity) {
+    fun getCourseListClasses(activity: MainActivity) {
         getClassesForSiswa(getCurrentUserID()) { classes ->
             if (classes != null) {
                 Log.e("CLASS SISWA", classes)

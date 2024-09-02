@@ -108,8 +108,8 @@
 
             storageReference = FirebaseStorage.getInstance().reference
 
-            val mUploadedPdfUriString: String? = mKelompokDetails.taskList[mTaskListPosition].pdfUrl
-            mDatabasePdf = mUploadedPdfUriString?.toUri()
+                val mUploadedPdfUriString: String? = mKelompokDetails.taskList[mTaskListPosition].pdfUrl
+                mDatabasePdf = mUploadedPdfUriString?.toUri()
 
             binding?.btnUploadPdf?.setOnClickListener {
                 showPdfChooser()

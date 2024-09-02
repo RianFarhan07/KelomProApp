@@ -1,8 +1,10 @@
 package com.example.kelomproapp.ui.activities
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -15,20 +17,29 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kelomproapp.R
 import com.example.kelomproapp.adapter.CourseItemsAdapter
+import com.example.kelomproapp.adapter.KelompokItemsAdapter
 import com.example.kelomproapp.databinding.ActivityCourseBinding
 import com.example.kelomproapp.firebase.FirestoreClass
 import com.example.kelomproapp.models.Course
 import com.example.kelomproapp.models.Guru
+import com.example.kelomproapp.models.Kelompok
+import com.example.kelomproapp.models.Siswa
 import com.example.kelomproapp.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 
 class CourseActivity : BaseActivity() {
     private var binding : ActivityCourseBinding? = null
     private var mGuruName : String? = null
+    private var mSiswaName : String? = null
     private var mListClasses : String? = null
+
+    companion object{
+        const val CREATE_KELOMPOK_REQUEST_CODE = 77
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCourseBinding.inflate(layoutInflater)
@@ -38,10 +49,25 @@ class CourseActivity : BaseActivity() {
         setupActionBar()
         showProgressDialog(resources.getString(R.string.mohon_tunggu))
         FirestoreClass().getUserDetails(this,"guru",false)
+        FirestoreClass().getUserDetails(this,"siswa",false)
 
         binding!!.tvAddCourse.setOnClickListener {
-            binding!!.tvAddCourse.visibility = View.GONE
-            binding!!.cvAddCourseListName.visibility = View.VISIBLE
+            val currentUserID = FirestoreClass().getCurrentUserID()
+            if (currentUserID.isNotEmpty()) {
+                FirestoreClass().getUserRole(currentUserID) { role ->
+                    if (role == "siswa") {
+                        binding?.tvAddCourse?.text = "Buat Kelompok"
+                        val intent = Intent(this, CreateKelompokActivity::class.java)
+                        intent.putExtra(Constants.NAME, mSiswaName)
+                        intent.putExtra(Constants.TO_COURSE, false)
+                        startActivityForResult(intent, CREATE_KELOMPOK_REQUEST_CODE)
+                    }else{
+                        binding!!.tvAddCourse.visibility = View.GONE
+                        binding!!.cvAddCourseListName.visibility = View.VISIBLE
+                    }
+                }
+            }
+
         }
 
         binding!!.ibCloseListName.setOnClickListener {
@@ -73,10 +99,7 @@ class CourseActivity : BaseActivity() {
         if (currentUserID.isNotEmpty()) {
             FirestoreClass().getUserRole(currentUserID) { role ->
                 if (role == "siswa") {
-
-                    FirestoreClass().getCourseListClasses(this)
-                    binding?.tvAddCourse?.visibility = View.GONE
-                    binding?.cvAddCourseListName?.visibility = View.GONE
+                    FirestoreClass().getKelompokList(this)
                 }else{
                     FirestoreClass().getCourseList(this)
                 }
@@ -89,8 +112,24 @@ class CourseActivity : BaseActivity() {
     private fun setupActionBar(){
         setSupportActionBar(binding?.toolbarCourseListActivity)
         val toolbar = supportActionBar
-        if (toolbar != null){
-            supportActionBar?.title = "Daftar Materi"
+        if (toolbar != null){val currentUserID = FirestoreClass().getCurrentUserID()
+            if (currentUserID.isNotEmpty()) {
+                FirestoreClass().getUserRole(currentUserID) { role ->
+                    if (role == "siswa") {
+                        binding?.tvTitle?.text = "Daftar Kelompok"
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+       if (resultCode == Activity.RESULT_OK && requestCode == CREATE_KELOMPOK_REQUEST_CODE){
+            FirestoreClass().getKelompokList(this)
+        }
+        else{
+            Log.e("cancelled","cancelled")
         }
     }
 
@@ -129,7 +168,41 @@ class CourseActivity : BaseActivity() {
         mGuruName = guru.name
     }
 
+    fun getSiswaName(siswa: Siswa) {
+        // Set data guru ke UI sesuai kebutuhan
+        mSiswaName = "${siswa.firstName} ${siswa.lastName}"
+    }
 
+    fun populateKelompokListToUI(kelompokList: ArrayList<Kelompok>){
+
+        val rvKelompokList : RecyclerView = findViewById(R.id.rv_course_list)
+        val tvNoKelompokAvailable : TextView = findViewById(R.id.tv_no_course_available)
+
+        hideProgressDialog()
+
+        if (kelompokList.size >0){
+            rvKelompokList.visibility = View.VISIBLE
+            tvNoKelompokAvailable.visibility  = View.GONE
+
+            rvKelompokList.layoutManager = LinearLayoutManager(this)
+            rvKelompokList.setHasFixedSize(true)
+
+            val adapter = KelompokItemsAdapter(this,kelompokList)
+            rvKelompokList.adapter = adapter
+
+            adapter.setOnClickListener(object: KelompokItemsAdapter.OnClickListener{
+                override fun onClick(position: Int, model: Kelompok) {
+                    val intent = Intent(this@CourseActivity, TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    Log.e("KELOMPOK","ID : ${model.documentId}")
+                    startActivityForResult(intent, MainActivity.UPDATE_KELOMPOK_REQUEST_CODE)
+                }
+            })
+        }else{
+            rvKelompokList.visibility = View.GONE
+            tvNoKelompokAvailable.visibility  = View.VISIBLE
+        }
+    }
 
     fun populateCourseListToUI(courseList: ArrayList<Course>){
         hideProgressDialog()
